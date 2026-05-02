@@ -241,6 +241,19 @@
           "scheme": "blackbox",
           "componentType": "page",
           "path": "/politique-confidentialite"
+        },
+        {
+          "id": "UxnpsbaJ19YR",
+          "name": "Home",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/blank_project/PlasmicHome.tsx",
+          "importSpec": {
+            "modulePath": "Home.tsx"
+          },
+          "cssFilePath": "plasmic/blank_project/PlasmicHome.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [],
