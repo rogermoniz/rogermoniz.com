@@ -28,8 +28,8 @@
   max-width: 100%;
   object-fit: cover;
   width: 100%;
-  height: 100%;
   background: none;
+  height: 1024px;
   grid-column-start: 1 !important;
   grid-column-end: -1 !important;
 }
