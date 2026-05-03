@@ -241,6 +241,20 @@
           "scheme": "blackbox",
           "componentType": "page",
           "path": "/politique-confidentialite"
+        },
+        {
+          "id": "-rsQ3LdZ-Zjn",
+          "name": "NewPage",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/blank_project/PlasmicNewPage.tsx",
+          "importSpec": {
+            "modulePath": "../pages/new-page.tsx"
+          },
+          "cssFilePath": "plasmic/blank_project/PlasmicNewPage.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/new-page"
         }
       ],
       "icons": [],
