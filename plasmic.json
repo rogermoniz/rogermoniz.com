@@ -255,6 +255,104 @@
           "scheme": "blackbox",
           "componentType": "page",
           "path": "/new-page"
+        },
+        {
+          "id": "y9_F5PWLjJqJ",
+          "name": "AmourDeSoi",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/blank_project/PlasmicAmourDeSoi.tsx",
+          "importSpec": {
+            "modulePath": "../pages/amour-de-soi.tsx"
+          },
+          "cssFilePath": "plasmic/blank_project/PlasmicAmourDeSoi.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/amour-de-soi"
+        },
+        {
+          "id": "qPbblmgw7riw",
+          "name": "Fantaisie",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/blank_project/PlasmicFantaisie.tsx",
+          "importSpec": {
+            "modulePath": "../pages/fantaisie.tsx"
+          },
+          "cssFilePath": "plasmic/blank_project/PlasmicFantaisie.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/fantaisie"
+        },
+        {
+          "id": "6Wbz0W9IV8hw",
+          "name": "InTheBox",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/blank_project/PlasmicInTheBox.tsx",
+          "importSpec": {
+            "modulePath": "../pages/in-the-box.tsx"
+          },
+          "cssFilePath": "plasmic/blank_project/PlasmicInTheBox.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/in-the-box"
+        },
+        {
+          "id": "Mq1CT8jHthBK",
+          "name": "Grossesse",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/blank_project/PlasmicGrossesse.tsx",
+          "importSpec": {
+            "modulePath": "../pages/grossesse.tsx"
+          },
+          "cssFilePath": "plasmic/blank_project/PlasmicGrossesse.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/grossesse"
+        },
+        {
+          "id": "p2VNFOt4dVWU",
+          "name": "Evenementiel",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/blank_project/PlasmicEvenementiel.tsx",
+          "importSpec": {
+            "modulePath": "../pages/evenementiel.tsx"
+          },
+          "cssFilePath": "plasmic/blank_project/PlasmicEvenementiel.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/evenementiel"
+        },
+        {
+          "id": "w5pYTraZy-Pv",
+          "name": "Packshot",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/blank_project/PlasmicPackshot.tsx",
+          "importSpec": {
+            "modulePath": "../pages/packshot.tsx"
+          },
+          "cssFilePath": "plasmic/blank_project/PlasmicPackshot.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/packshot"
+        },
+        {
+          "id": "kNyrBRkcnZGV",
+          "name": "APropos",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/blank_project/PlasmicAPropos.tsx",
+          "importSpec": {
+            "modulePath": "../pages/a-propos.tsx"
+          },
+          "cssFilePath": "plasmic/blank_project/PlasmicAPropos.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/a-propos"
         }
       ],
       "icons": [],
