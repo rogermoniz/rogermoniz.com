@@ -93,14 +93,14 @@ export type PageCtx = {
 
 export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return {
-    title: "Blog Template",
+    title: "Article Name | Roger Moniz Photographe à Nice",
 
     openGraph: {
-      title: "Blog Template"
+      title: "Article Name | Roger Moniz Photographe à Nice"
     },
     twitter: {
       card: "summary" as const,
-      title: "Blog Template"
+      title: "Article Name | Roger Moniz Photographe à Nice"
     }
   };
 }
