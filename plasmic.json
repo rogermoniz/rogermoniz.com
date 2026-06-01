@@ -353,6 +353,20 @@
           "scheme": "blackbox",
           "componentType": "page",
           "path": "/a-propos"
+        },
+        {
+          "id": "z0TpqPvefOFD",
+          "name": "PortraitATester",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/rogermoniz_com/PlasmicPortraitATester.tsx",
+          "importSpec": {
+            "modulePath": "../pages/portraits-2.tsx"
+          },
+          "cssFilePath": "plasmic/rogermoniz_com/PlasmicPortraitATester.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/portraits-2"
         }
       ],
       "icons": [],
@@ -381,13 +395,20 @@
     }
   ],
   "globalVariants": {
-    "variantGroups": []
+    "variantGroups": [
+      {
+        "id": "eVZ9AxMzpA6_",
+        "name": "UnnamedGlobalGroupOfVariants",
+        "projectId": "eYvaNejesYxSLtRjN5K9nx",
+        "contextFilePath": "plasmic/rogermoniz_com/PlasmicGlobalVariant__UnnamedGlobalGroupOfVariants.tsx"
+      }
+    ]
   },
   "wrapPagesWithGlobalContexts": true,
   "preserveJsImportExtensions": false,
   "nextjsConfig": {
     "pagesDir": "../pages"
   },
-  "cliVersion": "0.1.361",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.361/dist/plasmic.schema.json"
+  "cliVersion": "0.1.363",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.363/dist/plasmic.schema.json"
 }

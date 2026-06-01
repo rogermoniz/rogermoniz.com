@@ -7,4 +7,11 @@
 
 import { createUseGlobalVariants } from "@plasmicapp/react-web";
 
-export const _useGlobalVariants = createUseGlobalVariants({});
+import {
+  UnnamedGlobalGroupOfVariantsValue,
+  useUnnamedGlobalGroupOfVariants
+} from "../rogermoniz_com/PlasmicGlobalVariant__UnnamedGlobalGroupOfVariants"; // plasmic-import: eVZ9AxMzpA6_/globalVariant
+
+export const _useGlobalVariants = createUseGlobalVariants({
+  unnamedGlobalGroupOfVariants: useUnnamedGlobalGroupOfVariants
+});

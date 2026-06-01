@@ -10,7 +10,10 @@
   );
 }
 
-.plasmic_default_styles {
+.plasmic_default_styles,
+.plasmic_default_styles:where(
+  .global_unnamedGlobalGroupOfVariants_unnamedVariant
+) {
   --mixin-Y6jlSQBqPMKv_text-align: left;
   --mixin-Y6jlSQBqPMKv_text-transform: none;
   --mixin-Y6jlSQBqPMKv_white-space: pre-wrap;
