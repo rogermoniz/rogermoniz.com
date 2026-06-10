@@ -7,7 +7,7 @@
   },
   "style": {
     "scheme": "css-modules",
-    "defaultStyleCssFilePath": "plasmic/plasmic__default_style.module.css"
+    "defaultStyleCssFilePath": "plasmic/plasmic__default_style.css"
   },
   "images": {
     "scheme": "public-files",
@@ -26,7 +26,7 @@
       "projectApiToken": "vXGGQpdi9fhcncabBdg8DcMRUbkz0iRW6HS1jzQufQR6QH0MasPwr9SX7ap4SsK3xXwwXmzZtglWGe0Rm2nw",
       "projectName": "plasmic-basic-components",
       "version": ">0.0.0",
-      "cssFilePath": "plasmic/plasmic_basic_components/plasmic.module.css",
+      "cssFilePath": "plasmic/plasmic_basic_components/plasmic.css",
       "components": [],
       "icons": [],
       "images": [],
@@ -87,7 +87,7 @@
       "projectApiToken": "lQhv2cusp2b86x9qHawbZsxpcIf0yDsz98a0VxBgAQuZqWB3BCDmP1fATvwdbJwXSJ8OMQv6gp9QuJg74DBQ",
       "projectName": "rogermoniz.com",
       "version": "latest",
-      "cssFilePath": "plasmic/blank_project/plasmic.module.css",
+      "cssFilePath": "plasmic/blank_project/plasmic.css",
       "components": [
         {
           "id": "GNYMyVRdEodH",
@@ -409,6 +409,6 @@
   "nextjsConfig": {
     "pagesDir": "../pages"
   },
-  "cliVersion": "0.1.363",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.363/dist/plasmic.schema.json"
+  "cliVersion": "0.1.364",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.364/dist/plasmic.schema.json"
 }

@@ -66,7 +66,6 @@ import { _useStyleTokens } from "../blank_project/PlasmicStyleTokensProvider"; /
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "../blank_project/plasmic.module.css"; // plasmic-import: eYvaNejesYxSLtRjN5K9nx/projectcss
 import sty from "./PlasmicPortraitATester.module.css"; // plasmic-import: z0TpqPvefOFD/css
 
 const emptyProxy: any = new Proxy(() => "", {
@@ -210,17 +209,17 @@ function PlasmicPortraitATester__RenderFunc(props: {
         }
       `}</style>
 
-      <div className={projectcss.plasmic_page_wrapper}>
+      <div className={"plasmic_page_wrapper"}>
         <div
           data-plasmic-name={"root"}
           data-plasmic-override={overrides.root}
           data-plasmic-root={true}
           data-plasmic-for-node={forNode}
           className={classNames(
-            projectcss.all,
-            projectcss.root_reset,
-            projectcss.plasmic_default_styles,
-            projectcss.plasmic_mixins,
+            "all",
+            "root_reset_eYvaNejesYxSLtRjN5K9nx",
+            "plasmic_default_styles",
+            "plasmic_mixins",
             styleTokensClassNames,
             sty.root
           )}
