@@ -243,20 +243,6 @@
           "path": "/politique-confidentialite"
         },
         {
-          "id": "-rsQ3LdZ-Zjn",
-          "name": "NewPage",
-          "type": "managed",
-          "projectId": "eYvaNejesYxSLtRjN5K9nx",
-          "renderModuleFilePath": "plasmic/blank_project/PlasmicNewPage.tsx",
-          "importSpec": {
-            "modulePath": "../pages/new-page.tsx"
-          },
-          "cssFilePath": "plasmic/blank_project/PlasmicNewPage.module.css",
-          "scheme": "blackbox",
-          "componentType": "page",
-          "path": "/new-page"
-        },
-        {
           "id": "y9_F5PWLjJqJ",
           "name": "AmourDeSoi",
           "type": "managed",
@@ -353,20 +339,6 @@
           "scheme": "blackbox",
           "componentType": "page",
           "path": "/a-propos"
-        },
-        {
-          "id": "z0TpqPvefOFD",
-          "name": "PortraitATester",
-          "type": "managed",
-          "projectId": "eYvaNejesYxSLtRjN5K9nx",
-          "renderModuleFilePath": "plasmic/rogermoniz_com/PlasmicPortraitATester.tsx",
-          "importSpec": {
-            "modulePath": "../pages/portraits-2.tsx"
-          },
-          "cssFilePath": "plasmic/rogermoniz_com/PlasmicPortraitATester.module.css",
-          "scheme": "blackbox",
-          "componentType": "page",
-          "path": "/portraits-2"
         }
       ],
       "icons": [],
