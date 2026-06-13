@@ -6,13 +6,14 @@ import Head from "next/head";
 import Link from "next/link";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
+
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <PlasmicRootProvider Head={Head} Link={Link}>
-      {/* 1. Ton script Google Tag Manager (déjà mis) */}
+      {/* 1. Google Tag Manager — load on idle, off the critical path */}
       <Script
         id="gtm-script"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -24,12 +25,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         }}
       />
 
-      {/* 2. Nouveau script Google Analytics (gtag.js) */}
+      {/* 2. Google Analytics (gtag.js) — also on idle */}
       <Script
         src="https://www.googletagmanager.com/gtag/js?id=G-S6WXWWKVQY"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
       />
-      <Script id="google-analytics" strategy="afterInteractive">
+      <Script id="google-analytics" strategy="lazyOnload">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
