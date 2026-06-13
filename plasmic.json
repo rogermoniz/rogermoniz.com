@@ -180,7 +180,7 @@
           "projectId": "eYvaNejesYxSLtRjN5K9nx",
           "renderModuleFilePath": "plasmic/blank_project/PlasmicCgv.tsx",
           "importSpec": {
-            "modulePath": "../pages/conditions-generales-de-vente.tsx"
+            "modulePath": "../pages/cgv.tsx"
           },
           "cssFilePath": "plasmic/blank_project/PlasmicCgv.module.css",
           "scheme": "blackbox",
@@ -235,7 +235,7 @@
           "projectId": "eYvaNejesYxSLtRjN5K9nx",
           "renderModuleFilePath": "plasmic/blank_project/PlasmicPolitiqueDeConfidentialite.tsx",
           "importSpec": {
-            "modulePath": "../pages/politique-confidentialite.tsx"
+            "modulePath": "../pages/confidentialite.tsx"
           },
           "cssFilePath": "plasmic/blank_project/PlasmicPolitiqueDeConfidentialite.module.css",
           "scheme": "blackbox",

@@ -307,8 +307,8 @@ export const PlasmicCgv = Object.assign(
     internalArgProps: PlasmicCgv__ArgProps,
 
     pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), {
-      pageRoute: "/conditions-generales-de-vente",
-      pagePath: "/conditions-generales-de-vente",
+      pageRoute: "/cgv",
+      pagePath: "/cgv",
       params: {},
       query: {}
     })

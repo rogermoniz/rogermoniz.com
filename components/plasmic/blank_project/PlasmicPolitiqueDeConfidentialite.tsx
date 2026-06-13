@@ -310,8 +310,8 @@ export const PlasmicPolitiqueDeConfidentialite = Object.assign(
     internalArgProps: PlasmicPolitiqueDeConfidentialite__ArgProps,
 
     pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), {
-      pageRoute: "/politique-confidentialite",
-      pagePath: "/politique-confidentialite",
+      pageRoute: "/confidentialite",
+      pagePath: "/confidentialite",
       params: {},
       query: {}
     })
