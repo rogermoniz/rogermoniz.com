@@ -353,6 +353,20 @@
           "scheme": "blackbox",
           "componentType": "page",
           "path": "/corporate"
+        },
+        {
+          "id": "HK7J01fsZKfq",
+          "name": "Portraits",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/rogermoniz_com/PlasmicPortraits.tsx",
+          "importSpec": {
+            "modulePath": "../pages/portrait.tsx"
+          },
+          "cssFilePath": "plasmic/rogermoniz_com/PlasmicPortraits.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/portrait"
         }
       ],
       "icons": [],
