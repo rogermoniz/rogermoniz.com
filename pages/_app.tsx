@@ -5,6 +5,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import Link from "next/link";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <PlasmicRootProvider Head={Head} Link={Link}>
@@ -38,6 +39,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       </Script>
 
       <Component {...pageProps} />
+      <Analytics />
     </PlasmicRootProvider>
   );
 }
