@@ -339,6 +339,20 @@
           "scheme": "blackbox",
           "componentType": "page",
           "path": "/a-propos"
+        },
+        {
+          "id": "gmI5Lbl29zyT",
+          "name": "Corporate",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/rogermoniz_com/PlasmicCorporate.tsx",
+          "importSpec": {
+            "modulePath": "../pages/corporate.tsx"
+          },
+          "cssFilePath": "plasmic/rogermoniz_com/PlasmicCorporate.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/corporate"
         }
       ],
       "icons": [],
