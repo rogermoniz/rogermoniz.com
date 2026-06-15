@@ -132,20 +132,6 @@
           "path": "/blog"
         },
         {
-          "id": "tHZZMy0_Dz78",
-          "name": "Portrait",
-          "type": "managed",
-          "projectId": "eYvaNejesYxSLtRjN5K9nx",
-          "renderModuleFilePath": "plasmic/blank_project/PlasmicPortrait.tsx",
-          "importSpec": {
-            "modulePath": "../pages/portraits.tsx"
-          },
-          "cssFilePath": "plasmic/blank_project/PlasmicPortrait.module.css",
-          "scheme": "blackbox",
-          "componentType": "page",
-          "path": "/portraits"
-        },
-        {
           "id": "VsiCr7M2wPrN",
           "name": "Contact",
           "type": "managed",
