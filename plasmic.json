@@ -353,6 +353,20 @@
           "scheme": "blackbox",
           "componentType": "page",
           "path": "/portrait"
+        },
+        {
+          "id": "R26sQ5GeanQ6",
+          "name": "ShootingEhpad",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/rogermoniz_com/PlasmicShootingEhpad.tsx",
+          "importSpec": {
+            "modulePath": "../pages/blog/shooting-ehpad.tsx"
+          },
+          "cssFilePath": "plasmic/rogermoniz_com/PlasmicShootingEhpad.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/blog/shooting-ehpad"
         }
       ],
       "icons": [],
