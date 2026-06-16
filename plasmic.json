@@ -367,6 +367,34 @@
           "scheme": "blackbox",
           "componentType": "page",
           "path": "/blog/shooting-ehpad"
+        },
+        {
+          "id": "PJWAwKiBJI2w",
+          "name": "TroisLieuxMagiques",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/rogermoniz_com/PlasmicTroisLieuxMagiques.tsx",
+          "importSpec": {
+            "modulePath": "../pages/blog/trois-lieux-magiques-a-nice.tsx"
+          },
+          "cssFilePath": "plasmic/rogermoniz_com/PlasmicTroisLieuxMagiques.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/blog/trois-lieux-magiques-a-nice"
+        },
+        {
+          "id": "WJLyxmTPgv_X",
+          "name": "OctobreRose2025",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/rogermoniz_com/PlasmicOctobreRose2025.tsx",
+          "importSpec": {
+            "modulePath": "../pages/blog/octobre-rose-2025.tsx"
+          },
+          "cssFilePath": "plasmic/rogermoniz_com/PlasmicOctobreRose2025.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/blog/octobre-rose-2025"
         }
       ],
       "icons": [],
