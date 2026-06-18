@@ -4,24 +4,24 @@ import * as React from "react";
 import { PageParamsProvider as PageParamsProvider__ } from "@plasmicapp/react-web/lib/host";
 
 import { UnnamedGlobalGroupOfVariantsContextProvider } from "../components/plasmic/rogermoniz_com/PlasmicGlobalVariant__UnnamedGlobalGroupOfVariants";
-import { PlasmicCorporate } from "../components/plasmic/rogermoniz_com/PlasmicCorporate";
+import { PlasmicPrestationCorporate } from "../components/plasmic/rogermoniz_com/PlasmicPrestationCorporate";
 import { useRouter } from "next/router";
 import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";
 
-function Corporate() {
-  // Use PlasmicCorporate to render this component as it was
+function PrestationCorporate() {
+  // Use PlasmicPrestationCorporate to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,
   // attaching the appropriate event handlers, etc.  You
   // can also install whatever React hooks you need here to manage state or
   // fetch data.
   //
-  // Props you can pass into PlasmicCorporate are:
+  // Props you can pass into PlasmicPrestationCorporate are:
   // 1. Variants you want to activate,
   // 2. Contents for slots you want to fill,
   // 3. Overrides for any named node in the component to attach behavior and data,
   // 4. Props to set on the root node.
   //
-  // By default, PlasmicCorporate is wrapped by your project's global
+  // By default, PlasmicPrestationCorporate is wrapped by your project's global
   // variant context providers. These wrappers may be moved to
   // Next.js Custom App component
   // (https://nextjs.org/docs/advanced-features/custom-app).
@@ -34,11 +34,11 @@ function Corporate() {
           params={useRouter()?.query}
           query={useRouter()?.query}
         >
-          <PlasmicCorporate />
+          <PlasmicPrestationCorporate />
         </PageParamsProvider__>
       </PlasmicQueryDataProvider>
     </UnnamedGlobalGroupOfVariantsContextProvider>
   );
 }
 
-export default Corporate;
+export default PrestationCorporate;

@@ -3,34 +3,42 @@
 import * as React from "react";
 import { PageParamsProvider as PageParamsProvider__ } from "@plasmicapp/react-web/lib/host";
 
-import { PlasmicFantaisie } from "../components/plasmic/blank_project/PlasmicFantaisie";
+import { UnnamedGlobalGroupOfVariantsContextProvider } from "../components/plasmic/rogermoniz_com/PlasmicGlobalVariant__UnnamedGlobalGroupOfVariants";
+import { PlasmicPrestationFantaisie } from "../components/plasmic/rogermoniz_com/PlasmicPrestationFantaisie";
 import { useRouter } from "next/router";
 import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";
 
-function Fantaisie() {
-  // Use PlasmicFantaisie to render this component as it was
+function PrestationFantaisie() {
+  // Use PlasmicPrestationFantaisie to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,
   // attaching the appropriate event handlers, etc.  You
   // can also install whatever React hooks you need here to manage state or
   // fetch data.
   //
-  // Props you can pass into PlasmicFantaisie are:
+  // Props you can pass into PlasmicPrestationFantaisie are:
   // 1. Variants you want to activate,
   // 2. Contents for slots you want to fill,
   // 3. Overrides for any named node in the component to attach behavior and data,
   // 4. Props to set on the root node.
+  //
+  // By default, PlasmicPrestationFantaisie is wrapped by your project's global
+  // variant context providers. These wrappers may be moved to
+  // Next.js Custom App component
+  // (https://nextjs.org/docs/advanced-features/custom-app).
 
   return (
-    <PlasmicQueryDataProvider>
-      <PageParamsProvider__
-        route={useRouter()?.pathname}
-        params={useRouter()?.query}
-        query={useRouter()?.query}
-      >
-        <PlasmicFantaisie />
-      </PageParamsProvider__>
-    </PlasmicQueryDataProvider>
+    <UnnamedGlobalGroupOfVariantsContextProvider value={undefined}>
+      <PlasmicQueryDataProvider>
+        <PageParamsProvider__
+          route={useRouter()?.pathname}
+          params={useRouter()?.query}
+          query={useRouter()?.query}
+        >
+          <PlasmicPrestationFantaisie />
+        </PageParamsProvider__>
+      </PlasmicQueryDataProvider>
+    </UnnamedGlobalGroupOfVariantsContextProvider>
   );
 }
 
-export default Fantaisie;
+export default PrestationFantaisie;

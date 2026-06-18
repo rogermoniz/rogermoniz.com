@@ -4,24 +4,24 @@ import * as React from "react";
 import { PageParamsProvider as PageParamsProvider__ } from "@plasmicapp/react-web/lib/host";
 
 import { UnnamedGlobalGroupOfVariantsContextProvider } from "../../components/plasmic/rogermoniz_com/PlasmicGlobalVariant__UnnamedGlobalGroupOfVariants";
-import { PlasmicOctobreRose2025 } from "../../components/plasmic/rogermoniz_com/PlasmicOctobreRose2025";
+import { PlasmicBlogOctobreRose2025 } from "../../components/plasmic/rogermoniz_com/PlasmicBlogOctobreRose2025";
 import { useRouter } from "next/router";
 import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";
 
-function OctobreRose2025() {
-  // Use PlasmicOctobreRose2025 to render this component as it was
+function BlogOctobreRose2025() {
+  // Use PlasmicBlogOctobreRose2025 to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,
   // attaching the appropriate event handlers, etc.  You
   // can also install whatever React hooks you need here to manage state or
   // fetch data.
   //
-  // Props you can pass into PlasmicOctobreRose2025 are:
+  // Props you can pass into PlasmicBlogOctobreRose2025 are:
   // 1. Variants you want to activate,
   // 2. Contents for slots you want to fill,
   // 3. Overrides for any named node in the component to attach behavior and data,
   // 4. Props to set on the root node.
   //
-  // By default, PlasmicOctobreRose2025 is wrapped by your project's global
+  // By default, PlasmicBlogOctobreRose2025 is wrapped by your project's global
   // variant context providers. These wrappers may be moved to
   // Next.js Custom App component
   // (https://nextjs.org/docs/advanced-features/custom-app).
@@ -34,11 +34,11 @@ function OctobreRose2025() {
           params={useRouter()?.query}
           query={useRouter()?.query}
         >
-          <PlasmicOctobreRose2025 />
+          <PlasmicBlogOctobreRose2025 />
         </PageParamsProvider__>
       </PlasmicQueryDataProvider>
     </UnnamedGlobalGroupOfVariantsContextProvider>
   );
 }
 
-export default OctobreRose2025;
+export default BlogOctobreRose2025;
