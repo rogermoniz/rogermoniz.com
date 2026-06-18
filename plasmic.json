@@ -188,20 +188,6 @@
           "path": "/mentions-legales"
         },
         {
-          "id": "pBcY5syl3PyE",
-          "name": "BlogTemplate",
-          "type": "managed",
-          "projectId": "eYvaNejesYxSLtRjN5K9nx",
-          "renderModuleFilePath": "plasmic/blank_project/PlasmicBlogTemplate.tsx",
-          "importSpec": {
-            "modulePath": "../pages/blog/template.tsx"
-          },
-          "cssFilePath": "plasmic/blank_project/PlasmicBlogTemplate.module.css",
-          "scheme": "blackbox",
-          "componentType": "page",
-          "path": "/blog/template"
-        },
-        {
           "id": "Ko-IVH-QxvOI",
           "name": "Menu",
           "type": "managed",
@@ -395,6 +381,20 @@
           "scheme": "blackbox",
           "componentType": "page",
           "path": "/blog/octobre-rose-2025"
+        },
+        {
+          "id": "S3alc73i-Zu-",
+          "name": "EventsOnPosePourLeRose",
+          "type": "managed",
+          "projectId": "eYvaNejesYxSLtRjN5K9nx",
+          "renderModuleFilePath": "plasmic/rogermoniz_com/PlasmicEventsOnPosePourLeRose.tsx",
+          "importSpec": {
+            "modulePath": "../pages/events/on-pose-pour-le-rose.tsx"
+          },
+          "cssFilePath": "plasmic/rogermoniz_com/PlasmicEventsOnPosePourLeRose.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/events/on-pose-pour-le-rose"
         }
       ],
       "icons": [],
