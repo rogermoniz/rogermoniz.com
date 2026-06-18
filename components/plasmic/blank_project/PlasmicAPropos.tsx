@@ -92,14 +92,14 @@ export type PageCtx = {
 
 export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return {
-    title: "Préstation À Propos | Roger Moniz Studio",
+    title: "À Propos | Roger Moniz Studio",
 
     openGraph: {
-      title: "Préstation À Propos | Roger Moniz Studio"
+      title: "À Propos | Roger Moniz Studio"
     },
     twitter: {
       card: "summary" as const,
-      title: "Préstation À Propos | Roger Moniz Studio"
+      title: "À Propos | Roger Moniz Studio"
     }
   };
 }
