@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@plasmicapp/cli": "^0.1.364",
+    "@plasmicapp/cli": "^0.1.366",
     "@plasmicapp/react-web": "^1.0.3",
     "@plasmicpkgs/plasmic-basic-components": "^0.0.274",
     "@vercel/analytics": "^2.0.1",
