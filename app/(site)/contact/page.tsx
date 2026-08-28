@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { canonicalPath } from "@/lib/canonical";
 import { Preloader } from "@/components/effects/Preloader";
 import { Reveal } from "@/components/effects/Reveal";
 import {
@@ -15,7 +16,11 @@ import { getContactPage } from "@/lib/content/source";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { metaTitle } = await getContactPage();
-  return { title: metaTitle, openGraph: { title: metaTitle } };
+  return {
+    title: metaTitle,
+    alternates: { canonical: canonicalPath("/contact") },
+    openGraph: { title: metaTitle },
+  };
 }
 
 export default async function ContactRoute() {

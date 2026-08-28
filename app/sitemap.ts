@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
+import { canonicalPath } from "@/lib/canonical";
 import { getRouteKinds } from "@/lib/content/source";
-
-const BASE = "https://rogermoniz.com";
 
 /**
  * Every page in the database, weighted by what it is. No lastModified: the
@@ -22,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return pages.map(({ route, kind }) => {
     const weight = WEIGHT[kind] ?? WEIGHT.article!;
     return {
-      url: `${BASE}${route === "/" ? "/" : `${route}/`}`,
+      url: canonicalPath(route),
       changeFrequency: weight.changeFrequency,
       priority: weight.priority,
     };

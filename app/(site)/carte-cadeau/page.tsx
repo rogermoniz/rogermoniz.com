@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { canonicalPath } from "@/lib/canonical";
 import { Preloader } from "@/components/effects/Preloader";
 import { Reveal } from "@/components/effects/Reveal";
 import { RichText } from "@/components/primitives/RichText";
@@ -16,7 +17,11 @@ import { getGiftPage } from "@/lib/content/source";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { metaTitle } = await getGiftPage();
-  return { title: metaTitle, openGraph: { title: metaTitle } };
+  return {
+    title: metaTitle,
+    alternates: { canonical: canonicalPath("/carte-cadeau") },
+    openGraph: { title: metaTitle },
+  };
 }
 
 export default async function CarteCadeauRoute() {

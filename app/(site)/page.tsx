@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { canonicalPath } from "@/lib/canonical";
 import { Preloader } from "@/components/effects/Preloader";
 import { ApertureGallery } from "@/components/sections/ApertureGallery";
 import { CtaSection } from "@/components/sections/CtaSection";
@@ -10,7 +11,11 @@ import { getHomePage, getPageMeta } from "@/lib/content/source";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { metaTitle } = await getPageMeta("index");
-  return { title: metaTitle, openGraph: { title: metaTitle } };
+  return {
+    title: metaTitle,
+    alternates: { canonical: canonicalPath("/") },
+    openGraph: { title: metaTitle },
+  };
 }
 
 export default async function HomeRoute() {

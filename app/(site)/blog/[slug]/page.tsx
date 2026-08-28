@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { canonicalPath } from "@/lib/canonical";
 import { ArticlePage } from "@/components/templates/ArticlePage";
 import { getEditorial, getPageKind, getSlugsByKind } from "@/lib/content/source";
 
@@ -24,7 +25,11 @@ export async function generateMetadata({
   const { slug } = await params;
   if ((await getPageKind(`${SECTION}/${slug}`)) !== "article") notFound();
   const data = await getEditorial(`${SECTION}/${slug}`);
-  return { title: data.metaTitle, openGraph: { title: data.metaTitle } };
+  return {
+    title: data.metaTitle,
+    alternates: { canonical: canonicalPath(`/${SECTION}/${slug}`) },
+    openGraph: { title: data.metaTitle },
+  };
 }
 
 export default async function Route({ params }: { params: Promise<{ slug: string }> }) {

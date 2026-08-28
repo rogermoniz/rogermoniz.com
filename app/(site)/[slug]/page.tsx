@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { canonicalPath } from "@/lib/canonical";
 import { LegalPage } from "@/components/templates/LegalPage";
 import { PrestationPage } from "@/components/templates/PrestationPage";
 import { getEditorial, getPageKind, getPrestation, getSlugsByKind } from "@/lib/content/source";
@@ -33,7 +34,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const { data } = await load(slug);
-  return { title: data.metaTitle, openGraph: { title: data.metaTitle } };
+  return {
+    title: data.metaTitle,
+    alternates: { canonical: canonicalPath(`/${slug}`) },
+    openGraph: { title: data.metaTitle },
+  };
 }
 
 export default async function Route({ params }: { params: Promise<{ slug: string }> }) {

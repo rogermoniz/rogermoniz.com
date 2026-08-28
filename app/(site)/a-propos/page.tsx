@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { canonicalPath } from "@/lib/canonical";
 import Image from "next/image";
 import { Preloader } from "@/components/effects/Preloader";
 import { ScrollCue } from "@/components/effects/ScrollCue";
@@ -19,7 +20,11 @@ import { getAboutPage } from "@/lib/content/source";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { metaTitle } = await getAboutPage();
-  return { title: metaTitle, openGraph: { title: metaTitle } };
+  return {
+    title: metaTitle,
+    alternates: { canonical: canonicalPath("/a-propos") },
+    openGraph: { title: metaTitle },
+  };
 }
 
 export default async function AProposRoute() {

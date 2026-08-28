@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { canonicalPath } from "@/lib/canonical";
 import Image from "next/image";
 import { Preloader } from "@/components/effects/Preloader";
 import { Reveal } from "@/components/effects/Reveal";
@@ -18,7 +19,11 @@ import { getEventsPage } from "@/lib/content/source";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { metaTitle } = await getEventsPage();
-  return { title: metaTitle, openGraph: { title: metaTitle } };
+  return {
+    title: metaTitle,
+    alternates: { canonical: canonicalPath("/events") },
+    openGraph: { title: metaTitle },
+  };
 }
 
 export default async function EventsRoute() {
