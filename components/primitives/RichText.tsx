@@ -16,6 +16,8 @@ export function RichText({ spans }: { spans: readonly Span[] }) {
         let node = <>{span.text}</>;
         if (span.bold) node = <strong className="font-medium text-ink">{node}</strong>;
         if (span.italic) node = <em>{node}</em>;
+        // The legal pages name a storage key; it reads as code, so it is code.
+        if (span.code) node = <code className="font-mono text-[0.92em]">{node}</code>;
 
         if (span.href) {
           const external = /^https?:|^mailto:|^tel:/.test(span.href);

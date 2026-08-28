@@ -176,7 +176,7 @@ export type PrestationPage = {
 
 export type Span =
   | string
-  | { text: string; bold?: boolean; italic?: boolean; href?: string }
+  | { text: string; bold?: boolean; italic?: boolean; code?: boolean; href?: string }
   | { break: boolean };
 
 export type ContentBlock =
