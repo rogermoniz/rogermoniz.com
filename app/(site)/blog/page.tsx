@@ -46,7 +46,7 @@ export default async function BlogRoute() {
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="size-full object-cover transition-transform duration-800 ease-out-expo group-hover:scale-[1.04]"
+              className="size-full object-cover transition-transform duration-1600 ease-out-expo group-hover:scale-[1.04]"
             />
             <span className="absolute inset-0 bg-[linear-gradient(to_top,rgb(0_0_0/0.5),transparent_50%)]" />
           </Link>

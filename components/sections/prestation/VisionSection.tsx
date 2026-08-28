@@ -42,7 +42,7 @@ export function VisionSection({ vision }: { vision: VisionBlock }) {
                 height={875}
                 loading="lazy"
                 sizes="(max-width: 768px) 100vw, 33vw"
-                className="aspect-4/5 size-full object-cover grayscale transition-[transform,filter] duration-1000 ease-out-expo group-hover:scale-105 group-hover:grayscale-0"
+                className="aspect-4/5 size-full object-cover transition-transform duration-1200 ease-out-expo group-hover:scale-105"
               />
             </figure>
           ))}
@@ -88,7 +88,7 @@ export function VisionSection({ vision }: { vision: VisionBlock }) {
               height={1250}
               loading="lazy"
               sizes="(max-width: 1024px) 50vw, 25vw"
-              className="aspect-4/5 size-full rounded-2xl object-cover grayscale"
+              className="aspect-4/5 size-full rounded-2xl object-cover"
             />
           ))}
         </Reveal>

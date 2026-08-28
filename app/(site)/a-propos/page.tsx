@@ -41,7 +41,7 @@ export default async function AProposRoute() {
               priority={background.theme === "light"}
               sizes="50vw"
               style={{ objectPosition: background.focal ?? undefined }}
-              className={`size-full object-cover grayscale ${
+              className={`size-full object-cover ${
                 background.theme === "dark" ? "hidden dark:block" : "block dark:hidden"
               }`}
             />
@@ -82,7 +82,7 @@ export default async function AProposRoute() {
               height={1250}
               sizes="(max-width: 1024px) 100vw, 40vw"
               style={{ objectPosition: data.story.image.focal ?? undefined }}
-              className="size-full scale-[1.03] object-cover grayscale transition-[filter,transform] duration-1000 ease-out-expo group-hover:scale-100 group-hover:grayscale-0"
+              className="size-full scale-[1.03] object-cover transition-transform duration-1400 ease-out-expo group-hover:scale-100"
             />
           </Reveal>
 
@@ -137,7 +137,7 @@ export default async function AProposRoute() {
                 height={1000}
                 loading="lazy"
                 sizes="60vw"
-                className="h-full w-auto object-cover grayscale transition-[filter] duration-900 ease-out-expo group-hover:grayscale-0"
+                className="h-full w-auto object-cover"
               />
             </div>
           ))}

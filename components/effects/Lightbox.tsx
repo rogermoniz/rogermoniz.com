@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { cloudinary } from "@/lib/cloudinary";
 import type { CloudinaryImage } from "@/lib/content/types";
 
@@ -9,6 +10,10 @@ const MIN_SCALE = 0.6;
 const MAX_SCALE = 4;
 const STEP = 0.5;
 const SWIPE_THRESHOLD = 60;
+
+/** The strip glides to its neighbour, then recentres with no transition. */
+const SLIDE_MS = 320;
+const SLIDE_EASE = "cubic-bezier(0.22, 0.61, 0.36, 1)";
 
 type Point = { x: number; y: number };
 
@@ -57,17 +62,24 @@ export function Lightbox({
   images,
   openIndex,
   onClose,
+  poster = null,
 }: {
   images: readonly CloudinaryImage[];
   openIndex: number | null;
   onClose: () => void;
+  /** The exact file the clicked thumbnail is showing, already in cache. */
+  poster?: string | null;
 }) {
   const [index, setIndex] = useState(0);
   const [scale, setScale] = useState(1);
   const [offset, setOffset] = useState<Point>({ x: 0, y: 0 });
+  /** How far the strip has been dragged or glided from centre, in pixels. */
+  const [shift, setShift] = useState(0);
+  const [sliding, setSliding] = useState(false);
   const dragStart = useRef<Point | null>(null);
   const pointerStart = useRef<Point | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+  const slideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isOpen = openIndex !== null;
 
@@ -82,13 +94,35 @@ export function Lightbox({
     reset();
   }, [openIndex, reset]);
 
+  /**
+   * Zoomed in, paging swaps the photo outright: sliding a magnified image
+   * sideways reads as a glitch rather than as navigation.
+   */
   const go = useCallback(
     (delta: number) => {
-      setIndex((current) => (current + delta + images.length) % images.length);
-      reset();
+      if (scale > 1.02) {
+        setIndex((current) => (current + delta + images.length) % images.length);
+        reset();
+        return;
+      }
+      if (slideTimer.current) return;
+
+      setSliding(true);
+      setShift(delta > 0 ? -window.innerWidth : window.innerWidth);
+      slideTimer.current = setTimeout(() => {
+        setIndex((current) => (current + delta + images.length) % images.length);
+        reset();
+        setSliding(false);
+        setShift(0);
+        slideTimer.current = null;
+      }, SLIDE_MS);
     },
-    [images.length, reset],
+    [images.length, reset, scale],
   );
+
+  useEffect(() => () => {
+    if (slideTimer.current) clearTimeout(slideTimer.current);
+  }, []);
 
   const zoom = useCallback((delta: number) => {
     setScale((current) => {
@@ -144,6 +178,9 @@ export function Lightbox({
   const current = images[index];
   if (!current) return null;
 
+  const at = (delta: number) => images[(index + delta + images.length) % images.length] ?? current;
+  const neighbours = [at(-1), current, at(1)];
+
   const onPointerDown = (event: React.PointerEvent) => {
     pointerStart.current = { x: event.clientX, y: event.clientY };
     if (scale > 1) {
@@ -153,22 +190,36 @@ export function Lightbox({
   };
 
   const onPointerMove = (event: React.PointerEvent) => {
-    if (!dragStart.current) return;
-    setOffset({
-      x: event.clientX - dragStart.current.x,
-      y: event.clientY - dragStart.current.y,
-    });
+    if (dragStart.current) {
+      setOffset({
+        x: event.clientX - dragStart.current.x,
+        y: event.clientY - dragStart.current.y,
+      });
+      return;
+    }
+    // At rest the strip follows the finger, so a swipe feels connected to it.
+    if (pointerStart.current && scale === 1 && !sliding) {
+      setShift(event.clientX - pointerStart.current.x);
+    }
   };
 
   const onPointerUp = (event: React.PointerEvent) => {
     const start = pointerStart.current;
     dragStart.current = null;
     pointerStart.current = null;
+    if (scale !== 1 || !start) return;
+
     // At rest, a horizontal drag pages through the gallery instead of panning.
-    if (scale === 1 && start) {
-      const travel = event.clientX - start.x;
-      if (Math.abs(travel) > SWIPE_THRESHOLD) go(travel < 0 ? 1 : -1);
+    const travel = event.clientX - start.x;
+    if (Math.abs(travel) > SWIPE_THRESHOLD) {
+      setShift(0);
+      go(travel < 0 ? 1 : -1);
+      return;
     }
+    // Too short to count as a swipe, so the strip springs back to centre.
+    setSliding(true);
+    setShift(0);
+    window.setTimeout(() => setSliding(false), SLIDE_MS);
   };
 
   const toggleFullscreen = () => {
@@ -181,7 +232,7 @@ export function Lightbox({
     }
   };
 
-  return (
+  return createPortal(
     <div
       ref={dialogRef}
       role="dialog"
@@ -221,19 +272,31 @@ export function Lightbox({
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
       >
-        <div className="flex size-full items-center justify-center px-5 py-12">
-          <Image
-            key={current.path}
-            src={cloudinary(current.path, { width: 1600 })}
-            alt={current.alt}
-            width={1600}
-            height={2000}
-            priority
-            sizes="100vw"
-            draggable={false}
-            style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})` }}
-            className="max-h-[85vh] w-auto max-w-[95%] object-contain shadow-[0_0_100px_rgb(0_0_0/0.8)] transition-transform duration-100 select-none max-md:max-h-[80vh] max-md:max-w-full"
-          />
+        {/*
+          Three slides wide, parked on the middle one. Paging glides the strip
+          to a neighbour that is already decoded, which is what makes the move
+          read as a slide rather than as a photo being replaced.
+        */}
+        <div
+          className="absolute inset-0 flex h-full w-[300%]"
+          style={{
+            transform: `translateX(calc(-33.3333% + ${shift}px))`,
+            transition: sliding ? `transform ${SLIDE_MS}ms ${SLIDE_EASE}` : "none",
+          }}
+        >
+          {neighbours.map((image, position) => (
+            <div
+              key={`${image.path}-${position}`}
+              className="flex h-full basis-1/3 items-center justify-center px-5 py-12"
+            >
+              <Slide
+                image={image}
+                isCurrent={position === 1}
+                poster={position === 1 && index === openIndex ? poster : null}
+                transform={`translate(${offset.x}px, ${offset.y}px) scale(${scale})`}
+              />
+            </div>
+          ))}
         </div>
       </div>
 
@@ -284,9 +347,77 @@ export function Lightbox({
           </svg>
         </IconButton>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
 const controlClass =
   "inline-flex items-center justify-center p-1.5 text-white/85 transition duration-200 hover:-translate-y-0.5 hover:text-accent";
+
+/**
+ * One photo on the strip. It fades in once decoded rather than popping, and
+ * only the middle slide carries the zoom and pan transform.
+ */
+function Slide({
+  image,
+  isCurrent,
+  poster,
+  transform,
+}: {
+  image: CloudinaryImage;
+  isCurrent: boolean;
+  poster: string | null;
+  transform: string;
+}) {
+  const [loaded, setLoaded] = useState(false);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  // A cached photo is already complete before React can attach onLoad, so the
+  // load event never fires and the fade would leave it invisible forever.
+  useEffect(() => {
+    if (imageRef.current?.complete) setLoaded(true);
+  }, [image.path]);
+
+  return (
+    <span className="relative flex max-h-[85vh] max-w-[95%] items-center justify-center max-md:max-h-[80vh] max-md:max-w-full">
+      {poster && !loaded ? (
+        /* The thumbnail is already decoded, so the viewer never opens empty.
+           eslint-disable-next-line @next/next/no-img-element */
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={poster}
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+          style={{ transform: isCurrent ? transform : undefined }}
+          className="max-h-[85vh] w-auto max-w-full object-contain shadow-[0_0_100px_rgb(0_0_0/0.8)] select-none max-md:max-h-[80vh]"
+        />
+      ) : null}
+      <Image
+      src={cloudinary(image.path, { width: 1600 })}
+      alt={isCurrent ? image.alt : ""}
+      width={1600}
+      height={2000}
+      priority={isCurrent}
+      loading="eager"
+      /* Height bound, not width bound: the photo is capped at 85vh, so a
+         portrait is roughly 65vh wide. Asking for 80vw fetched a 3840px file
+         for a 380px box, which is what made the viewer slow to open. */
+      sizes="(max-width: 768px) 100vw, 65vh"
+      draggable={false}
+      ref={imageRef}
+      onLoad={() => setLoaded(true)}
+      style={{
+        transform: isCurrent ? transform : undefined,
+        // Without a poster there is nothing underneath, so never hide it.
+        opacity: poster && !loaded ? 0 : 1,
+        transition: "transform 0.1s linear, opacity 0.3s ease",
+      }}
+      className={`max-h-[85vh] w-auto max-w-[95%] object-contain shadow-[0_0_100px_rgb(0_0_0/0.8)] select-none max-md:max-h-[80vh] max-md:max-w-full ${
+        poster && !loaded ? "absolute inset-0 m-auto" : ""
+      }`}
+      />
+    </span>
+  );
+}

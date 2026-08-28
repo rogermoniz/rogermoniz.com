@@ -47,7 +47,7 @@ export default async function EventsRoute() {
               alt={featured.alt}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="size-full object-cover grayscale transition-[transform,filter] duration-1500 ease-out-expo group-hover:scale-105 group-hover:grayscale-0"
+              className="size-full object-cover transition-transform duration-1500 ease-out-expo group-hover:scale-105"
             />
           </Reveal>
 

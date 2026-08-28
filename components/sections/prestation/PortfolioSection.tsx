@@ -22,12 +22,25 @@ const SPAN: Record<BentoSpan, string> = {
 };
 
 /**
+ * The grid is four columns, so a tile is a quarter of the row unless it spans
+ * two. Telling the browser the wrong fraction is the difference between a
+ * sharp photo and a soft one on the wide tiles.
+ */
+const SIZES: Record<BentoSpan, string> = {
+  "span-1x1": "(max-width: 768px) 82vw, 25vw",
+  "span-1x2": "(max-width: 768px) 82vw, 25vw",
+  "span-2x1": "(max-width: 768px) 82vw, 50vw",
+  "span-2x2": "(max-width: 768px) 82vw, 50vw",
+};
+
+/**
  * The gallery. On desktop the bento variant is a dense mosaic that dims its
  * unhovered tiles; below 768px it becomes a snap scrolling carousel, which is
  * the same markup with different layout rules.
  */
 export function PortfolioSection({ portfolio }: { portfolio: PortfolioBlock }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [poster, setPoster] = useState<string | null>(null);
   const images = portfolio.items.map((item) => item.image);
 
   return (
@@ -49,7 +62,13 @@ export function PortfolioSection({ portfolio }: { portfolio: PortfolioBlock }) {
               <figure key={item.image.path} className="m-0 overflow-hidden rounded-2xl">
                 <button
                   type="button"
-                  onClick={() => setOpenIndex(index)}
+                  onClick={(event) => {
+                  // Hand the viewer the file this thumbnail already decoded, so
+                  // it opens on the photo rather than on a black screen.
+                  const thumb = event.currentTarget.querySelector("img");
+                  setPoster(thumb?.currentSrc || null);
+                  setOpenIndex(index);
+                }}
                   aria-label={`Agrandir la photo ${index + 1}`}
                   className="block size-full"
                 >
@@ -76,9 +95,15 @@ export function PortfolioSection({ portfolio }: { portfolio: PortfolioBlock }) {
                 key={`${item.image.path}-${index}`}
                 type="button"
                 role="listitem"
-                onClick={() => setOpenIndex(index)}
+                onClick={(event) => {
+                  // Hand the viewer the file this thumbnail already decoded, so
+                  // it opens on the photo rather than on a black screen.
+                  const thumb = event.currentTarget.querySelector("img");
+                  setPoster(thumb?.currentSrc || null);
+                  setOpenIndex(index);
+                }}
                 aria-label={`Agrandir la photo ${index + 1}`}
-                className={`relative min-h-[120px] overflow-hidden rounded-3xl bg-surface transition-[opacity,filter,box-shadow] duration-600 ease-out-expo hover:z-2 hover:shadow-[0_24px_60px_rgb(0_0_0/0.1)] group-hover/grid:opacity-50 hover:!opacity-100 max-md:aspect-3/4 max-md:min-h-0 max-md:w-[82%] max-md:shrink-0 max-md:snap-center max-md:!opacity-100 dark:hover:shadow-[0_24px_60px_rgb(0_0_0/0.6)] ${
+                className={`relative min-h-[120px] overflow-hidden rounded-3xl bg-surface transition-[box-shadow] duration-600 ease-out-expo hover:z-2 hover:shadow-[0_24px_60px_rgb(0_0_0/0.1)] max-md:aspect-3/4 max-md:min-h-0 max-md:w-[82%] max-md:shrink-0 max-md:snap-center dark:hover:shadow-[0_24px_60px_rgb(0_0_0/0.6)] ${
                   item.span ? SPAN[item.span] : ""
                 } max-md:col-auto max-md:row-auto`}
               >
@@ -87,8 +112,8 @@ export function PortfolioSection({ portfolio }: { portfolio: PortfolioBlock }) {
                   alt={item.image.alt}
                   fill
                   loading="lazy"
-                  sizes="(max-width: 768px) 82vw, 25vw"
-                  className="size-full scale-[1.02] object-cover grayscale transition-[transform,filter] duration-800 ease-out-expo hover:scale-[1.08] hover:grayscale-0"
+                  sizes={item.span ? SIZES[item.span] : "(max-width: 768px) 82vw, 25vw"}
+                  className="size-full scale-[1.02] object-cover transition-transform duration-800 ease-out-expo hover:scale-[1.08]"
                 />
               </button>
             ))}
@@ -96,7 +121,12 @@ export function PortfolioSection({ portfolio }: { portfolio: PortfolioBlock }) {
         )}
       </Container>
 
-      <Lightbox images={images} openIndex={openIndex} onClose={() => setOpenIndex(null)} />
+      <Lightbox
+        images={images}
+        openIndex={openIndex}
+        poster={poster}
+        onClose={() => setOpenIndex(null)}
+      />
     </section>
   );
 }
