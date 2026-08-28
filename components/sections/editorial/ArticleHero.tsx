@@ -124,7 +124,9 @@ export function ArticleHero({
                 alt={alt}
                 fill
                 priority
-                sizes="100vw"
+                /* The frame expands to fullscreen, but asking for 100vw picks
+                   the 3840px rung and the reveal starts before it decodes. */
+                sizes="(max-width: 768px) 100vw, 66vw"
                 className="size-full object-cover"
               />
             </div>

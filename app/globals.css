@@ -310,4 +310,12 @@
   &:active {
     box-shadow: var(--tactile-active);
   }
+
+  /* The original used :focus, which leaves a control looking pressed after a
+     mouse click; :focus-visible gives keyboard users the same state without
+     that. */
+  &:focus-visible {
+    box-shadow: var(--tactile-active);
+    outline: none;
+  }
 }

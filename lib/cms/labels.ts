@@ -41,6 +41,7 @@ const BY_COLUMN: Record<string, string> = {
   box_grid_columns: "Grille : colonnes",
   box_grid_large: "Grille : grandes cases",
   card_brand: "Nom sur la carte",
+  columns: "Images par ligne",
   card_caption: "Légende de la carte",
   category: "Catégorie",
   cta_href: "Lien du bouton",

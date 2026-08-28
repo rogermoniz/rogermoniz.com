@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Reveal } from "@/components/effects/Reveal";
 import { RichText } from "@/components/primitives/RichText";
+import { FigureGroup } from "@/components/sections/editorial/FigureGroup";
 import { cloudinary } from "@/lib/cloudinary";
 import type { ContentBlock, ContentSection } from "@/lib/content/types";
 
@@ -13,7 +14,11 @@ function Figure({ block }: { block: Extract<ContentBlock, { type: "figure" }> })
   const isBanner = block.variant === "or-banner";
 
   return (
-    <figure className={`group relative m-0 overflow-hidden rounded-2xl bg-surface ${isBanner ? "" : "mb-8"}`}>
+    <figure
+      className={`group relative m-0 overflow-hidden rounded-2xl bg-surface ${
+        isBanner ? "" : "mb-[clamp(1.6rem,3vw,2.4rem)] last:mb-0"
+      }`}
+    >
       {block.num ? (
         <span className="absolute top-3 left-3 z-2 flex size-8 items-center justify-center rounded-full bg-accent font-display text-sm font-bold text-white">
           {block.num}
@@ -114,21 +119,14 @@ function Block({ block }: { block: ContentBlock }) {
           <Figure block={block} />
         </Reveal>
       );
-    case "figureGroup": {
-      const cols =
-        block.variant === "or-steps"
-          ? "grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-[560px]:grid-cols-2"
-          : block.variant === "or-stats"
-            ? "grid-cols-4 max-lg:grid-cols-2 max-[520px]:grid-cols-1"
-            : "grid-cols-3 max-md:grid-cols-2";
+    case "figureGroup":
       return (
-        <Reveal className={`mb-10 grid gap-4 ${cols}`}>
+        <FigureGroup variant={block.variant} columns={block.columns}>
           {block.figures.map((figure, index) =>
             figure.type === "figure" ? <Figure key={index} block={figure} /> : null,
           )}
-        </Reveal>
+        </FigureGroup>
       );
-    }
     case "note":
       return (
         <Reveal className="my-10 rounded-2xl border border-edge bg-surface-card p-8">
@@ -166,7 +164,11 @@ export function ContentBlocks({ sections }: { sections: readonly ContentSection[
   return (
     <>
       {sections.map((section, index) => (
-        <section key={section.id ?? index} id={section.id ?? undefined} className="scroll-mt-32">
+        <section
+          key={section.id ?? index}
+          id={section.id ?? undefined}
+          className="mb-[clamp(2.5rem,4vw,3.5rem)] scroll-mt-[90px] last:mb-0"
+        >
           {section.blocks.map((block, i) => (
             <Block key={i} block={block} />
           ))}

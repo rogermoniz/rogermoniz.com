@@ -126,6 +126,18 @@ export type PricingBlock =
     } & SectionHeading)
   | ({ kind: "quote"; lead: string[]; ctaLabel: string; ctaHref: string } & SectionHeading);
 
+/** The article pinned above the blog grid. */
+export type BlogCover = {
+  href: string;
+  flag: string;
+  path: string;
+  alt: string;
+  meta: string;
+  title: string;
+  excerpt: string;
+  ctaLabel: string;
+};
+
 export type BentoSpan = "span-1x1" | "span-1x2" | "span-2x1" | "span-2x2";
 
 export type GalleryItem = {
@@ -174,6 +186,9 @@ export type PrestationPage = {
    components render, never a string of HTML handed to the DOM.
    ========================================================================== */
 
+/** A row of pictures holds one to four. */
+export type FigureColumns = 1 | 2 | 3 | 4;
+
 export type Span =
   | string
   | { text: string; bold?: boolean; italic?: boolean; code?: boolean; href?: string }
@@ -193,7 +208,13 @@ export type ContentBlock =
       captionSub?: string;
       num?: string;
     }
-  | { type: "figureGroup"; variant: string; figures: readonly ContentBlock[] }
+  | {
+      type: "figureGroup";
+      variant: string;
+      /** How many pictures sit side by side. Falls back to the variant. */
+      columns?: FigureColumns;
+      figures: readonly ContentBlock[];
+    }
   | { type: "note"; blocks: readonly ContentBlock[] }
   | { type: "group"; blocks: readonly ContentBlock[] }
   | { type: "duo"; columns: readonly ContentSection[] };

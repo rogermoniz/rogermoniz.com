@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDownIcon } from "@/components/primitives/icons";
 import { InstagramOutlineIcon, MailIcon } from "@/components/primitives/SocialIcons";
 import type { ArticlePageData, TocEntry } from "@/lib/content/types";
@@ -37,6 +37,41 @@ export function ArticleSidebar({
   tocLabel?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState<string | null>(null);
+
+  /**
+   * Scroll spy. The reader's place in the article is marked by the dot on the
+   * rail, so the list says where you are rather than only where you can go.
+   */
+  useEffect(() => {
+    const ids = toc.map((entry) => entry.href.replace(/^#/, "")).filter(Boolean);
+    if (!ids.length || !("IntersectionObserver" in window)) return;
+
+    const sections = ids
+      .map((id) => document.getElementById(id))
+      .filter((node): node is HTMLElement => node !== null);
+    if (!sections.length) return;
+
+    const seen = new Map<string, number>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) seen.set(entry.target.id, entry.intersectionRatio);
+        let best: string | null = null;
+        let bestRatio = 0;
+        for (const [id, ratio] of seen) {
+          if (ratio > bestRatio) {
+            best = id;
+            bestRatio = ratio;
+          }
+        }
+        if (best) setActive(`#${best}`);
+      },
+      { threshold: [0, 0.15, 0.4, 0.75, 1], rootMargin: "-15% 0px -55% 0px" },
+    );
+
+    for (const section of sections) observer.observe(section);
+    return () => observer.disconnect();
+  }, [toc]);
 
   const share = async () => {
     const url = window.location.href;
@@ -56,7 +91,7 @@ export function ArticleSidebar({
             type="button"
             aria-expanded={open}
             onClick={() => setOpen((value) => !value)}
-            className="flex w-full items-center justify-between border-b border-edge pb-4 font-display text-[0.7rem] font-semibold tracking-[2px] text-ink uppercase lg:pointer-events-none"
+            className="mb-5 flex w-full items-center justify-between gap-3 text-left text-[0.7rem] font-semibold tracking-[0.14em] text-accent uppercase lg:pointer-events-none lg:cursor-default"
           >
             <span>{tocLabel}</span>
             <ChevronDownIcon
@@ -69,17 +104,29 @@ export function ArticleSidebar({
             }`}
           >
             <li className="overflow-hidden">
-              <ul className="pt-4">
-                {toc.map((entry) => (
-                  <li key={entry.href}>
-                    <a
-                      href={entry.href}
-                      className="block py-2 text-[0.9rem] leading-snug text-muted transition-colors duration-300 hover:text-ink"
-                    >
-                      {entry.label}
-                    </a>
-                  </li>
-                ))}
+              <ul className="relative flex flex-col gap-[0.85rem] lg:before:absolute lg:before:top-[5px] lg:before:bottom-[5px] lg:before:left-0 lg:before:w-px lg:before:bg-edge lg:before:content-['']">
+                {toc.map((entry) => {
+                  const isActive = entry.href === active;
+                  return (
+                    <li key={entry.href} className="relative lg:pl-5">
+                      <span
+                        aria-hidden="true"
+                        className={`absolute top-[0.6em] -left-[2px] hidden size-1.5 -translate-y-1/2 rounded-full bg-accent transition-transform duration-300 ease-out-expo lg:block ${
+                          isActive ? "scale-100" : "scale-0"
+                        }`}
+                      />
+                      <a
+                        href={entry.href}
+                        aria-current={isActive ? "location" : undefined}
+                        className={`inline-block text-[0.92rem] leading-[1.35] font-medium transition-colors duration-300 hover:text-ink ${
+                          isActive ? "text-ink" : "text-muted"
+                        }`}
+                      >
+                        {entry.label}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </li>
           </ul>
@@ -90,15 +137,15 @@ export function ArticleSidebar({
         <div className="flex flex-col gap-6">
           {meta.blocks.map((block) => (
             <div key={block.label} className="flex flex-col gap-1">
-              <span className="font-display text-[0.65rem] font-semibold tracking-[2px] text-muted uppercase">
+              <span className="text-[0.66rem] font-semibold tracking-[0.1em] text-muted uppercase">
                 {block.label}
               </span>
-              <span className="text-[0.95rem] text-ink">{block.value}</span>
+              <span className="text-[0.95rem] font-semibold text-ink">{block.value}</span>
             </div>
           ))}
           {meta.shareLabel ? (
             <div className="flex flex-col gap-3">
-              <span className="font-display text-[0.65rem] font-semibold tracking-[2px] text-muted uppercase">
+              <span className="text-[0.66rem] font-semibold tracking-[0.1em] text-muted uppercase">
                 {meta.shareLabel}
               </span>
               <div className="flex gap-3">
