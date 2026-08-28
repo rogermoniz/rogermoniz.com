@@ -1,10 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
- * Two jobs:
- *  1. Serve the CMS at admin.rogermoniz.com by rewriting that host onto /admin.
- *  2. Keep every /admin page behind the session cookie, so an unauthenticated
- *     request never reaches a page that can read or write content.
+ * Keeps every /admin page behind the session cookie, so an unauthenticated
+ * request never reaches a page that can read or write content.
  */
 const SESSION_COOKIE = "rm_admin";
 
@@ -21,19 +19,8 @@ async function expectedToken(secret: string): Promise<string> {
 }
 
 export async function middleware(request: NextRequest) {
-  const host = request.headers.get("host") ?? "";
-  const url = request.nextUrl.clone();
-  const isAdminHost = host.startsWith("admin.");
-
-  // The admin subdomain serves the CMS at its root.
-  if (isAdminHost && !url.pathname.startsWith("/admin")) {
-    url.pathname = `/admin${url.pathname === "/" ? "" : url.pathname}`;
-    return NextResponse.rewrite(url);
-  }
-
-  const path = isAdminHost ? `/admin${url.pathname === "/" ? "" : url.pathname}` : url.pathname;
-  if (!path.startsWith("/admin")) return NextResponse.next();
-  if (path.startsWith("/admin/login")) return NextResponse.next();
+  const { pathname } = request.nextUrl;
+  if (pathname.startsWith("/admin/login")) return NextResponse.next();
 
   const secret = process.env.ADMIN_SESSION_SECRET;
   const cookie = request.cookies.get(SESSION_COOKIE)?.value;
@@ -42,11 +29,12 @@ export async function middleware(request: NextRequest) {
   }
 
   const login = request.nextUrl.clone();
-  login.pathname = isAdminHost ? "/login" : "/admin/login";
-  login.searchParams.set("next", url.pathname);
+  login.pathname = "/admin/login";
+  login.searchParams.set("next", pathname);
   return NextResponse.redirect(login);
 }
 
+/** Only the CMS is guarded; the public site never runs this. */
 export const config = {
-  matcher: ["/admin/:path*", "/((?!_next|favicon|.*\\..*).*)"],
+  matcher: ["/admin/:path*"],
 };
