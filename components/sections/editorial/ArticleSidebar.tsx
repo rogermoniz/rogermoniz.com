@@ -103,7 +103,7 @@ export function ArticleSidebar({
               open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
             }`}
           >
-            <li className="overflow-hidden">
+            <li className="overflow-hidden lg:overflow-visible">
               <ul className="relative flex flex-col gap-[0.85rem] lg:before:absolute lg:before:top-[5px] lg:before:bottom-[5px] lg:before:left-0 lg:before:w-px lg:before:bg-edge lg:before:content-['']">
                 {toc.map((entry) => {
                   const isActive = entry.href === active;
@@ -111,7 +111,7 @@ export function ArticleSidebar({
                     <li key={entry.href} className="relative lg:pl-5">
                       <span
                         aria-hidden="true"
-                        className={`absolute top-[0.6em] -left-[2px] hidden size-1.5 -translate-y-1/2 rounded-full bg-accent transition-transform duration-300 ease-out-expo lg:block ${
+                        className={`absolute top-[0.6em] -left-[3px] hidden size-1.5 -translate-y-1/2 rounded-full bg-accent transition-transform duration-300 ease-out-expo lg:block ${
                           isActive ? "scale-100" : "scale-0"
                         }`}
                       />

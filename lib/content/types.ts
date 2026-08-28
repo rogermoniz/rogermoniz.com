@@ -205,6 +205,8 @@ export type ContentBlock =
       path: string | null;
       alt: string;
       caption?: string;
+      /** Small line above the caption, on a banner. */
+      captionKicker?: string;
       captionSub?: string;
       num?: string;
     }

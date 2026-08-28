@@ -34,6 +34,15 @@
 
     /* Tactile surface: the raised, embossed control used by buttons,
        eyebrow pills and the footer social keys. */
+    /* An overlay caption sits on the photograph, so it keeps its own values
+       in both themes rather than following the page palette. */
+    --figure-shade: linear-gradient(
+      to top,
+      rgb(24 9 13 / 0.92) 0%,
+      rgb(24 9 13 / 0.5) 42%,
+      rgb(24 9 13 / 0) 80%
+    );
+    --figure-tint: #f3eceb;
     --tactile-grad: linear-gradient(to top, #d8d9db 0%, #fff 80%, #fdfdfd 100%);
     --tactile-border: #8f9092;
     --tactile-text: #606060;
@@ -147,6 +156,7 @@
   --color-hero-gold: var(--fixed-gold);
   --color-danger: var(--fixed-danger);
 
+  --color-figure-tint: var(--figure-tint);
   --color-menu-glass: var(--menu-bg-glass);
   --color-menu-edge: var(--menu-border);
   --color-menu-ink: var(--menu-text-main);

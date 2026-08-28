@@ -15,8 +15,8 @@ const GRID: Record<FigureColumns, string> = {
 
 /** Older content names a variant instead of a count; both mean a column count. */
 const BY_VARIANT: Record<string, FigureColumns> = {
-  "or-steps": 4,
-  "or-stats": 4,
+  "or-steps": 3,
+  "or-stats": 2,
 };
 
 export function figureColumns(variant: string, columns?: FigureColumns): FigureColumns {
@@ -34,9 +34,9 @@ export function FigureGroup({
 }) {
   return (
     <Reveal
-      className={`mt-[clamp(1.6rem,3vw,2.4rem)] mb-[clamp(1.6rem,3vw,2.4rem)] grid gap-[clamp(1rem,1.6vw,1.4rem)] last:mb-0 ${GRID[figureColumns(variant, columns)]}`}
+      className={`mt-[clamp(1.6rem,3vw,2.4rem)] grid gap-[clamp(1rem,1.6vw,1.4rem)] ${GRID[figureColumns(variant, columns)]}`}
     >
-      <div className="contents [&_figure]:mb-0">{children}</div>
+      {children}
     </Reveal>
   );
 }

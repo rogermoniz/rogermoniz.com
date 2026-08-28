@@ -23,7 +23,7 @@ export function ArticlePage({ data }: { data: ArticlePageData }) {
               <ArticleSidebar toc={data.toc} meta={data.meta} />
             </div>
           </div>
-          <div className="flex max-w-[720px] flex-col">
+          <div className="flex max-w-[748px] flex-col">
             <ContentBlocks sections={data.sections} />
           </div>
         </div>
