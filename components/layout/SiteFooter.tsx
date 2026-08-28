@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CookiePreferencesButton } from "@/components/consent/CookiePreferencesButton";
 import {
-  CookieIcon,
   InstagramOutlineIcon,
   MailIcon,
   PhoneIcon,
@@ -97,9 +97,7 @@ export async function SiteFooter() {
                 {link.label}
               </Link>
             ))}
-            <Link href="/confidentialite" className={legalLink} title="Préférences cookies">
-              <CookieIcon className="size-[15px]" /> Cookies
-            </Link>
+            <CookiePreferencesButton className={legalLink} />
           </div>
         </div>
       </div>

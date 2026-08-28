@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Oswald } from "next/font/google";
 import Script from "next/script";
+import { CONSENT_DEFAULTS } from "@/lib/consent";
 import { THEME_BOOTSTRAP, ThemeProvider } from "@/components/layout/ThemeProvider";
 import "./globals.css";
 
@@ -66,20 +67,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script id="rm-theme" strategy="beforeInteractive">
           {THEME_BOOTSTRAP}
         </Script>
+        {/* Denied until the reader says otherwise. See lib/consent.ts. */}
+        <Script id="consent-defaults" strategy="beforeInteractive">
+          {CONSENT_DEFAULTS}
+        </Script>
       </head>
       <body className={`${oswald.variable} ${inter.variable} font-body`}>
         <ThemeProvider>{children}</ThemeProvider>
 
-        <Script id="gtm" strategy="lazyOnload">
-          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-KM8Z9NSC');`}
-        </Script>
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-S6WXWWKVQY"
-          strategy="lazyOnload"
-        />
-        <Script id="ga" strategy="lazyOnload">
-          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-S6WXWWKVQY');`}
-        </Script>
       </body>
     </html>
   );

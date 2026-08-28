@@ -1,13 +1,30 @@
 import type { MetadataRoute } from "next";
-import { getRoutes } from "@/lib/content/source";
+import { getRouteKinds } from "@/lib/content/source";
 
 const BASE = "https://rogermoniz.com";
 
+/**
+ * Every page in the database, weighted by what it is. No lastModified: the
+ * content has no edit timestamp, and a generated one would be a crawl signal
+ * that means nothing, which is worse than none at all.
+ */
+const WEIGHT: Record<string, { priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }> = {
+  home: { priority: 1, changeFrequency: "weekly" },
+  prestation: { priority: 0.9, changeFrequency: "monthly" },
+  standalone: { priority: 0.7, changeFrequency: "weekly" },
+  article: { priority: 0.6, changeFrequency: "yearly" },
+  legal: { priority: 0.2, changeFrequency: "yearly" },
+};
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const routes = await getRoutes();
-  return routes.map((route) => ({
-    url: `${BASE}${route === "/" ? "/" : `${route}/`}`,
-    changeFrequency: "monthly",
-    priority: route === "/" ? 1 : 0.8,
-  }));
+  const pages = await getRouteKinds();
+
+  return pages.map(({ route, kind }) => {
+    const weight = WEIGHT[kind] ?? WEIGHT.article!;
+    return {
+      url: `${BASE}${route === "/" ? "/" : `${route}/`}`,
+      changeFrequency: weight.changeFrequency,
+      priority: weight.priority,
+    };
+  });
 }

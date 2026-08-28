@@ -1,3 +1,6 @@
+import { SiteAnalytics } from "@/components/analytics/SiteAnalytics";
+import { ConsentBanner } from "@/components/consent/ConsentBanner";
+import { ConsentProvider } from "@/components/consent/ConsentProvider";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
@@ -8,11 +11,13 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   const [nav, identity] = await Promise.all([getNavigation(), getSiteIdentity()]);
 
   return (
-    <>
+    <ConsentProvider>
       <SiteHeader nav={nav.primaryNav} identity={identity} />
       <main>{children}</main>
       <SiteFooter />
       <ThemeToggle />
-    </>
+      <ConsentBanner />
+      <SiteAnalytics />
+    </ConsentProvider>
   );
 }

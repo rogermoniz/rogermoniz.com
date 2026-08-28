@@ -206,6 +206,12 @@ export async function getRoutes(): Promise<string[]> {
   return (d.pages ?? []).map((p) => str(p.route));
 }
 
+/** Route plus what the page is, so the sitemap can weight it honestly. */
+export async function getRouteKinds(): Promise<{ route: string; kind: string }[]> {
+  const d = await db();
+  return (d.pages ?? []).map((p) => ({ route: str(p.route), kind: str(p.kind) }));
+}
+
 export async function getPageMeta(slug: string) {
   const d = await db();
   const page = (d.pages ?? []).find((p) => p.slug === slug);

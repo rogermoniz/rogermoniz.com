@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { SiteAnalytics } from "@/components/analytics/SiteAnalytics";
+import { ConsentBanner } from "@/components/consent/ConsentBanner";
+import { ConsentProvider } from "@/components/consent/ConsentProvider";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
@@ -18,8 +21,9 @@ export const metadata: Metadata = {
 export default async function NotFound() {
   const [nav, identity] = await Promise.all([getNavigation(), getSiteIdentity()]);
 
+  /* A 404 is a page a visitor lands on, so it honours consent like any other. */
   return (
-    <>
+    <ConsentProvider>
       <SiteHeader nav={nav.primaryNav} identity={identity} />
     <Container
       as="section"
@@ -34,6 +38,8 @@ export default async function NotFound() {
     </Container>
       <SiteFooter />
       <ThemeToggle />
-    </>
+      <ConsentBanner />
+      <SiteAnalytics />
+    </ConsentProvider>
   );
 }
