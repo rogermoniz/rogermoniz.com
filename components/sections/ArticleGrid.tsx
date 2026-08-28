@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { Reveal } from "@/components/effects/Reveal";
 import { ArrowRightIcon } from "@/components/primitives/icons";
 import { cloudinary } from "@/lib/cloudinary";
@@ -64,49 +63,19 @@ export function Card({ card }: { card: ArticleCard }) {
   );
 }
 
-/**
- * The filterable article grid. Filtering is React state, so hidden cards leave
- * the accessibility tree entirely rather than being visually hidden.
- */
+/** The journal grid. The active filter is decided above it, in JournalBrowser. */
 export function ArticleGrid({
   cards,
-  filters,
-  filterHead,
+  active = "all",
 }: {
   cards: readonly ArticleCard[];
-  filters?: readonly { value: string; label: string }[];
-  filterHead?: string;
+  /** A category value, or "all". */
+  active?: string;
 }) {
-  const [active, setActive] = useState("all");
   const visible = active === "all" ? cards : cards.filter((c) => c.category === active);
 
   return (
     <>
-      {filters?.length ? (
-        <div className="mb-12">
-          {filterHead ? (
-            <Reveal className="mb-6 font-display text-[0.7rem] font-semibold tracking-[2px] text-muted uppercase">
-              {filterHead}
-            </Reveal>
-          ) : null}
-          <Reveal className="flex flex-wrap gap-3">
-            {filters.map((filter) => (
-              <button
-                key={filter.value}
-                type="button"
-                aria-pressed={active === filter.value}
-                onClick={() => setActive(filter.value)}
-                className={`tactile rounded-[100px] px-5 py-2.5 font-display text-[0.7rem] font-bold tracking-[1px] uppercase transition-colors ${
-                  active === filter.value ? "!text-accent" : ""
-                }`}
-              >
-                {filter.label}
-              </button>
-            ))}
-          </Reveal>
-        </div>
-      ) : null}
-
       <div className="grid grid-cols-3 gap-10 max-lg:grid-cols-2 max-md:grid-cols-1">
         {visible.map((card) => (
           <Reveal key={card.href + (card.title ?? "")}>
