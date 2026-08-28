@@ -2,13 +2,17 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/templates/LegalPage";
 import { PrestationPage } from "@/components/templates/PrestationPage";
-import { getEditorial, getPrestation, getSlugsByKind } from "@/lib/content/source";
+import { getEditorial, getPageKind, getPrestation, getSlugsByKind } from "@/lib/content/source";
 
 /**
  * Every prestation and every legal page renders through here. Editing a
  * template changes all eleven at once; the pages differ only by their data.
  */
-export const dynamicParams = false;
+/**
+ * A page added from the editor is not in the build manifest, so unknown slugs
+ * render on demand and are rejected only if the database has no such page.
+ */
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const slugs = await getSlugsByKind("prestation", "legal");
@@ -16,10 +20,10 @@ export async function generateStaticParams() {
 }
 
 async function load(slug: string) {
-  const prestationSlugs = await getSlugsByKind("prestation");
-  return prestationSlugs.includes(slug)
-    ? ({ kind: "prestation" as const, data: await getPrestation(slug) })
-    : ({ kind: "legal" as const, data: await getEditorial(slug) });
+  const kind = await getPageKind(slug);
+  if (kind === "prestation") return { kind: "prestation" as const, data: await getPrestation(slug) };
+  if (kind === "legal") return { kind: "legal" as const, data: await getEditorial(slug) };
+  notFound();
 }
 
 export async function generateMetadata({

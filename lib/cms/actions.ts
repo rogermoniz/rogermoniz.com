@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { checkPassword, isSignedIn, SESSION_COOKIE, sessionToken } from "@/lib/cms/auth";
 import { TABLE_BY_NAME } from "@/lib/cms/schema";
+import { hasColumn, idColumn } from "@/lib/cms/read";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 export type ActionResult = { ok: boolean; message: string };
@@ -36,14 +37,31 @@ async function guard() {
   if (!(await isSignedIn())) throw new Error("Not signed in.");
 }
 
-function coerce(table: string, form: FormData) {
+/** Publishing is what makes an edit visible: the site is static between saves. */
+function publish() {
+  revalidatePath("/", "layout");
+}
+
+function parseJsonField(name: string, raw: string): unknown {
+  try {
+    return JSON.parse(raw);
+  } catch {
+    throw new Error(`Le champ « ${name} » n'est pas au bon format.`);
+  }
+}
+
+function coerce(table: string, form: FormData): Record<string, unknown> {
   const spec = TABLE_BY_NAME.get(table);
   if (!spec) throw new Error(`Unknown table ${table}`);
   const row: Record<string, unknown> = {};
 
   for (const field of spec.fields) {
     if (field.readOnly) continue;
-    if (!form.has(field.name)) continue;
+    if (!form.has(field.name)) {
+      // An unticked checkbox sends nothing, so absent means false.
+      if (field.kind === "boolean") row[field.name] = false;
+      continue;
+    }
     const raw = String(form.get(field.name) ?? "");
 
     if (field.kind === "boolean") {
@@ -51,38 +69,67 @@ function coerce(table: string, form: FormData) {
     } else if (field.kind === "number") {
       row[field.name] = raw.trim() === "" ? null : Number(raw);
     } else if (field.kind === "json") {
-      row[field.name] = raw.trim() === "" ? null : JSON.parse(raw);
+      row[field.name] = raw.trim() === "" ? null : parseJsonField(field.name, raw);
     } else if (field.kind === "list") {
-      row[field.name] = raw.trim() === ""
-        ? []
-        : raw.split("\n").map((v) => v.trim()).filter(Boolean);
+      row[field.name] = raw
+        .split(/[\n,]/)
+        .map((v) => v.trim())
+        .filter(Boolean);
     } else {
       row[field.name] = raw === "" && !field.required ? null : raw;
     }
   }
-  // Checkboxes send nothing when unticked, so absent means false.
-  for (const field of spec.fields) {
-    if (field.kind === "boolean" && !field.readOnly && !form.has(field.name)) {
-      row[field.name] = false;
-    }
-  }
-  return { spec, row };
+  return row;
 }
 
-export async function saveRow(
-  _prev: ActionResult | null,
-  form: FormData,
-): Promise<ActionResult> {
+function readMatch(form: FormData): Record<string, string> {
+  const raw = String(form.get("__match") ?? "");
+  if (!raw) return {};
+  return JSON.parse(raw) as Record<string, string>;
+}
+
+function readFilters(form: FormData): Record<string, string> {
+  const raw = String(form.get("__filters") ?? "");
+  if (!raw) return {};
+  return JSON.parse(raw) as Record<string, string>;
+}
+
+function scoped(table: string, match: Record<string, string>) {
+  let query = supabaseAdmin.from(table).select("*");
+  for (const [column, value] of Object.entries(match)) query = query.eq(column, value);
+  return query;
+}
+
+async function nextPosition(table: string, filters: Record<string, string>): Promise<number> {
+  if (!hasColumn(table, "position")) return 0;
+  const { data } = await scoped(table, filters).order("position", { ascending: false }).limit(1);
+  const top = (data ?? [])[0] as Record<string, unknown> | undefined;
+  return typeof top?.position === "number" ? top.position + 1 : 0;
+}
+
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Saves one row. A row with no match is new, which is what lets the same form
+ * serve a singleton that does not exist yet and an entry being added to a list.
+ */
+export async function saveRow(_prev: ActionResult | null, form: FormData): Promise<ActionResult> {
   await guard();
   const table = String(form.get("__table"));
-  const id = String(form.get("__id") ?? "");
-  const { spec, row } = coerce(table, form);
+  const match = readMatch(form);
+  const filters = readFilters(form);
 
   try {
-    if (id) {
-      const { error } = await supabaseAdmin.from(table).update(row).eq(spec.primaryKey, id);
+    const row = { ...coerce(table, form), ...filters };
+    if (Object.keys(match).length) {
+      let query = supabaseAdmin.from(table).update(row);
+      for (const [column, value] of Object.entries(match)) query = query.eq(column, value);
+      const { error } = await query;
       if (error) return { ok: false, message: error.message };
     } else {
+      if (hasColumn(table, "position") && row.position === undefined) {
+        row.position = await nextPosition(table, filters);
+      }
       const { error } = await supabaseAdmin.from(table).insert(row);
       if (error) return { ok: false, message: error.message };
     }
@@ -90,25 +137,172 @@ export async function saveRow(
     return { ok: false, message: cause instanceof Error ? cause.message : "Enregistrement impossible." };
   }
 
-  // The site is static with a 10 minute window; publishing pushes it live now.
-  revalidatePath("/", "layout");
+  publish();
   return { ok: true, message: "Enregistré. Le site est à jour." };
 }
 
-export async function deleteRow(form: FormData) {
+/** Adds an empty entry to a list, so the editor never types a row from nothing. */
+export async function addRow(form: FormData) {
   await guard();
   const table = String(form.get("__table"));
-  const id = String(form.get("__id"));
+  const filters = readFilters(form);
   const spec = TABLE_BY_NAME.get(table);
   if (!spec) throw new Error(`Unknown table ${table}`);
 
-  await supabaseAdmin.from(table).delete().eq(spec.primaryKey, id);
-  revalidatePath("/", "layout");
-  redirect(`/admin/${table}`);
+  const row: Record<string, unknown> = { ...filters };
+  if (hasColumn(table, "position")) row.position = await nextPosition(table, filters);
+
+  // Fill in whatever the database insists on, so the insert cannot fail.
+  for (const field of spec.fields) {
+    if (field.readOnly || row[field.name] !== undefined || !field.required) continue;
+    if (field.kind === "number") row[field.name] = 0;
+    else if (field.kind === "boolean") row[field.name] = false;
+    else if (field.kind === "json") row[field.name] = [];
+    else if (field.kind === "list") row[field.name] = [];
+    else row[field.name] = DEFAULT_TEXT[`${table}.${field.name}`] ?? "";
+  }
+
+  const { error } = await supabaseAdmin.from(table).insert(row);
+  if (error) throw new Error(`${table}: ${error.message}`);
+  publish();
+}
+
+/** Values a check constraint will not let us leave blank. */
+const DEFAULT_TEXT: Record<string, string> = {
+  "gallery_items.kind": "bento",
+  "vision_blocks.kind": "split",
+  "pricing_blocks.kind": "cards",
+  "cta_links.variant": "outline",
+  "hero_marquee_images.speed": "up",
+  "about_hero_backgrounds.theme": "light",
+  "pricing_notes.placement": "footnote",
+  "nav_items.group_key": "primary",
+};
+
+export async function deleteRowAction(form: FormData) {
+  await guard();
+  const table = String(form.get("__table"));
+  const match = readMatch(form);
+  if (!Object.keys(match).length) throw new Error("Nothing to delete.");
+
+  let query = supabaseAdmin.from(table).delete();
+  for (const [column, value] of Object.entries(match)) query = query.eq(column, value);
+  const { error } = await query;
+  if (error) throw new Error(`${table}: ${error.message}`);
+  publish();
+}
+
+/** Swaps a row with its neighbour, which is all reordering needs to be. */
+export async function moveRow(form: FormData) {
+  await guard();
+  const table = String(form.get("__table"));
+  const direction = String(form.get("__direction")) === "up" ? -1 : 1;
+  const match = readMatch(form);
+  const filters = readFilters(form);
+  const key = idColumn(table);
+
+  const { data, error } = await scoped(table, filters).order("position");
+  if (error) throw new Error(`${table}: ${error.message}`);
+  const rows = (data ?? []) as Record<string, unknown>[];
+
+  const index = rows.findIndex((r) => String(r[key]) === String(match[key]));
+  const a = rows[index];
+  const b = rows[index + direction];
+  if (!a || !b) return;
+
+  await supabaseAdmin.from(table).update({ position: b.position }).eq(key, String(a[key]));
+  await supabaseAdmin.from(table).update({ position: a.position }).eq(key, String(b[key]));
+  publish();
+}
+
+/* -------------------------------------------------------------------------- */
+
+const SCAFFOLD: Record<string, (slug: string) => { table: string; row: Record<string, unknown> }[]> = {
+  prestation: (slug) => [
+    { table: "hero_marquee", row: { page_slug: slug, title: "", image_aspect: "3 / 4" } },
+    { table: "vision_blocks", row: { page_slug: slug, kind: "split" } },
+    { table: "pricing_blocks", row: { page_slug: slug, kind: "cards" } },
+    { table: "section_headings", row: { page_slug: slug, section_key: "process" } },
+    { table: "section_headings", row: { page_slug: slug, section_key: "pricing" } },
+    { table: "section_headings", row: { page_slug: slug, section_key: "portfolio" } },
+    { table: "cta_blocks", row: { page_slug: slug } },
+  ],
+  article: (slug) => [
+    { table: "article_hero", row: { page_slug: slug } },
+    { table: "section_headings", row: { page_slug: slug, section_key: "read_next" } },
+    { table: "cta_blocks", row: { page_slug: slug } },
+  ],
+  legal: (slug) => [{ table: "hero_marquee", row: { page_slug: slug, title: "", image_aspect: "3 / 4" } }],
+};
+
+const SLUG_PATTERN = /^[a-z0-9]+(?:[-/][a-z0-9]+)*$/;
+
+export async function createPage(_prev: ActionResult | null, form: FormData): Promise<ActionResult> {
+  await guard();
+  const kind = String(form.get("kind") ?? "");
+  const slug = String(form.get("slug") ?? "").trim().toLowerCase();
+  const title = String(form.get("meta_title") ?? "").trim();
+
+  if (!SCAFFOLD[kind]) return { ok: false, message: "Ce type de page ne peut pas être créé ici." };
+  if (!SLUG_PATTERN.test(slug)) {
+    return { ok: false, message: "L'identifiant ne peut contenir que des lettres minuscules, des chiffres et des tirets." };
+  }
+  if (!title) return { ok: false, message: "Le titre pour Google est obligatoire." };
+
+  const route = `/${slug}`;
+  const { data: existing } = await supabaseAdmin
+    .from("pages")
+    .select("slug")
+    .or(`slug.eq.${slug},route.eq.${route}`)
+    .limit(1);
+  if ((existing ?? []).length) return { ok: false, message: "Une page utilise déjà cette adresse." };
+
+  const { data: last } = await supabaseAdmin
+    .from("pages")
+    .select("sort_order")
+    .order("sort_order", { ascending: false })
+    .limit(1);
+  const sortOrder = (((last ?? [])[0] as { sort_order?: number } | undefined)?.sort_order ?? 0) + 1;
+
+  const { error } = await supabaseAdmin.from("pages").insert({
+    slug,
+    route,
+    kind,
+    meta_title: title,
+    preloader_label: String(form.get("preloader_label") ?? "").trim() || null,
+    sort_order: sortOrder,
+  });
+  if (error) return { ok: false, message: error.message };
+
+  for (const { table, row } of SCAFFOLD[kind](slug)) {
+    const { error: scaffoldError } = await supabaseAdmin.from(table).insert(row);
+    if (scaffoldError) return { ok: false, message: `${table}: ${scaffoldError.message}` };
+  }
+
+  publish();
+  redirect(`/admin/pages/${slug.split("/").map(encodeURIComponent).join("/")}`);
+}
+
+/**
+ * Deleting a page removes its content too, because every content table
+ * references `pages (slug) on delete cascade`.
+ */
+export async function deletePage(form: FormData) {
+  await guard();
+  const slug = String(form.get("slug"));
+  const { data } = await supabaseAdmin.from("pages").select("kind").eq("slug", slug).maybeSingle();
+  const kind = (data as { kind?: string } | null)?.kind;
+  if (kind === "home" || kind === "standalone") {
+    throw new Error("Cette page fait partie de la structure du site et ne peut pas être supprimée.");
+  }
+  const { error } = await supabaseAdmin.from("pages").delete().eq("slug", slug);
+  if (error) throw new Error(error.message);
+  publish();
+  redirect("/admin");
 }
 
 export async function republish(): Promise<ActionResult> {
   await guard();
-  revalidatePath("/", "layout");
+  publish();
   return { ok: true, message: "Site republié." };
 }

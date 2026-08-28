@@ -1,0 +1,111 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { AdminBar } from "@/components/cms/AdminBar";
+import { Panel } from "@/components/cms/Panel";
+import { RowForm } from "@/components/cms/RowForm";
+import { deletePage } from "@/lib/cms/actions";
+import { uploadEnabled } from "@/lib/cms/cloudinary";
+import { editableFields, knownImages, loadPage, pageName } from "@/lib/cms/read";
+
+export const dynamic = "force-dynamic";
+
+/** Article slugs carry a slash (blog/…), so the route matches every segment. */
+export default async function PageEditor({ params }: { params: Promise<{ slug: string[] }> }) {
+  const { slug: segments } = await params;
+  const slug = segments.map(decodeURIComponent).join("/");
+  const [loaded, library] = await Promise.all([loadPage(slug), knownImages()]);
+  if (!loaded) notFound();
+
+  const { page, sections } = loaded;
+  const canUpload = uploadEnabled();
+  const removable = page.kind !== "home" && page.kind !== "standalone";
+  const settingsFields = editableFields("pages", page ? ["slug"] : []);
+
+  return (
+    <>
+      <AdminBar title={pageName(page)} back={{ href: "/admin", label: "Le site" }} />
+
+      <div className="mx-auto max-w-4xl px-6 py-10">
+        <div className="mb-10 flex flex-wrap items-center gap-4">
+          <span className="rounded-full bg-menu-subtle px-3 py-1 font-mono text-xs text-muted">
+            {page.route}
+          </span>
+          <Link
+            href={page.route}
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm text-muted transition-colors duration-200 hover:text-accent"
+          >
+            Voir la page ↗
+          </Link>
+        </div>
+
+        <nav className="mb-12 flex flex-wrap gap-2">
+          {sections.map((section) => (
+            <a
+              key={section.key}
+              href={`#${section.key}`}
+              className="rounded-full border border-edge px-4 py-1.5 font-display text-[0.62rem] font-bold tracking-[1px] uppercase transition-colors duration-200 hover:border-accent hover:text-accent"
+            >
+              {section.label}
+            </a>
+          ))}
+        </nav>
+
+        {sections.map((section, index) => (
+          <section
+            key={section.key}
+            id={section.key}
+            className="mb-16 scroll-mt-24 border-t border-edge pt-10"
+          >
+            <h3 className="flex items-baseline gap-3 text-xl font-medium text-ink">
+              <span className="font-display text-[0.65rem] font-bold tracking-[1.5px] text-muted">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              {section.label}
+            </h3>
+            {section.hint ? <p className="mt-2 mb-8 max-w-prose text-sm text-muted">{section.hint}</p> : <div className="mb-8" />}
+
+            {section.panels.map((panel, panelIndex) => (
+              <Panel
+                key={`${panel.table}-${panelIndex}`}
+                panel={panel}
+                library={library}
+                canUpload={canUpload}
+              />
+            ))}
+          </section>
+        ))}
+
+        <section id="reglages" className="mb-16 scroll-mt-24 border-t border-edge pt-10">
+          <h3 className="mb-2 text-xl font-medium text-ink">Réglages de la page</h3>
+          <p className="mb-8 max-w-prose text-sm text-muted">
+            L'adresse, le titre affiché par Google et le texte du chargement.
+          </p>
+          <RowForm
+            table="pages"
+            fields={settingsFields}
+            row={page as unknown as Record<string, unknown>}
+            match={{ slug: page.slug }}
+            filters={{}}
+            library={library}
+            canUpload={canUpload}
+            columns={2}
+          />
+        </section>
+
+        {removable ? (
+          <form action={deletePage} className="border-t border-edge pt-6">
+            <input type="hidden" name="slug" value={page.slug} />
+            <button
+              type="submit"
+              className="text-xs text-muted transition-colors duration-200 hover:text-danger"
+            >
+              Supprimer cette page et tout son contenu
+            </button>
+          </form>
+        ) : null}
+      </div>
+    </>
+  );
+}

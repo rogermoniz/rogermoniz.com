@@ -1,62 +1,207 @@
 import "server-only";
-import { TABLE_BY_NAME, type TableSpec } from "@/lib/cms/schema";
+import { TABLE_BY_NAME, type Field, type TableSpec } from "@/lib/cms/schema";
+import { HIDDEN_COLUMNS, controlKind, isAdvanced, type ControlKind } from "@/lib/cms/labels";
+import { blueprintFor, type Panel, type Section } from "@/lib/cms/blueprint";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 export type Row = Record<string, unknown>;
 
-function sortColumn(spec: TableSpec): string {
-  const names = new Set(spec.fields.map((f) => f.name));
-  for (const candidate of ["page_slug", "position", "sort_order", "group_key"]) {
-    if (names.has(candidate)) return candidate;
-  }
-  return spec.primaryKey;
-}
+/** section_headings is the one table keyed by a pair rather than an id. */
+const KEY_COLUMNS: Record<string, readonly string[]> = {
+  section_headings: ["page_slug", "section_key"],
+};
 
-export async function listRows(table: string): Promise<Row[]> {
+export function keyColumns(table: string): readonly string[] {
   const spec = TABLE_BY_NAME.get(table);
   if (!spec) throw new Error(`Unknown table ${table}`);
-  const first = sortColumn(spec);
-  const names = new Set(spec.fields.map((f) => f.name));
+  return KEY_COLUMNS[table] ?? [spec.primaryKey];
+}
 
-  let query = supabaseAdmin.from(table).select("*").order(first);
-  if (first !== "position" && names.has("position")) query = query.order("position");
+/** The column a row is addressed by; composite keys still lead with this one. */
+export function idColumn(table: string): string {
+  const [first] = keyColumns(table);
+  if (!first) throw new Error(`No key column for ${table}`);
+  return first;
+}
+
+export function hasColumn(table: string, column: string): boolean {
+  return TABLE_BY_NAME.get(table)?.fields.some((f) => f.name === column) ?? false;
+}
+
+/** A table without page_slug holds content for the whole site, not one page. */
+export function isPageScoped(table: string): boolean {
+  return hasColumn(table, "page_slug");
+}
+
+export type EditableField = Field & { control: ControlKind; advanced: boolean };
+
+export function editableFields(table: string, extraHidden: readonly string[] = []): EditableField[] {
+  const spec = TABLE_BY_NAME.get(table);
+  if (!spec) throw new Error(`Unknown table ${table}`);
+  const hidden = new Set([...HIDDEN_COLUMNS, ...extraHidden]);
+  return spec.fields
+    .filter((f) => !f.readOnly && !hidden.has(f.name))
+    .map((f) => ({ ...f, control: controlKind(table, f.name, f.kind), advanced: isAdvanced(f.name) }));
+}
+
+/* -------------------------------------------------------------------------- */
+
+async function select(table: string, filters: Record<string, string>): Promise<Row[]> {
+  let query = supabaseAdmin.from(table).select("*");
+  for (const [column, value] of Object.entries(filters)) query = query.eq(column, value);
+  if (hasColumn(table, "position")) query = query.order("position");
+  else if (hasColumn(table, "sort_order")) query = query.order("sort_order");
+  else query = query.order(idColumn(table));
   const { data, error } = await query;
   if (error) throw new Error(`${table}: ${error.message}`);
   return (data ?? []) as Row[];
 }
 
-export async function getRow(table: string, id: string): Promise<Row | null> {
-  const spec = TABLE_BY_NAME.get(table);
-  if (!spec) throw new Error(`Unknown table ${table}`);
-  const { data, error } = await supabaseAdmin
-    .from(table)
-    .select("*")
-    .eq(spec.primaryKey, id)
-    .maybeSingle();
-  if (error) throw new Error(`${table}: ${error.message}`);
-  return (data ?? null) as Row | null;
+export type LoadedPanel =
+  | { form: "single"; table: string; title: string; row: Row | null; filters: Record<string, string> }
+  | {
+      form: "rows";
+      table: string;
+      title: string;
+      noun: string;
+      rows: Row[];
+      filters: Record<string, string>;
+      child: ChildRows | null;
+    };
+
+type ChildRows = {
+  table: string;
+  foreignKey: string;
+  title: string;
+  noun: string;
+  rowsById: Record<string, Row[]>;
+};
+
+export type LoadedSection = { key: string; label: string; hint: string | null; panels: LoadedPanel[] };
+
+function filtersFor(panel: Panel, slug: string): Record<string, string> {
+  const filters: Record<string, string> = {};
+  if (isPageScoped(panel.table)) filters.page_slug = slug;
+  if (panel.form === "single" && panel.sectionKey) filters.section_key = panel.sectionKey;
+  if (panel.form === "rows" && panel.where) filters[panel.where.column] = panel.where.value;
+  return filters;
 }
 
-export async function countRows(table: string): Promise<number> {
-  const { count, error } = await supabaseAdmin
-    .from(table)
-    .select("*", { count: "exact", head: true });
-  if (error) return 0;
-  return count ?? 0;
+async function loadPanel(panel: Panel, slug: string): Promise<LoadedPanel> {
+  const filters = filtersFor(panel, slug);
+  const rows = await select(panel.table, filters);
+
+  if (panel.form === "single") {
+    return { form: "single", table: panel.table, title: panel.title ?? "", row: rows[0] ?? null, filters };
+  }
+
+  let child: ChildRows | null = null;
+  if (panel.child) {
+    const ids = rows.map((r) => String(r[idColumn(panel.table)]));
+    const { data, error } = await supabaseAdmin
+      .from(panel.child.table)
+      .select("*")
+      .in(panel.child.foreignKey, ids)
+      .order("position");
+    if (error) throw new Error(`${panel.child.table}: ${error.message}`);
+    const rowsById: Record<string, Row[]> = Object.fromEntries(ids.map((id) => [id, []]));
+    for (const row of (data ?? []) as Row[]) {
+      const key = String(row[panel.child.foreignKey]);
+      const bucket = (rowsById[key] ??= []);
+      bucket.push(row);
+    }
+    child = { ...panel.child, rowsById };
+  }
+
+  return { form: "rows", table: panel.table, title: panel.title, noun: panel.noun, rows, filters, child };
 }
 
-/** A short human label for a row, so lists are readable without opening each one. */
+export async function loadSections(slug: string, sections: readonly Section[]): Promise<LoadedSection[]> {
+  return Promise.all(
+    sections.map(async (section) => ({
+      key: section.key,
+      label: section.label,
+      hint: section.hint ?? null,
+      panels: await Promise.all(section.panels.map((panel) => loadPanel(panel, slug))),
+    })),
+  );
+}
+
+export type PageRow = {
+  slug: string;
+  route: string;
+  kind: string;
+  meta_title: string;
+  preloader_label: string | null;
+  sort_order: number;
+};
+
+/** Titles are written for Google, so the studio suffix is noise in a list. */
+export function pageName(page: { meta_title: string; slug: string }): string {
+  const [head] = page.meta_title.split("|");
+  return (head ?? "").trim() || page.slug;
+}
+
+export async function listPages(): Promise<PageRow[]> {
+  const { data, error } = await supabaseAdmin.from("pages").select("*").order("sort_order");
+  if (error) throw new Error(`pages: ${error.message}`);
+  return (data ?? []) as PageRow[];
+}
+
+export async function getPage(slug: string): Promise<PageRow | null> {
+  const { data, error } = await supabaseAdmin.from("pages").select("*").eq("slug", slug).maybeSingle();
+  if (error) throw new Error(`pages: ${error.message}`);
+  return (data ?? null) as PageRow | null;
+}
+
+export async function loadPage(slug: string) {
+  const page = await getPage(slug);
+  if (!page) return null;
+  const blueprint = blueprintFor(slug, page.kind);
+  return { page, sections: await loadSections(slug, blueprint.sections) };
+}
+
+/** Global content: one panel per table, with no page filter. */
+export async function loadGlobalPanel(table: string, form: "single" | "rows"): Promise<LoadedPanel> {
+  const rows = await select(table, {});
+  if (form === "single") return { form: "single", table, title: "", row: rows[0] ?? null, filters: {} };
+  return { form: "rows", table, title: "", noun: "élément", rows, filters: {}, child: null };
+}
+
+/** Every Cloudinary path already used on the site, so images can be reused. */
+export async function knownImages(): Promise<string[]> {
+  const columns: [string, string][] = [
+    ["footer_images", "path"], ["hero_marquee_images", "path"], ["gallery_items", "path"],
+    ["vision_images", "path"], ["prestation_teasers", "path"], ["about_strip", "path"],
+    ["about_hero_backgrounds", "path"], ["article_cards", "path"], ["read_next_cards", "path"],
+    ["blog_cover", "path"], ["event_featured", "path"], ["reviews", "avatar_path"],
+    ["home_welcome", "image_path"], ["about_story", "image_path"], ["article_hero", "image_path"],
+    ["site_settings", "logo_path"],
+  ];
+  const found = await Promise.all(
+    columns.map(async ([table, column]) => {
+      const { data } = await supabaseAdmin.from(table).select(column);
+      return ((data ?? []) as unknown as Row[])
+        .map((r) => r[column])
+        .filter((v): v is string => typeof v === "string" && v !== "");
+    }),
+  );
+  return [...new Set(found.flat())].sort();
+}
+
+/** A short human label for a row, so a collapsed list stays readable. */
 export function summarise(spec: TableSpec, row: Row): string {
-  const preferred = ["title", "label", "question", "name", "heading", "value", "body", "quote", "slug"];
+  const preferred = ["title", "label", "question", "name", "heading", "value", "body", "quote", "alt", "href"];
   for (const key of preferred) {
     const v = row[key];
-    if (typeof v === "string" && v.trim()) return v.length > 80 ? `${v.slice(0, 80)}…` : v;
+    if (typeof v === "string" && v.trim()) return v.length > 70 ? `${v.slice(0, 70)}…` : v;
   }
   for (const field of spec.fields) {
+    if (HIDDEN_COLUMNS.has(field.name)) continue;
     const v = row[field.name];
-    if (field.kind !== "json" && typeof v === "string" && v.trim()) {
-      return v.length > 80 ? `${v.slice(0, 80)}…` : v;
+    if (field.kind === "text" && typeof v === "string" && v.trim()) {
+      return v.length > 70 ? `${v.slice(0, 70)}…` : v;
     }
   }
-  return `#${String(row[spec.primaryKey] ?? "")}`;
+  return "À compléter";
 }
