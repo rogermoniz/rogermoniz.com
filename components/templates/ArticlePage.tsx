@@ -7,7 +7,16 @@ import { ReadNext } from "@/components/sections/editorial/ReadNext";
 import { DualCta } from "@/components/sections/prestation/DualCta";
 import type { ArticlePageData } from "@/lib/content/types";
 
-/** One template for every blog post and event write up. */
+/**
+ * One template for every blog post and event write up, in two variants: a
+ * feature runs the wider column its editorial pictures need, a standard
+ * article the narrower one that reads better for plain prose.
+ */
+const COLUMN: Record<ArticlePageData["template"], string> = {
+  standard: "max-w-[720px]",
+  feature: "max-w-[744px]",
+};
+
 export function ArticlePage({ data }: { data: ArticlePageData }) {
   const hero = data.hero;
 
@@ -23,7 +32,7 @@ export function ArticlePage({ data }: { data: ArticlePageData }) {
               <ArticleSidebar toc={data.toc} meta={data.meta} />
             </div>
           </div>
-          <div className="flex max-w-[748px] flex-col">
+          <div className={`flex flex-col ${COLUMN[data.template]}`}>
             <ContentBlocks sections={data.sections} />
           </div>
         </div>

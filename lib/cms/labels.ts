@@ -89,6 +89,7 @@ const BY_COLUMN: Record<string, string> = {
   share_label: "Texte du partage",
   slug: "Identifiant",
   sort_order: "Ordre dans la liste",
+  template: "Mise en page",
   span: "Taille dans la mosaïque",
   spans: "Texte enrichi",
   speed: "Colonne",
@@ -142,6 +143,7 @@ const HINTS: Record<string, string> = {
   "pricing_notes.placement": "au dessus ou en dessous des formules",
   "rich_sections.blocks": "structure du contenu de l'article, à modifier avec précaution",
   "pages.sort_order": "position de la page dans cet écran, pas sur le site",
+  "pages.template": "standard pour un article de lecture, feature pour un dossier illustré",
   "site_settings.phone": "format international, utilisé par le lien d'appel",
 };
 
@@ -153,6 +155,7 @@ const CHOICES: Record<string, readonly string[]> = {
   "hero_marquee_images.speed": ["up", "down", "up-slow", "down-slow"],
   "nav_items.group_key": ["primary", "secondary", "footer"],
   "pages.kind": ["home", "prestation", "article", "legal", "standalone"],
+  "pages.template": ["standard", "feature"],
   "pricing_blocks.kind": ["cards", "quote"],
   "pricing_notes.placement": ["intro", "footnote"],
   "vision_blocks.kind": ["split", "stacked"],

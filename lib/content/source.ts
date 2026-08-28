@@ -382,6 +382,7 @@ export async function getEditorial(slug: string): Promise<EditorialPage> {
   const article: ArticlePageData = {
     ...shared,
     kind: "article",
+    template: str(page?.template) === "feature" ? "feature" : "standard",
     hero: {
       category: nullable(hero?.category),
       date: nullable(hero?.date_label),

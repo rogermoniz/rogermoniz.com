@@ -58,11 +58,25 @@ function Caption({ block }: { block: FigureBlock }) {
   );
 }
 
-export function Figure({ block, className = "" }: { block: FigureBlock; className?: string }) {
+export function Figure({
+  block,
+  className = "",
+  context,
+}: {
+  block: FigureBlock;
+  className?: string;
+  /** Where the picture sits, when that changes its proportions. */
+  context?: "duo";
+}) {
   if (!block.path) return null;
 
   const variant = block.variant ?? "";
-  const shape = SHAPE[variant];
+  const base = SHAPE[variant];
+  // A banner in a stacked pair is a tall portrait, not a wide strip.
+  const shape =
+    base && variant === "or-banner" && context === "duo"
+      ? { ...base, aspect: "aspect-[2/3]", width: 900 }
+      : base;
   const overlay = OVERLAY[variant];
 
   // A plain figure keeps its own height and puts the caption underneath.

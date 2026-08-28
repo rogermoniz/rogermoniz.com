@@ -60,6 +60,7 @@ export const TABLES: TableSpec[] = [
       { name: "meta_title", kind: "text", required: true, readOnly: false },
       { name: "preloader_label", kind: "text", required: false, readOnly: false },
       { name: "sort_order", kind: "number", required: true, readOnly: false },
+      { name: "template", kind: "text", required: true, readOnly: false },
     ],
   },
   {

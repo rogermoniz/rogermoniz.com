@@ -9,7 +9,7 @@ import type { ContentBlock, ContentSection } from "@/lib/content/types";
 const PROSE = "mb-[1.6rem] text-[clamp(1.08rem,1.3vw,1.2rem)] leading-[1.85] text-ink";
 
 
-function Block({ block }: { block: ContentBlock }) {
+function Block({ block, context }: { block: ContentBlock; context?: "duo" }) {
   switch (block.type) {
     case "heading": {
       const centred = block.variant?.includes("or-center");
@@ -39,7 +39,7 @@ function Block({ block }: { block: ContentBlock }) {
           as="p"
           className={
             lead
-              ? "mb-8 text-[clamp(1.05rem,1.4vw,1.25rem)] leading-[1.75] text-muted"
+              ? "mt-[1.2rem] mb-0 text-[clamp(1.08rem,1.3vw,1.2rem)] leading-[1.6] text-ink"
               : strong
                 ? "mb-0 font-medium text-ink"
                 : PROSE
@@ -74,7 +74,7 @@ function Block({ block }: { block: ContentBlock }) {
     case "figure":
       return (
         <Reveal>
-          <Figure block={block} />
+          <Figure block={block} context={context} />
         </Reveal>
       );
     case "figureGroup":
@@ -115,11 +115,11 @@ function Block({ block }: { block: ContentBlock }) {
       );
     case "duo":
       return (
-        <div className="my-10 grid grid-cols-2 gap-8 max-md:grid-cols-1">
+        <div className="flex flex-col gap-[clamp(2.4rem,4.5vw,3.5rem)]">
           {block.columns.map((column, index) => (
             <div key={column.id ?? index} id={column.id ?? undefined}>
               {column.blocks.map((child, i) => (
-                <Block key={i} block={child} />
+                <Block key={i} block={child} context="duo" />
               ))}
             </div>
           ))}

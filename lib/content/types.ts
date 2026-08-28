@@ -248,8 +248,15 @@ type EditorialShared = {
 };
 
 /** A blog post or event write up: pinned photographic hero, sidebar, CTA. */
+/**
+ * A feature runs a wider column and treats its pictures editorially; a
+ * standard article is a narrower reading column with plain images.
+ */
+export type ArticleTemplate = "standard" | "feature";
+
 export type ArticlePageData = EditorialShared & {
   kind: "article";
+  template: ArticleTemplate;
   hero: ArticleHeroData;
   meta: {
     blocks: readonly { label: string; value: string }[];
