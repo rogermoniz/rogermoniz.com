@@ -180,6 +180,8 @@ export function Lightbox({
 
   const at = (delta: number) => images[(index + delta + images.length) % images.length] ?? current;
   const neighbours = [at(-1), current, at(1)];
+  /** One step beyond the strip, fetched but never painted. */
+  const warm = [at(-2), at(2)].filter((image) => !neighbours.includes(image));
 
   const onPointerDown = (event: React.PointerEvent) => {
     pointerStart.current = { x: event.clientX, y: event.clientY };
@@ -286,7 +288,7 @@ export function Lightbox({
         >
           {neighbours.map((image, position) => (
             <div
-              key={`${image.path}-${position}`}
+              key={image.path}
               className="flex h-full basis-1/3 items-center justify-center px-5 py-12"
             >
               <Slide
@@ -298,6 +300,21 @@ export function Lightbox({
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Decoding the next pair now is what makes a second page instant. */}
+      <div aria-hidden="true" className="pointer-events-none absolute size-px overflow-hidden opacity-0">
+        {warm.map((image) => (
+          <Image
+            key={image.path}
+            src={cloudinary(image.path, { width: 1600 })}
+            alt=""
+            width={16}
+            height={20}
+            loading="eager"
+            sizes="(max-width: 768px) 100vw, 65vh"
+          />
+        ))}
       </div>
 
       <IconButton

@@ -64,7 +64,7 @@ export function SiteHeader({
       <header className="fixed top-6 left-1/2 z-1000 w-auto max-w-[95%] -translate-x-1/2">
         <nav
           aria-label="Navigation principale"
-          className="relative flex items-center justify-between gap-5 rounded-[50px] border border-menu-edge bg-menu-glass p-1.5 shadow-[0_15px_35px_var(--menu-shadow)] transition-[background,border-color,box-shadow] duration-600"
+          className="relative flex items-center justify-between gap-5 backdrop-blur-[var(--menu-blur)] rounded-[50px] border border-menu-edge bg-menu-glass p-1.5 shadow-[0_15px_35px_var(--menu-shadow)] transition-[background,border-color,box-shadow] duration-600"
         >
           <Link
             href="/"
@@ -110,7 +110,7 @@ export function SiteHeader({
                   </button>
                   <div
                     role="menu"
-                    className="invisible absolute top-[calc(100%_+_15px)] left-1/2 z-1001 min-w-[180px] -translate-x-1/2 scale-90 rounded-2xl border border-menu-edge bg-menu-dropdown p-2 opacity-0 shadow-[0_20px_50px_var(--menu-shadow)] transition-all duration-300 ease-snappy group-hover:visible group-hover:scale-100 group-hover:opacity-100"
+                    className="invisible absolute top-[calc(100%_+_15px)] left-1/2 z-1001 min-w-[180px] -translate-x-1/2 scale-90 rounded-2xl border border-menu-edge bg-menu-dropdown backdrop-blur-[var(--menu-blur)] p-2 opacity-0 shadow-[0_20px_50px_var(--menu-shadow)] transition-all duration-300 ease-snappy group-hover:visible group-hover:scale-100 group-hover:opacity-100"
                   >
                     {item.children.map((child) => (
                       <Link
@@ -168,7 +168,7 @@ export function SiteHeader({
         id="rm-mobile-menu"
         aria-label="Navigation mobile"
         data-open={mobileOpen ? "true" : undefined}
-        className="fixed top-[95px] left-1/2 z-999 max-h-[75vh] w-[92%] max-w-[400px] -translate-x-1/2 scale-95 -translate-y-5 overflow-y-auto rounded-[30px] border border-menu-edge bg-menu-dropdown p-5 opacity-0 shadow-[0_20px_80px_var(--menu-shadow)] transition-[transform,opacity,visibility] duration-400 ease-snappy [visibility:hidden] data-[open]:translate-y-0 data-[open]:scale-100 data-[open]:opacity-100 data-[open]:[visibility:visible] nav:hidden"
+        className="fixed top-[95px] left-1/2 z-999 max-h-[75vh] w-[92%] max-w-[400px] -translate-x-1/2 scale-95 -translate-y-5 overflow-y-auto rounded-[30px] border border-menu-edge bg-menu-dropdown backdrop-blur-[var(--menu-blur)] p-5 opacity-0 shadow-[0_20px_80px_var(--menu-shadow)] transition-[transform,opacity,visibility] duration-400 ease-snappy [visibility:hidden] data-[open]:translate-y-0 data-[open]:scale-100 data-[open]:opacity-100 data-[open]:[visibility:visible] nav:hidden"
       >
         <ul>
           {nav.map((item, index) => {

@@ -44,6 +44,9 @@
 
     /* Menu surface */
     --menu-bg-glass: rgb(255 255 255 / 0.94);
+    /* The frosted pill. The original shipped this at 0 to keep scrolling
+       cheap; it is on by owner decision, so keep an eye on scroll cost. */
+    --menu-blur: 8px;
     --menu-border: rgb(0 0 0 / 0.08);
     --menu-text-main: #111111;
     --menu-text-muted: #5a5a5a;
@@ -114,6 +117,7 @@
     --tile-hover: rgb(255 255 255 / 0.15);
 
     --menu-bg-glass: rgb(20 20 20 / 0.92);
+    --menu-blur: 8px;
     --menu-border: rgb(255 255 255 / 0.1);
     --menu-text-main: #f5f5f7;
     --menu-text-muted: #a0a0a5;
