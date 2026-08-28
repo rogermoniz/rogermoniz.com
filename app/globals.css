@@ -43,6 +43,13 @@
       rgb(24 9 13 / 0) 80%
     );
     --figure-tint: #f3eceb;
+    /* Zero alpha surface. `transparent` is zero alpha BLACK, so fading to it
+       drags a grey haze across whatever sits under the gradient. */
+    --surface-fade: rgb(255 255 255 / 0);
+    /* Button labels are a shade larger and lighter inside an article than they
+       are on the rest of the site; the article template redeclares these. */
+    --button-label-size: 0.75rem;
+    --button-label-weight: 700;
     --tactile-grad: linear-gradient(to top, #d8d9db 0%, #fff 80%, #fdfdfd 100%);
     --tactile-border: #8f9092;
     --tactile-text: #606060;
@@ -90,6 +97,7 @@
   }
 
   html[data-theme="dark"] {
+    --surface-fade: rgb(0 0 0 / 0);
     --theme-bg: #000000;
     --theme-bg-alt1: #000000;
     --theme-bg-alt2: #000000;

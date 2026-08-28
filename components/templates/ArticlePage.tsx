@@ -21,7 +21,9 @@ export function ArticlePage({ data }: { data: ArticlePageData }) {
   const hero = data.hero;
 
   return (
-    <>
+    /* display:contents keeps the layout identical while the type scale below
+       reaches every button in the article, including the ones further down. */
+    <div className="contents [--button-label-size:0.875rem] [--button-label-weight:600]">
       <Preloader label={data.preloaderLabel ?? "Roger Moniz"} />
       <ArticleHero {...hero} />
 
@@ -57,6 +59,6 @@ export function ArticlePage({ data }: { data: ArticlePageData }) {
       ) : null}
 
       {data.readNext ? <ReadNext data={data.readNext} /> : null}
-    </>
+    </div>
   );
 }

@@ -40,7 +40,7 @@ export function BubbleButton({
         fullWidth ? "w-full justify-center" : ""
       } ${className}`}
     >
-      <span className="z-2 font-display text-sm font-semibold tracking-[0.05em] uppercase">
+      <span className="z-2 font-display text-[length:var(--button-label-size)] tracking-[0.05em] uppercase [font-weight:var(--button-label-weight)]">
         {children}
       </span>
       <span className="relative z-2 block size-5 overflow-hidden">

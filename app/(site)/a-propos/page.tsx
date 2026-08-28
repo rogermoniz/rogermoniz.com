@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Preloader } from "@/components/effects/Preloader";
+import { ScrollCue } from "@/components/effects/ScrollCue";
 import { Reveal } from "@/components/effects/Reveal";
 import { RichText } from "@/components/primitives/RichText";
 import {
@@ -46,13 +47,15 @@ export default async function AProposRoute() {
               }`}
             />
           ))}
-          <span className="absolute inset-0 bg-[linear-gradient(90deg,var(--theme-bg)_1%,transparent_58%)]" />
+          <span className="absolute inset-0 bg-[linear-gradient(90deg,var(--theme-bg)_1%,var(--surface-fade)_58%)]" />
         </div>
 
         <span
           aria-hidden="true"
           className="pointer-events-none absolute inset-[14px] z-4 border border-[rgb(194_154_75_/_0.38)]"
         />
+
+        <ScrollCue label={hero.scrollLabel} tone="ink" />
 
         <div className="relative z-2 mx-auto w-full max-w-[1500px] px-[clamp(40px,6vw,90px)]">
           <Eyebrow>{hero.eyebrow}</Eyebrow>

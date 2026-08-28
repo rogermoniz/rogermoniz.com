@@ -29,6 +29,18 @@ function CheckIcon() {
  * Priced pages list their formulas as cards; bespoke pages (événementiel,
  * packshot) invite a quote instead. Same section, two shapes of data.
  */
+/**
+ * How many formulas share a row, and how tightly. Four cards run narrower and
+ * closer together than three, which is what the original does rather than
+ * letting one auto fit rule decide.
+ */
+const GRID: Record<1 | 2 | 3 | 4, string> = {
+  1: "grid-cols-1 gap-12",
+  2: "grid-cols-2 gap-12 max-md:grid-cols-1",
+  3: "grid-cols-3 gap-12 max-lg:grid-cols-2 max-md:grid-cols-1",
+  4: "grid-cols-4 gap-6 max-xl:grid-cols-2 max-md:grid-cols-1",
+};
+
 export function PricingSection({ pricing }: { pricing: PricingBlock }) {
   return (
     <section id="pricing" className="bg-surface py-[clamp(64px,7vw,100px)]">
@@ -74,7 +86,7 @@ export function PricingSection({ pricing }: { pricing: PricingBlock }) {
               </Reveal>
             ) : null}
 
-            <div className="mt-10 grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-12 max-lg:grid-cols-2 max-md:grid-cols-1">
+            <div className={`mt-10 grid ${GRID[Math.min(pricing.cards.length, 4) as 1 | 2 | 3 | 4] ?? GRID[3]}`}>
             {pricing.cards.map((card) => (
               <Reveal
                 key={card.title}
