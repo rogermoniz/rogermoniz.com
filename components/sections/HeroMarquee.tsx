@@ -40,6 +40,7 @@ export function HeroMarquee({ hero }: { hero: HomePage["hero"] }) {
   const aspect = hero.imageAspect;
   const pinRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
   const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [entered, setEntered] = useState(false);
 
@@ -67,18 +68,64 @@ export function HeroMarquee({ hero }: { hero: HomePage["hero"] }) {
     if (!pin) return;
 
     let frame: number | null = null;
+    // Measured on resize rather than on every frame: reading layout inside the
+    // scroll handler forces the browser to lay the page out again before it can
+    // answer, once per frame, for numbers that only change when the window does.
+    let pinTop = 0;
+    let pinHeight = 0;
+    let viewportWidth = 0;
+    let viewportHeight = 0;
+    // Toggled rather than left on, because a promoted layer costs GPU memory
+    // for as long as it is declared. Written only when it changes.
+    let promoted = false;
+    let interactive = true;
+
+    const measure = () => {
+      pinTop = pin.getBoundingClientRect().top + window.scrollY;
+      pinHeight = pin.offsetHeight;
+      viewportWidth = window.innerWidth;
+      viewportHeight = window.innerHeight;
+    };
+
+    // Hovering an image runs an 800ms transition of its greyscale filter and a
+    // 60px shadow. While the hero is flying away the columns sweep past a
+    // stationary cursor, firing that on image after image underneath a move
+    // that is already the heaviest thing on the page. Nothing is meant to be
+    // hovered mid flight, so nothing is.
+    const setInteractive = (on: boolean) => {
+      if (on === interactive) return;
+      interactive = on;
+      const row = rowRef.current;
+      if (row) row.style.pointerEvents = on ? "" : "none";
+    };
+
+    const promote = (on: boolean) => {
+      if (on === promoted) return;
+      promoted = on;
+      const value = on ? "transform, opacity" : "";
+      for (const node of columnRefs.current) if (node) node.style.willChange = value;
+      const overlay = overlayRef.current;
+      if (overlay) overlay.style.willChange = value;
+    };
 
     const render = () => {
       frame = null;
-      const isDesktop = window.innerWidth >= 769;
-      const rect = pin.getBoundingClientRect();
+      const isDesktop = viewportWidth >= 769;
+      const travelled = window.scrollY - pinTop;
       let progress: number;
       if (isDesktop) {
-        const distance = pin.offsetHeight - window.innerHeight;
-        progress = distance > 0 ? clamp(-rect.top / distance, 0, 1) : 0;
+        const distance = pinHeight - viewportHeight;
+        progress = distance > 0 ? clamp(travelled / distance, 0, 1) : 0;
       } else {
-        progress = clamp(-rect.top / window.innerHeight, 0, 1);
+        progress = clamp(travelled / viewportHeight, 0, 1);
       }
+
+      // Every column and the title are re-rastered as they scale, and the
+      // images carry a greyscale filter, so the work is real. Holding them on
+      // the compositor for the length of the move is what keeps it smooth;
+      // outside it there is nothing to hold.
+      promote(progress > 0 && progress < 1);
+      setInteractive(progress === 0);
 
       const table = isDesktop ? DESKTOP_PARALLAX : MOBILE_PARALLAX;
       columnRefs.current.forEach((node, index) => {
@@ -100,14 +147,27 @@ export function HeroMarquee({ hero }: { hero: HomePage["hero"] }) {
       frame ??= requestAnimationFrame(render);
     };
 
+    const remeasure = () => {
+      measure();
+      schedule();
+    };
+
+    measure();
     render();
     window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule, { passive: true });
+    window.addEventListener("resize", remeasure, { passive: true });
+    // The pin grows when a font swaps or an image settles, and the scroll
+    // distance is derived from its height.
+    const observer = new ResizeObserver(remeasure);
+    observer.observe(pin);
 
     return () => {
       window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
+      window.removeEventListener("resize", remeasure);
+      observer.disconnect();
       if (frame !== null) cancelAnimationFrame(frame);
+      promote(false);
+      setInteractive(true);
     };
   }, []);
 
@@ -156,7 +216,10 @@ export function HeroMarquee({ hero }: { hero: HomePage["hero"] }) {
           ) : null}
         </div>
 
-        <div className="flex h-[150%] w-[150vw] flex-none rotate-[-4deg] scale-110 gap-[1.5vw] [mask-image:linear-gradient(to_bottom,transparent_0%,black_15%,black_85%,transparent_100%)] max-lg:h-[180%] max-lg:w-[200vw] max-md:w-[150vw]">
+        <div
+          ref={rowRef}
+          className="flex h-[150%] w-[150vw] flex-none rotate-[-4deg] scale-110 gap-[1.5vw] [mask-image:linear-gradient(to_bottom,transparent_0%,black_15%,black_85%,transparent_100%)] max-lg:h-[180%] max-lg:w-[200vw] max-md:w-[150vw]"
+        >
           {hero.columns.map((column, index) => (
             <div
               key={column.speed}
