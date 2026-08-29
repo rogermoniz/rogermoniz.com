@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Reveal } from "@/components/effects/Reveal";
 import { ArrowRightIcon } from "@/components/primitives/icons";
 import { DisplayHeading, Eyebrow, HeadingSub } from "@/components/primitives/Typography";
@@ -26,6 +26,48 @@ export function ApertureGallery({ prestations }: { prestations: HomePage["presta
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
   const bgRefs = useRef<(HTMLDivElement | null)[]>([]);
   const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
+  // What was last written to each node, so an unchanged frame writes nothing.
+  const lastRef = useRef<{ clip: string; bg: string; shift: string; fade: string; hidden: boolean }[]>([]);
+  const [armed, setArmed] = useState(false);
+
+  // Eight full screen photographs cannot wait for the aperture that reveals
+  // them: left to lazy loading they only start once the slide is already on
+  // screen, and the first ones irised open onto nothing. They are fetched when
+  // the section is a viewport and a half away, and never before the reader has
+  // scrolled at all, so a visitor who reads the top of the page and leaves is
+  // not charged for them.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || armed) return;
+
+    let near = false;
+    let moved = window.scrollY > 0;
+
+    const arm = () => {
+      if (near && moved) setArmed(true);
+    };
+    const onScroll = () => {
+      moved = true;
+      arm();
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          near = true;
+          arm();
+        }
+      },
+      { rootMargin: "150% 0px" },
+    );
+    observer.observe(section);
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [armed]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -35,6 +77,10 @@ export function ApertureGallery({ prestations }: { prestations: HomePage["presta
 
     const render = () => {
       frame = null;
+      // Read, then write, and never the other way round: the browser lays the
+      // page out once for this and the writes below cost nothing extra. Caching
+      // the section's offset instead would be a frame faster and wrong, because
+      // anything above it changing height moves it.
       const rect = section.getBoundingClientRect();
       const distance = section.offsetHeight - window.innerHeight;
       const progress = distance > 0 ? clamp(-rect.top / distance, 0, 1) : 0;
@@ -42,19 +88,56 @@ export function ApertureGallery({ prestations }: { prestations: HomePage["presta
       const total = (count - 1) * SLIDE_STEP + SLIDE_SPAN;
       const travelled = progress * total;
 
+      const opens = slideRefs.current.map((_, index) =>
+        clamp((travelled - index * SLIDE_STEP) / SLIDE_SPAN, 0, 1),
+      );
+      // The highest slide that has finished opening covers the screen edge to
+      // edge, so every slide stacked under it is painting a full screen
+      // photograph nobody can see. Derived from the opened amounts rather than
+      // from the formula, so it cannot drift out of step with them.
+      let topFull = -1;
+      for (const [index, open] of opens.entries()) if (open >= 1) topFull = index;
+
       slideRefs.current.forEach((slide, index) => {
         if (!slide) return;
-        const open = clamp((travelled - index * SLIDE_STEP) / SLIDE_SPAN, 0, 1);
-        slide.style.clipPath = `circle(${(150 * open).toFixed(2)}% at 50% 50%)`;
+        const open = opens[index] ?? 0;
+        const shown = clamp((travelled - (index * SLIDE_STEP + 0.5)) / 1, 0, 1);
+
+        const clip = `circle(${(150 * open).toFixed(2)}% at 50% 50%)`;
+        const bgScale = `scale(${(1.3 - 0.3 * open).toFixed(3)})`;
+        const shift = `translateY(${(80 * (1 - shown)).toFixed(1)}px)`;
+        const fade = shown.toFixed(3);
+
+        // Seven of the eight slides hold still on any given frame. Writing the
+        // value they already carry still costs a style recalculation each, so
+        // the ones that are not moving are left alone.
+        const last = (lastRef.current[index] ??= { clip: "", bg: "", shift: "", fade: "", hidden: false });
+        // Nothing that has not started opening is drawn, and nothing sitting
+        // under a slide that is already covering the screen.
+        const hidden = index < topFull || open === 0;
+        if (last.hidden !== hidden) {
+          slide.style.visibility = hidden ? "hidden" : "";
+          last.hidden = hidden;
+        }
+        if (hidden) return;
+
+        if (last.clip !== clip) {
+          slide.style.clipPath = clip;
+          last.clip = clip;
+        }
 
         const bg = bgRefs.current[index];
-        if (bg) bg.style.transform = `scale(${(1.3 - 0.3 * open).toFixed(3)})`;
+        if (bg && last.bg !== bgScale) {
+          bg.style.transform = bgScale;
+          last.bg = bgScale;
+        }
 
         const content = contentRefs.current[index];
-        if (content) {
-          const shown = clamp((travelled - (index * SLIDE_STEP + 0.5)) / 1, 0, 1);
-          content.style.transform = `translateY(${(80 * (1 - shown)).toFixed(1)}px)`;
-          content.style.opacity = shown.toFixed(3);
+        if (content && (last.shift !== shift || last.fade !== fade)) {
+          content.style.transform = shift;
+          content.style.opacity = fade;
+          last.shift = shift;
+          last.fade = fade;
         }
       });
     };
@@ -113,6 +196,7 @@ export function ApertureGallery({ prestations }: { prestations: HomePage["presta
                 alt={slide.image.alt}
                 fill
                 sizes="100vw"
+                loading={armed ? "eager" : "lazy"}
                 className="size-full object-cover"
               />
             </div>
