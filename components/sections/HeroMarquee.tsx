@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ScrollCue } from "@/components/effects/ScrollCue";
 import { Eyebrow, HeadingSub } from "@/components/primitives/Typography";
 import { cloudinary } from "@/lib/cloudinary";
@@ -32,6 +32,9 @@ const MOBILE_PARALLAX = [
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
+
+/** Layout effects do not run on the server, and asking for one there warns. */
+const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 export function HeroMarquee({ hero }: { hero: HomePage["hero"] }) {
   const aspect = hero.imageAspect;
@@ -162,7 +165,7 @@ export function HeroMarquee({ hero }: { hero: HomePage["hero"] }) {
               }}
               className="flex min-w-0 flex-1 flex-col [backface-visibility:hidden] [transform:translateZ(0)]"
             >
-              <MarqueeStrip column={column} priority={index === 0} aspect={aspect} />
+              <MarqueeStrip column={column} lead={index === 0} aspect={aspect} />
             </div>
           ))}
         </div>
@@ -174,31 +177,46 @@ export function HeroMarquee({ hero }: { hero: HomePage["hero"] }) {
 }
 
 /**
- * One scrolling column. The strip holds the images twice so translateY(-50%)
- * loops seamlessly, and repeats further when a single loop would be shorter
- * than the viewport — otherwise a gap appears at the seam on tall screens.
+ * One scrolling column.
+ *
+ * The strip holds every image twice so translateY(-50%) loops seamlessly, and
+ * repeats further when one loop would be shorter than the column it has to
+ * fill, otherwise the seam opens a gap and the column runs empty.
  */
 function MarqueeStrip({
   column,
-  priority,
+  lead,
   aspect,
 }: {
   column: HomePage["hero"]["columns"][number];
-  priority: boolean;
+  lead: boolean;
   aspect: string;
 }) {
   const stripRef = useRef<HTMLDivElement>(null);
   const [repeat, setRepeat] = useState(1);
 
-  useEffect(() => {
+  // Measured before the browser paints, so the strip is never briefly too
+  // short: growing it afterwards would restart the animation and read as a
+  // jump. The column is watched rather than the window because it is what the
+  // strip actually has to cover, and a phone rotating changes it.
+  useIsomorphicLayoutEffect(() => {
     const strip = stripRef.current;
-    if (!strip) return;
-    const unit = strip.scrollHeight / 2;
-    if (unit <= 0) return;
-    const needed = window.innerHeight * 1.1;
-    if (unit >= needed) return;
-    setRepeat(Math.ceil(needed / unit));
-  }, []);
+    const column = strip?.parentElement;
+    if (!strip || !column) return;
+
+    const measure = () => {
+      const loop = strip.scrollHeight / (2 * repeat);
+      if (loop <= 0) return;
+      // A tenth over the column height covers the parent's rotation.
+      const next = Math.max(1, Math.ceil((column.clientHeight * 1.1) / loop));
+      if (next !== repeat) setRepeat(next);
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(column);
+    return () => observer.disconnect();
+  }, [repeat]);
 
   const images = useMemo(() => {
     const doubled = [...column.images, ...column.images];
@@ -220,16 +238,28 @@ function MarqueeStrip({
           alt={image.alt}
           width={500}
           height={667}
-          priority={priority && index < 2}
-          loading={priority && index < 2 ? undefined : "lazy"}
-          sizes="(max-width: 768px) 50vw, 25vw"
+          // Every column is on screen from the first frame, so nothing here is
+          // deferred: lazy loading filled the hero in over several seconds and
+          // left whole columns blank. Only the first of each column is
+          // preloaded; the repeats reuse the same handful of URLs, so they cost
+          // no extra requests.
+          priority={lead && index === 0}
+          loading={lead && index === 0 ? undefined : "eager"}
+          sizes={COLUMN_SIZES}
           style={{ "--pos": image.focal, "--pos-m": image.focalMobile, aspectRatio: aspect } as React.CSSProperties}
-          className="mb-[1.5vw] block h-auto w-full rounded-xl object-cover opacity-50 grayscale transition-all duration-800 ease-out-expo hover:z-10 hover:scale-[1.02] hover:opacity-100 hover:grayscale-0 hover:shadow-[0_30px_60px_var(--theme-shadow)] max-md:hover:scale-100"
+          className="mb-[1.5vw] block h-auto w-full rounded-xl object-cover opacity-50 grayscale transition-[transform,opacity,filter,box-shadow] duration-800 ease-out-expo hover:z-10 hover:scale-[1.02] hover:opacity-100 hover:grayscale-0 hover:shadow-[0_30px_60px_var(--theme-shadow)] max-md:hover:scale-100"
         />
       ))}
     </div>
   );
 }
+
+/**
+ * The row is 150vw wide (200vw on tablet) and splits into four columns, so a
+ * column is roughly 37vw of the viewport, not the 25vw a four column grid
+ * would suggest. Asking for the smaller number served a blurry image.
+ */
+const COLUMN_SIZES = "(max-width: 767px) 37vw, (max-width: 1023px) 49vw, 37vw";
 
 const BASE_DURATION = {
   up: 36,

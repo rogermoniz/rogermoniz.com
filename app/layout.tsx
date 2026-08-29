@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Oswald } from "next/font/google";
 import Script from "next/script";
-import { CONSENT_DEFAULTS } from "@/lib/consent";
+import { CONSENT_BOOTSTRAP, CONSENT_DEFAULTS } from "@/lib/consent";
 import { THEME_BOOTSTRAP, ThemeProvider } from "@/components/layout/ThemeProvider";
 import "./globals.css";
 
@@ -63,10 +63,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="fr" data-theme="light" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://res.cloudinary.com" />
-        {/* Applies the reader's saved theme before first paint. */}
-        <Script id="rm-theme" strategy="beforeInteractive">
-          {THEME_BOOTSTRAP}
-        </Script>
+        {/*
+          Two things have to be settled before anything is drawn, and neither can
+          be settled on the server because both live in the reader's own storage:
+          which theme to paint in, and whether the consent notice is being asked.
+          These run inline, in document order, before the body is parsed.
+
+          `next/script` will not do here, even at `beforeInteractive`: it queues
+          the code for the framework runtime to pick up, which is late enough to
+          flash a light page at a dark reader, and late enough that the notice,
+          the largest element on a first visit, arrived seconds after the rest of
+          the page and took Largest Contentful Paint with it.
+        */}
+        <script>{THEME_BOOTSTRAP}</script>
+        <script>{CONSENT_BOOTSTRAP}</script>
         {/* Denied until the reader says otherwise. See lib/consent.ts. */}
         <Script id="consent-defaults" strategy="beforeInteractive">
           {CONSENT_DEFAULTS}

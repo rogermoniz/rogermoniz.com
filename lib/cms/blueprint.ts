@@ -37,13 +37,36 @@ const heading = (sectionKey: string, title = "Titre de la section"): Panel => ({
   title,
 });
 
+/**
+ * The four marquee columns, left to right on the page.
+ *
+ * They live in one table separated by `speed`, so listing them together
+ * interleaved four columns into a single numbered list where "image 2" meant
+ * nothing. One panel per column matches what the visitor sees, and it scopes
+ * adding, reordering and renumbering to the column being edited.
+ */
+const MARQUEE_COLUMNS = [
+  { speed: "up", title: "Colonne 1" },
+  { speed: "down", title: "Colonne 2" },
+  { speed: "up-slow", title: "Colonne 3" },
+  { speed: "down-slow", title: "Colonne 4" },
+] as const;
+
 const HERO: Section = {
   key: "hero",
   label: "Bandeau d'accueil",
   hint: "Le grand titre et les colonnes d'images qui défilent en haut de la page.",
   panels: [
     { form: "single", table: "hero_marquee", title: "Titres" },
-    { form: "rows", table: "hero_marquee_images", title: "Images qui défilent", noun: "image" },
+    ...MARQUEE_COLUMNS.map(
+      (column): Panel => ({
+        form: "rows",
+        table: "hero_marquee_images",
+        title: `Images qui défilent : ${column.title}`,
+        noun: "image",
+        where: { column: "speed", value: column.speed },
+      }),
+    ),
   ],
 };
 
@@ -357,8 +380,27 @@ export const CATEGORIES: readonly Category[] = [
 ];
 
 /** Global content that belongs to the whole site rather than to one page. */
-export const GLOBAL_PANELS: readonly { table: string; label: string; noun: string; form: "single" | "rows" }[] = [
+export type GlobalPanel = {
+  table: string;
+  label: string;
+  noun: string;
+  form: "single" | "rows";
+  /** A table holding several independent lists, one panel each. */
+  groups?: readonly { title: string; where: { column: string; value: string } }[];
+};
+
+export const GLOBAL_PANELS: readonly GlobalPanel[] = [
   { table: "site_settings", label: "Coordonnées du studio", noun: "réglage", form: "single" },
-  { table: "nav_items", label: "Menu de navigation", noun: "lien", form: "rows" },
+  {
+    table: "nav_items",
+    label: "Menu de navigation",
+    noun: "lien",
+    form: "rows",
+    groups: [
+      { title: "Menu principal", where: { column: "group_key", value: "primary" } },
+      { title: "Prestations", where: { column: "group_key", value: "prestations" } },
+      { title: "Mentions légales", where: { column: "group_key", value: "legal" } },
+    ],
+  },
   { table: "footer_images", label: "Images du pied de page", noun: "image", form: "rows" },
 ];

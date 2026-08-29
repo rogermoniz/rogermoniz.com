@@ -65,6 +65,9 @@ export function ConsentBanner() {
       role="dialog"
       aria-modal="false"
       aria-labelledby="consent-title"
+      // Hidden by the stylesheet, before paint, when a choice is already on
+      // record. See CONSENT_BOOTSTRAP in lib/consent.ts.
+      data-consent-notice=""
       className="fixed inset-x-0 bottom-0 z-1002 flex justify-center px-4 pb-4 max-md:px-3 max-md:pb-3"
     >
       <div className="tactile w-full max-w-[720px] rounded-[20px] p-7 shadow-[0_30px_80px_var(--theme-shadow)] max-md:p-5">

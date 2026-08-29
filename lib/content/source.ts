@@ -26,11 +26,26 @@ const SPEEDS = ["up", "down", "up-slow", "down-slow"] as const;
 
 type Row = Record<string, unknown>;
 
+/**
+ * `position` only counts inside a group, so tables split across groups tie on
+ * it and Postgres is free to break the tie however it likes. Falling back to
+ * `id` makes every read a total order, so a row edited in the CMS cannot come
+ * back in a different place.
+ */
 async function table(name: string, order = "position"): Promise<Row[]> {
-  const { data, error } = await supabase.from(name).select("*").order(order);
+  let query = supabase.from(name).select("*").order(order);
+  if (order !== "id" && !NO_ID.has(name)) query = query.order("id");
+  const { data, error } = await query;
   if (error) throw new Error(`Reading ${name}: ${error.message}`);
   return (data ?? []) as Row[];
 }
+
+/** Tables keyed by something other than a numeric id. */
+const NO_ID = new Set([
+  "pages", "about_close", "about_hero", "about_story", "article_hero",
+  "blog_cover", "contact_form", "cta_blocks", "event_featured", "gift_form", "gift_intro",
+  "hero_marquee", "home_welcome", "pricing_blocks", "section_headings", "vision_blocks",
+]);
 
 const str = (v: unknown): string => (typeof v === "string" ? v : "");
 const nullable = (v: unknown): string | null => (typeof v === "string" ? v : null);

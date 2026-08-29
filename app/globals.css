@@ -244,6 +244,18 @@
     scroll-behavior: smooth;
   }
 
+  /* The consent notice ships in the HTML so it paints with the page rather than
+     waiting for React to mount it. It starts hidden and the script in the
+     document head reveals it, so a reader who has already chosen never sees it
+     flash. See CONSENT_BOOTSTRAP in lib/consent.ts. */
+  [data-consent-notice] {
+    display: none;
+  }
+
+  html[data-consent="ask"] [data-consent-notice] {
+    display: flex;
+  }
+
   html,
   body {
     margin: 0;

@@ -87,8 +87,13 @@ export function Panel({
   const spec = TABLE_BY_NAME.get(panel.table);
   if (!spec) return null;
 
+  // A column the panel is filtered on is already decided by the panel itself,
+  // so offering it as a field would let the editor contradict the list they are
+  // standing in. `saveRow` writes the filters over the form anyway.
+  const scopedOut = Object.keys(panel.filters);
+
   if (panel.form === "single") {
-    const fields = editableFields(panel.table);
+    const fields = editableFields(panel.table, scopedOut);
     return (
       <div className="mb-8">
         {panel.title ? (
@@ -110,7 +115,7 @@ export function Panel({
     );
   }
 
-  const fields = editableFields(panel.table);
+  const fields = editableFields(panel.table, scopedOut);
   const child = panel.child;
 
   return (

@@ -24,6 +24,7 @@ export default async function NotFound() {
   /* A 404 is a page a visitor lands on, so it honours consent like any other. */
   return (
     <ConsentProvider>
+      <ConsentBanner />
       <SiteHeader nav={nav.primaryNav} identity={identity} />
     <Container
       as="section"
@@ -38,7 +39,6 @@ export default async function NotFound() {
     </Container>
       <SiteFooter />
       <ThemeToggle />
-      <ConsentBanner />
       <SiteAnalytics />
     </ConsentProvider>
   );

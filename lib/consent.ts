@@ -65,6 +65,16 @@ export function writeConsent(analytics: boolean): Consent {
 }
 
 /**
+ * Decides, before the first paint, whether the notice has to be asked.
+ *
+ * The notice is in the server rendered HTML so it paints with everything else.
+ * Without this, it could only appear once React had hydrated and read storage,
+ * which made the largest element on a first visit arrive seconds late and put
+ * the whole page's Largest Contentful Paint behind it.
+ */
+export const CONSENT_BOOTSTRAP = `try{var r=localStorage.getItem("${CONSENT_KEY}"),c=r&&JSON.parse(r),a=c&&Date.now()-Date.parse(c.at);document.documentElement.setAttribute("data-consent",c&&c.version===${CONSENT_VERSION}&&a>=0&&a<=${MAX_AGE_MS}?"set":"ask")}catch(e){document.documentElement.setAttribute("data-consent","ask")}`;
+
+/**
  * Google Consent Mode. Declared denied before any tag can run, so a tag that
  * loads early still stores nothing until the reader says otherwise.
  */

@@ -12,11 +12,14 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
 
   return (
     <ConsentProvider>
+      {/* First in the document, though it is fixed to the bottom of the screen:
+          it is the largest thing on a first visit, so it should not wait for the
+          rest of the page to parse before it can paint. */}
+      <ConsentBanner />
       <SiteHeader nav={nav.primaryNav} identity={identity} />
       <main>{children}</main>
       <SiteFooter />
       <ThemeToggle />
-      <ConsentBanner />
       <SiteAnalytics />
     </ConsentProvider>
   );

@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { checkPassword, isSignedIn, SESSION_COOKIE, sessionToken } from "@/lib/cms/auth";
 import { TABLE_BY_NAME } from "@/lib/cms/schema";
-import { hasColumn, idColumn } from "@/lib/cms/read";
+import { hasColumn, idColumn, orderColumns } from "@/lib/cms/read";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 export type ActionResult = { ok: boolean; message: string };
@@ -201,7 +201,11 @@ export async function moveRow(form: FormData) {
   const filters = readFilters(form);
   const key = idColumn(table);
 
-  const { data, error } = await scoped(table, filters).order("position");
+  // The same total order the editor is reading, so index arithmetic here and
+  // the list on screen can never disagree.
+  let query = scoped(table, filters);
+  for (const column of orderColumns(table)) query = query.order(column);
+  const { data, error } = await query;
   if (error) throw new Error(`${table}: ${error.message}`);
   const rows = (data ?? []) as Record<string, unknown>[];
 
@@ -210,8 +214,19 @@ export async function moveRow(form: FormData) {
   const b = rows[index + direction];
   if (!a || !b) return;
 
-  await supabaseAdmin.from(table).update({ position: b.position }).eq(key, String(a[key]));
-  await supabaseAdmin.from(table).update({ position: a.position }).eq(key, String(b[key]));
+  if (a.position === b.position) {
+    // Equal positions make a swap a no-op, so renumber the whole list from the
+    // order on screen with the two entries exchanged.
+    const ordered = [...rows];
+    ordered[index] = b;
+    ordered[index + direction] = a;
+    for (const [at, row] of ordered.entries()) {
+      await supabaseAdmin.from(table).update({ position: at }).eq(key, String(row[key]));
+    }
+  } else {
+    await supabaseAdmin.from(table).update({ position: b.position }).eq(key, String(a[key]));
+    await supabaseAdmin.from(table).update({ position: a.position }).eq(key, String(b[key]));
+  }
   publish();
 }
 

@@ -46,12 +46,28 @@ export function editableFields(table: string, extraHidden: readonly string[] = [
 
 /* -------------------------------------------------------------------------- */
 
+/**
+ * The order a list is read in, as a total order.
+ *
+ * `position` is only unique inside a group, so a table split across groups
+ * (hero images per column, nav links per menu) ties on it. Postgres is free to
+ * break a tie however it likes, and an UPDATE moves the row it rewrote to the
+ * end of the heap, which is why editing an entry used to make it jump down the
+ * list. Ending on the key columns makes the order total, so it never moves.
+ */
+export function orderColumns(table: string): string[] {
+  const lead = hasColumn(table, "position")
+    ? "position"
+    : hasColumn(table, "sort_order")
+      ? "sort_order"
+      : null;
+  return [...(lead ? [lead] : []), ...keyColumns(table)];
+}
+
 async function select(table: string, filters: Record<string, string>): Promise<Row[]> {
   let query = supabaseAdmin.from(table).select("*");
   for (const [column, value] of Object.entries(filters)) query = query.eq(column, value);
-  if (hasColumn(table, "position")) query = query.order("position");
-  else if (hasColumn(table, "sort_order")) query = query.order("sort_order");
-  else query = query.order(idColumn(table));
+  for (const column of orderColumns(table)) query = query.order(column);
   const { data, error } = await query;
   if (error) throw new Error(`${table}: ${error.message}`);
   return (data ?? []) as Row[];
@@ -162,10 +178,14 @@ export async function loadPage(slug: string) {
 }
 
 /** Global content: one panel per table, with no page filter. */
-export async function loadGlobalPanel(table: string, form: "single" | "rows"): Promise<LoadedPanel> {
-  const rows = await select(table, {});
-  if (form === "single") return { form: "single", table, title: "", row: rows[0] ?? null, filters: {} };
-  return { form: "rows", table, title: "", noun: "élément", rows, filters: {}, child: null };
+export async function loadGlobalPanel(
+  table: string,
+  form: "single" | "rows",
+  filters: Record<string, string> = {},
+): Promise<LoadedPanel> {
+  const rows = await select(table, filters);
+  if (form === "single") return { form: "single", table, title: "", row: rows[0] ?? null, filters };
+  return { form: "rows", table, title: "", noun: "élément", rows, filters, child: null };
 }
 
 /** Every Cloudinary path already used on the site, so images can be reused. */

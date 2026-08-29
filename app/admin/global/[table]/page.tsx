@@ -12,14 +12,26 @@ export default async function GlobalEditor({ params }: { params: Promise<{ table
   const entry = GLOBAL_PANELS.find((p) => p.table === table);
   if (!entry) notFound();
 
-  const [loaded, library] = await Promise.all([loadGlobalPanel(entry.table, entry.form), knownImages()]);
-  const panel = loaded.form === "rows" ? { ...loaded, title: entry.label, noun: entry.noun } : loaded;
+  type Group = { title: string; where: { column: string; value: string } | null };
+  const groups: readonly Group[] = entry.groups ?? [{ title: entry.label, where: null }];
+  const [panels, library] = await Promise.all([
+    Promise.all(
+      groups.map(async (group) => {
+        const filters = group.where ? { [group.where.column]: group.where.value } : {};
+        const loaded = await loadGlobalPanel(entry.table, entry.form, filters);
+        return loaded.form === "rows" ? { ...loaded, title: group.title, noun: entry.noun } : loaded;
+      }),
+    ),
+    knownImages(),
+  ]);
 
   return (
     <>
       <AdminBar title={entry.label} back={{ href: "/admin", label: "Le site" }} />
       <div className="mx-auto max-w-4xl px-6 py-10">
-        <Panel panel={panel} library={library} canUpload={uploadEnabled()} />
+        {panels.map((panel, index) => (
+          <Panel key={index} panel={panel} library={library} canUpload={uploadEnabled()} />
+        ))}
       </div>
     </>
   );
