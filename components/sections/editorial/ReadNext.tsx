@@ -40,10 +40,10 @@ export function ReadNext({ data }: { data: ReadNextData }) {
                   ) : null}
                 </div>
                 <div className="p-6">
-                  <h3 className="mb-3 font-display text-[clamp(1.1rem,1.8vw,1.4rem)] font-bold tracking-[-0.02em] text-ink uppercase">
+                  <h3 className="mb-3 line-clamp-2 font-display text-[clamp(1.1rem,1.8vw,1.4rem)] font-bold tracking-[-0.02em] text-ink uppercase">
                     {card.title}
                   </h3>
-                  <p className="text-[0.95rem] leading-relaxed text-muted">{card.description}</p>
+                  <p className="line-clamp-2 text-[0.95rem] leading-relaxed text-muted">{card.description}</p>
                 </div>
               </>
             );

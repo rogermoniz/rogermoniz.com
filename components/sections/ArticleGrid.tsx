@@ -48,10 +48,14 @@ export function Card({ card }: { card: ArticleCard }) {
             {card.date}
           </span>
         ) : null}
-        <h3 className="mb-3 font-display text-[clamp(1.1rem,1.8vw,1.4rem)] font-bold tracking-[-0.02em] text-ink uppercase">
+        <h3 className="mb-3 line-clamp-2 font-display text-[clamp(1.1rem,1.8vw,1.4rem)] font-bold tracking-[-0.02em] text-ink uppercase">
           {card.title}
         </h3>
-        <p className="mb-6 grow text-[0.95rem] leading-relaxed text-muted">{card.description}</p>
+        {/* Two lines, however long the excerpt is, so a row of cards lines up
+            and the button below sits at the same height on each. */}
+        <p className="mb-6 grow line-clamp-2 text-[0.95rem] leading-relaxed text-muted">
+          {card.description}
+        </p>
         <span className="tactile inline-flex w-fit items-center gap-3 rounded-[100px] px-5 py-2.5">
           <span className="font-display text-[0.7rem] font-bold tracking-[0.05em] uppercase">
             {card.ctaLabel}
