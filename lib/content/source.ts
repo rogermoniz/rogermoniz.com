@@ -62,6 +62,23 @@ function one<T extends Row>(rows: T[], slug: string): T | undefined {
   return rows.find((r) => r.page_slug === slug);
 }
 
+/** Hrefs are written with and without a trailing slash; routes never are. */
+const withoutSlash = (href: string) => href.replace(/\/+$/, "");
+
+/**
+ * A draft exists in the database and nowhere else: it is not prerendered, not
+ * in the sitemap, and not in any listing. The page itself is served only to
+ * whoever is signed into the editor, which is what makes the preview a real
+ * page rather than a second rendering of it.
+ */
+const isPublished = (page: Row) => str(page.status) !== "draft";
+
+function draftRoutes(d: Record<string, Row[]>): Set<string> {
+  return new Set(
+    (d.pages ?? []).filter((p) => !isPublished(p)).map((p) => withoutSlash(str(p.route))),
+  );
+}
+
 /** Assembles the whole site once; every page then reads from memory. */
 async function fetchAll() {
   const names = [
@@ -207,7 +224,7 @@ export async function getFooterImages(): Promise<string[]> {
 export async function getSlugsByKind(...kinds: string[]): Promise<string[]> {
   const d = await db();
   return (d.pages ?? [])
-    .filter((p) => kinds.includes(str(p.kind)))
+    .filter((p) => kinds.includes(str(p.kind)) && isPublished(p))
     .map((p) => str(p.slug));
 }
 
@@ -224,7 +241,16 @@ export async function getRoutes(): Promise<string[]> {
 /** Route plus what the page is, so the sitemap can weight it honestly. */
 export async function getRouteKinds(): Promise<{ route: string; kind: string }[]> {
   const d = await db();
-  return (d.pages ?? []).map((p) => ({ route: str(p.route), kind: str(p.kind) }));
+  return (d.pages ?? [])
+    .filter(isPublished)
+    .map((p) => ({ route: str(p.route), kind: str(p.kind) }));
+}
+
+/** "draft", "published", or "" when there is no such page. */
+export async function getPageStatus(slug: string): Promise<string> {
+  const d = await db();
+  const page = (d.pages ?? []).find((p) => p.slug === slug);
+  return page ? str(page.status) || "published" : "";
 }
 
 export async function getPageMeta(slug: string) {
@@ -372,8 +398,8 @@ export async function getPrestation(slug: string): Promise<PrestationPage> {
  * read, so the tail of an article and the filtered index can never disagree.
  */
 function relatedFor(d: Record<string, Row[]>, slug: string) {
-  const withoutSlash = (href: string) => href.replace(/\/+$/, "");
   const route = `/${slug}`;
+  const drafts = draftRoutes(d);
   const cards = d.article_cards ?? [];
 
   const own = cards.find((r) => withoutSlash(str(r.href)) === route);
@@ -388,7 +414,8 @@ function relatedFor(d: Record<string, Row[]>, slug: string) {
       (r) =>
         str(r.page_slug) === listing &&
         str(r.category) === category &&
-        withoutSlash(str(r.href)) !== route,
+        withoutSlash(str(r.href)) !== route &&
+        !drafts.has(withoutSlash(str(r.href))),
     )
     .map((r) => ({
       href: str(r.href),
@@ -536,7 +563,9 @@ export async function getBlogPage() {
     filterHead: headingFor(d, slug, "filters").title,
     filters: (d.blog_filters ?? []).map((r) => ({ value: str(r.value), label: str(r.label) })),
     articlesIntro: headingFor(d, slug, "articles").title,
-    cards: bySlug(d.article_cards ?? [], slug).map((r) => ({
+    cards: bySlug(d.article_cards ?? [], slug)
+      .filter((r) => !draftRoutes(d).has(withoutSlash(str(r.href))))
+      .map((r) => ({
       href: str(r.href),
       date: nullable(r.date_label),
       badge: nullable(r.badge),
@@ -577,7 +606,9 @@ export async function getEventsPage() {
     listEyebrow: str(lh.eyebrow),
     listTitle: lh.title,
     listSubtitle: lh.subtitle,
-    cards: bySlug(d.article_cards ?? [], slug).map((r) => ({
+    cards: bySlug(d.article_cards ?? [], slug)
+      .filter((r) => !draftRoutes(d).has(withoutSlash(str(r.href))))
+      .map((r) => ({
       href: str(r.href),
       date: nullable(r.date_label),
       badge: nullable(r.badge),

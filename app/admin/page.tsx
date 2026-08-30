@@ -44,7 +44,14 @@ export default async function AdminHome() {
                     href={`/admin/pages/${page.slug.split("/").map(encodeURIComponent).join("/")}`}
                     className="tactile flex flex-col gap-1 rounded-2xl px-5 py-4 transition-transform duration-300 hover:-translate-y-0.5"
                   >
-                    <span className="text-sm font-medium text-ink">{pageName(page)}</span>
+                    <span className="flex items-center gap-2 text-sm font-medium text-ink">
+                      {pageName(page)}
+                      {page.status === "draft" ? (
+                        <span className="rounded-full border border-accent px-2 py-0.5 font-display text-[0.55rem] font-bold tracking-[1px] text-accent uppercase">
+                          Brouillon
+                        </span>
+                      ) : null}
+                    </span>
                     <span className="font-mono text-xs text-muted">{page.route}</span>
                   </Link>
                 ))}

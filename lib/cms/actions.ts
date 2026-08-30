@@ -287,6 +287,8 @@ export async function createPage(_prev: ActionResult | null, form: FormData): Pr
     meta_title: title,
     preloader_label: String(form.get("preloader_label") ?? "").trim() || null,
     sort_order: sortOrder,
+    // Nothing goes live by being created. The editor publishes it when it is ready.
+    status: "draft",
   });
   if (error) return { ok: false, message: error.message };
 
@@ -315,6 +317,21 @@ export async function deletePage(form: FormData) {
   if (error) throw new Error(error.message);
   publish();
   redirect("/admin");
+}
+
+/**
+ * Publishing is a separate act from saving, so work in progress can be written
+ * down, looked at and left alone until it is ready.
+ */
+export async function setPageStatus(form: FormData) {
+  await guard();
+  const slug = String(form.get("slug"));
+  const status = String(form.get("status"));
+  if (status !== "draft" && status !== "published") throw new Error("Statut inconnu.");
+
+  const { error } = await supabaseAdmin.from("pages").update({ status }).eq("slug", slug);
+  if (error) throw new Error(error.message);
+  publish();
 }
 
 export async function republish(): Promise<ActionResult> {

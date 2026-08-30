@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { AdminBar } from "@/components/cms/AdminBar";
 import { Panel } from "@/components/cms/Panel";
 import { RowForm } from "@/components/cms/RowForm";
-import { deletePage } from "@/lib/cms/actions";
+import { deletePage, setPageStatus } from "@/lib/cms/actions";
 import { uploadEnabled } from "@/lib/cms/cloudinary";
 import { editableFields, knownImages, loadPage, pageName } from "@/lib/cms/read";
 
@@ -19,6 +19,7 @@ export default async function PageEditor({ params }: { params: Promise<{ slug: s
   const { page, sections } = loaded;
   const canUpload = uploadEnabled();
   const removable = page.kind !== "home" && page.kind !== "standalone";
+  const draft = page.status === "draft";
   // The URL is pages.slug, and pages.route only mirrors it for the sitemap.
   // Neither is authored here: editing route moved nothing while looking like
   // it renamed the page, and moving a slug is a migration (every content
@@ -35,15 +36,45 @@ export default async function PageEditor({ params }: { params: Promise<{ slug: s
           <span className="rounded-full bg-menu-subtle px-3 py-1 font-mono text-xs text-muted">
             {page.route}
           </span>
+          {draft ? (
+            <span className="rounded-full border border-accent px-3 py-1 font-display text-[0.6rem] font-bold tracking-[1px] text-accent uppercase">
+              Brouillon
+            </span>
+          ) : null}
           <Link
             href={page.route}
             target="_blank"
             rel="noreferrer"
             className="text-sm text-muted transition-colors duration-200 hover:text-accent"
           >
-            Voir la page ↗
+            {draft ? "Aperçu ↗" : "Voir la page ↗"}
           </Link>
+
+          {/* Publishing is its own act, so a page can be written and looked at
+              for as long as it takes before anybody else can reach it. */}
+          <form action={setPageStatus} className="ml-auto">
+            <input type="hidden" name="slug" value={page.slug} />
+            <input type="hidden" name="status" value={draft ? "published" : "draft"} />
+            <button
+              type="submit"
+              className={`rounded-full px-4 py-1.5 font-display text-[0.62rem] font-bold tracking-[1px] uppercase transition-colors duration-200 ${
+                draft
+                  ? "border border-accent bg-accent text-surface"
+                  : "border border-edge text-muted hover:border-accent hover:text-accent"
+              }`}
+            >
+              {draft ? "Publier le brouillon" : "Repasser en brouillon"}
+            </button>
+          </form>
         </div>
+
+        {draft ? (
+          <p className="mb-10 rounded-xl border border-dashed border-accent px-5 py-4 text-sm text-muted">
+            Cette page n&apos;est pas en ligne. Elle n&apos;apparaît ni dans le blog, ni dans le
+            plan du site, et son adresse ne répond qu&apos;à vous, tant que vous êtes connecté ici.
+            Ouvrez l&apos;aperçu pour la voir telle qu&apos;elle sera.
+          </p>
+        ) : null}
 
         <nav className="mb-12 flex flex-wrap gap-2">
           {sections.map((section) => (

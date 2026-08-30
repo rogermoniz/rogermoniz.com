@@ -161,6 +161,8 @@ export type PageRow = {
   slug: string;
   route: string;
   kind: string;
+  /** "draft" until it is published; older rows predate the column. */
+  status?: string;
   meta_title: string;
   preloader_label: string | null;
   sort_order: number;
