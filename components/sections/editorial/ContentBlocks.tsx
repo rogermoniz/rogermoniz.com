@@ -77,26 +77,32 @@ function Block({ block, context }: { block: ContentBlock; context?: "duo" }) {
           <Figure block={block} context={context} />
         </Reveal>
       );
-    case "figureGroup":
+    case "figureGroup": {
+      // Only the slots that hold a photograph exist as far as the page is
+      // concerned. A layout chosen in the editor arrives as empty slots waiting
+      // to be filled, and until they are they must take up no room at all: an
+      // empty grid would otherwise open a gap in a published article.
+      const pictures = block.figures.filter((f) => f.type === "figure" && f.path);
+      if (!pictures.length) return null;
+
+      const cols = figureColumns(block.variant, block.columns);
       return (
         <FigureGroup variant={block.variant} columns={block.columns}>
-          {block.figures.map((figure, index) => {
-            if (figure.type !== "figure") return null;
+          {pictures.map((figure, index) => {
             // A last picture left alone on its row fills it, rather than
             // sitting in a third of the width with a gap beside it.
-            const cols = figureColumns(block.variant, block.columns);
-            const orphan =
-              block.figures.length % cols === 1 && index === block.figures.length - 1;
+            const orphan = pictures.length % cols === 1 && index === pictures.length - 1;
             return (
               <Figure
                 key={index}
-                block={figure}
+                block={figure as Extract<ContentBlock, { type: "figure" }>}
                 className={orphan ? "col-span-full !aspect-[16/10]" : ""}
               />
             );
           })}
         </FigureGroup>
       );
+    }
     case "note":
       return (
         <Reveal className="my-10 rounded-2xl border border-edge bg-surface-card p-8">
