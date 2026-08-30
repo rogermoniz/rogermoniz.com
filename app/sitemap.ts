@@ -3,6 +3,13 @@ import { canonicalPath } from "@/lib/canonical";
 import { getRouteKinds } from "@/lib/content/source";
 
 /**
+ * A metadata route carries its own segment config: the root layout's
+ * revalidate never reaches it, so without this a page added from the editor
+ * stays out of the sitemap until the next deploy.
+ */
+export const revalidate = 600;
+
+/**
  * Every page in the database, weighted by what it is. No lastModified: the
  * content has no edit timestamp, and a generated one would be a crawl signal
  * that means nothing, which is worse than none at all.
