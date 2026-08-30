@@ -21,9 +21,14 @@ export function ArticlePage({ data }: { data: ArticlePageData }) {
   const hero = data.hero;
 
   return (
-    /* display:contents keeps the layout identical while the type scale below
-       reaches every button in the article, including the ones further down. */
-    <div className="contents [--button-label-size:0.875rem] [--button-label-weight:600]">
+    /* A real box, deliberately not display:contents. An element with no client
+       rects gives the router nothing to measure when it decides where to place
+       the reader on the page it just opened, and this one is an only child, so
+       there was no sibling to fall back to and the scroll reset was skipped
+       altogether: an article opened from a card halfway down the blog began
+       halfway down. A plain block changes no layout here, and still carries the
+       type scale to every button in the article. */
+    <div className="[--button-label-size:0.875rem] [--button-label-weight:600]">
       <Preloader label={data.preloaderLabel ?? "Roger Moniz"} />
       <ArticleHero {...hero} />
 

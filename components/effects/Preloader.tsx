@@ -1,44 +1,54 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+
+/**
+ * The first document load belongs to it, and nothing else does.
+ *
+ * Every template renders one, so React mounted a fresh preloader on every
+ * client navigation too, where there is no first paint left to cover: the load
+ * event had long since fired, so it always ran the full fallback, flashed over
+ * an already painted page, and held `html { overflow: hidden }` for 700ms.
+ * That lock swallowed the router's scroll reset, which is why opening an
+ * article from a card halfway down the blog landed halfway down the article.
+ *
+ * The flag lives at module scope, so it is reset by a real page load and by
+ * nothing else.
+ */
+let consumed = false;
 
 /**
  * Holds the page still while the first paint settles, then slides away.
- * The bar creeps to 90% on a timer and completes on load, exactly as the
- * original did; the hard 700ms fallback guarantees it never traps the page.
+ * The bar creeps to 90% on a timer and completes on load; the hard 700ms
+ * fallback guarantees it never traps the page.
  */
-export function Preloader({
-  label,
-  onFinish,
-}: {
-  label: string;
-  onFinish?: () => void;
-}) {
+export function Preloader({ label }: { label: string }) {
+  const [active] = useState(() => !consumed);
   const [progress, setProgress] = useState(0);
   const [hidden, setHidden] = useState(false);
-  const doneRef = useRef(false);
-  const finishRef = useRef(onFinish);
-  finishRef.current = onFinish;
 
   useEffect(() => {
+    consumed = true;
+    if (!active) return;
+
     const root = document.documentElement;
     root.style.overflow = "hidden";
+
+    let done = false;
+    let settle: number | undefined;
 
     const creep = window.setInterval(() => {
       setProgress((value) => Math.min(90, value + Math.random() * 10));
     }, 200);
 
-    let settle: number | undefined;
-
     const finish = () => {
-      if (doneRef.current) return;
-      doneRef.current = true;
+      if (done) return;
+      done = true;
       window.clearInterval(creep);
       setProgress(100);
       settle = window.setTimeout(() => {
         setHidden(true);
         root.style.overflow = "";
-        finishRef.current?.();
       }, 80);
     };
 
@@ -52,7 +62,9 @@ export function Preloader({
       window.removeEventListener("load", finish);
       root.style.overflow = "";
     };
-  }, []);
+  }, [active]);
+
+  if (!active) return null;
 
   return (
     <div
