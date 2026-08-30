@@ -235,6 +235,7 @@ export function Lightbox({
   };
 
   return createPortal(
+    // biome-ignore lint/a11y/useKeyWithClickEvents: the dialog's keyboard path is a window keydown listener (Escape, arrows) that the rule cannot see.
     <div
       ref={dialogRef}
       role="dialog"
@@ -265,6 +266,7 @@ export function Lightbox({
         </svg>
       </IconButton>
 
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: the dialog's keyboard path is a window keydown listener (Escape, arrows) that the rule cannot see. */}
       <div
         className="relative size-full touch-none overflow-hidden"
         style={{ cursor: scale > 1 ? "grab" : "default" }}
@@ -327,6 +329,7 @@ export function Lightbox({
         </svg>
       </IconButton>
 
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: this only stops the backdrop from closing the dialog, so it is not an action and has no keyboard equivalent. */}
       <div
         onClick={(event) => event.stopPropagation()}
         className="absolute bottom-10 left-1/2 z-[100000] flex -translate-x-1/2 items-center justify-center gap-3.5 rounded-[100px] border border-white/15 bg-[rgb(20_20_20/0.75)] px-5 py-3 shadow-[0_20px_40px_rgb(0_0_0/0.45)] backdrop-blur-[24px] max-md:bottom-[22px] max-md:gap-1.5 max-md:px-3.5 max-md:py-2.5"
@@ -392,6 +395,7 @@ function Slide({
 
   // A cached photo is already complete before React can attach onLoad, so the
   // load event never fires and the fade would leave it invisible forever.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: image.path is the re-run trigger, not a value the body reads. A slide is reused for the next photo, so dropping it would leave a cached image faded out for good.
   useEffect(() => {
     if (imageRef.current?.complete) setLoaded(true);
   }, [image.path]);

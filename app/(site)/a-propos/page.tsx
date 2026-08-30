@@ -9,7 +9,6 @@ import {
   Container,
   DisplayHeading,
   Eyebrow,
-  HeadingSub,
   SectionHeading2,
 } from "@/components/primitives/Typography";
 import { DualCta } from "@/components/sections/prestation/DualCta";

@@ -1,9 +1,7 @@
-import Image from "next/image";
 import { Reveal } from "@/components/effects/Reveal";
 import { RichText } from "@/components/primitives/RichText";
 import { Figure } from "@/components/sections/editorial/Figure";
 import { FigureGroup, figureColumns } from "@/components/sections/editorial/FigureGroup";
-import { cloudinary } from "@/lib/cloudinary";
 import type { ContentBlock, ContentSection } from "@/lib/content/types";
 
 const PROSE = "mb-[1.6rem] text-[clamp(1.08rem,1.3vw,1.2rem)] leading-[1.85] text-ink";

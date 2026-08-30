@@ -1,0 +1,48 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.5.11/schema.json",
+	"files": {
+		"includes": [
+			"app/**/*.ts",
+			"app/**/*.tsx",
+			"components/**/*.ts",
+			"components/**/*.tsx",
+			"lib/**/*.ts",
+			"lib/**/*.tsx",
+			"scripts/**/*.mjs"
+		]
+	},
+	"formatter": {
+		"enabled": false
+	},
+	"assist": {
+		"enabled": false
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"preset": "none",
+			"correctness": {
+				"useExhaustiveDependencies": "error",
+				"useHookAtTopLevel": "error",
+				"noUnusedVariables": "error",
+				"noUnusedImports": "error",
+				"noChildrenProp": "error",
+				"noVoidElementsWithChildren": "error"
+			},
+			"security": {
+				"noDangerouslySetInnerHtml": "error"
+			},
+			"suspicious": {
+				"noDoubleEquals": "error",
+				"noDuplicateObjectKeys": "error"
+			},
+			"a11y": {
+				"useAltText": "error",
+				"useAnchorContent": "error",
+				"useButtonType": "error",
+				"useKeyWithClickEvents": "error",
+				"useValidAnchor": "error"
+			}
+		}
+	}
+}

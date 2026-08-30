@@ -9,7 +9,6 @@ import { ImageField } from "@/components/cms/ImageField";
  * keeps its exact structure and is edited as data, never silently flattened.
  */
 
-type Span = string | { text: string; bold?: boolean; italic?: boolean; href?: string } | { break: boolean };
 type Block = Record<string, unknown> & { type?: string };
 
 const CONTROL =

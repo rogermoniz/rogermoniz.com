@@ -72,7 +72,7 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
         setPanelOpen(true);
       },
     }),
-    [consent, ready, reasking, panelOpen, decide, asking],
+    [consent, ready, panelOpen, decide, asking],
   );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
