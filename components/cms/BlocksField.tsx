@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ImageField } from "@/components/cms/ImageField";
 import { figureColumns } from "@/components/sections/editorial/FigureGroup";
+import { SectionImageLayout } from "@/components/cms/SectionImageLayout";
 
 /**
  * An article body is a list of typed blocks. Most are plain prose, so those
@@ -102,6 +103,8 @@ export function BlocksField({
   return (
     <div className="flex flex-col gap-4">
       <input type="hidden" name={name} value={serialised} />
+
+      <SectionImageLayout blocks={blocks} onApply={setBlocks} />
 
       <div className="flex flex-wrap items-center gap-2">
         <button type="button" className={CHIP} onClick={() => append({ type: "heading", level: 2, text: "" })}>
@@ -330,8 +333,6 @@ function emptyFigure(): Block {
   return { type: "figure", variant: "", path: "", alt: "" };
 }
 
-const COLUMN_CHOICES = [1, 2, 3, 4] as const;
-
 /**
  * A row of pictures. The column count is the only layout decision: how many
  * rows there are follows from how many images are in the grid, which is what
@@ -372,31 +373,10 @@ function FigureGroupBody({
 
   return (
     <>
-      <Field title="Images par ligne">
-        <div className="flex flex-wrap items-center gap-2">
-          {COLUMN_CHOICES.map((choice) => (
-            <button
-              key={choice}
-              type="button"
-              aria-pressed={columns === choice}
-              onClick={() => onChange({ columns: choice })}
-              // One class decides the border and one the ink, rather than
-              // appending a second colour and leaving the stylesheet to settle it.
-              className={`rounded-full border px-3 py-1 font-display text-[0.6rem] font-bold tracking-[1px] uppercase transition-colors duration-200 ${
-                columns === choice
-                  ? "border-accent bg-accent text-surface"
-                  : "border-edge text-muted hover:border-accent hover:text-accent"
-              }`}
-            >
-              {choice}
-            </button>
-          ))}
-          <span className="text-xs text-muted">
-            {figures.length} image{figures.length > 1 ? "s" : ""}, soit {rows} ligne
-            {rows > 1 ? "s" : ""}. Sur un téléphone elles se remettent les unes sous les autres.
-          </span>
-        </div>
-      </Field>
+      <p className="mb-3 text-xs text-muted">
+        {columns} par ligne, {figures.length} image{figures.length > 1 ? "s" : ""}, soit {rows} ligne
+        {rows > 1 ? "s" : ""}. La disposition se règle en haut de cette partie.
+      </p>
 
       <ul className="mb-3 flex flex-col gap-3">
         {figures.map((figure, index) => (

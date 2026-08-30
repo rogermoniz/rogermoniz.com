@@ -86,12 +86,16 @@ function Block({ block, context }: { block: ContentBlock; context?: "duo" }) {
       if (!pictures.length) return null;
 
       const cols = figureColumns(block.variant, block.columns);
+      // A layout chosen in the editor is rendered literally, so the page and the
+      // picker never disagree. The older grids, whose shape comes from a variant
+      // rather than from a choice, keep the flourish they were built with: a
+      // last picture alone on its row spreads across it.
+      const spreadsOrphan = block.columns === undefined;
       return (
         <FigureGroup variant={block.variant} columns={block.columns}>
           {pictures.map((figure, index) => {
-            // A last picture left alone on its row fills it, rather than
-            // sitting in a third of the width with a gap beside it.
-            const orphan = pictures.length % cols === 1 && index === pictures.length - 1;
+            const orphan =
+              spreadsOrphan && pictures.length % cols === 1 && index === pictures.length - 1;
             return (
               <Figure
                 key={index}
