@@ -244,6 +244,17 @@ const SCAFFOLD: Record<string, (slug: string) => { table: string; row: Record<st
   ],
   article: (slug) => [
     { table: "article_hero", row: { page_slug: slug } },
+    {
+      table: "rich_sections",
+      row: {
+        page_slug: slug,
+        position: 0,
+        blocks: [
+          { type: "heading", level: 2, text: "" },
+          { type: "paragraph", spans: [""] },
+        ],
+      },
+    },
     { table: "section_headings", row: { page_slug: slug, section_key: "read_next" } },
     { table: "section_headings", row: { page_slug: slug, section_key: "related" } },
     { table: "cta_blocks", row: { page_slug: slug } },
@@ -365,6 +376,22 @@ export async function applyImageLayout(form: FormData): Promise<void> {
     .eq("page_slug", slug)
     .order("position");
   if (error) throw new Error(error.message);
+
+  if (!(data ?? []).length) {
+    const figures = Array.from({ length: wanted }, blankFigure);
+    const { error: seedError } = await supabaseAdmin.from("rich_sections").insert({
+      page_slug: slug,
+      position: 0,
+      blocks: [
+        { type: "heading", level: 2, text: "" },
+        { type: "paragraph", spans: [""] },
+        { type: "figureGroup", variant: "", columns, figures },
+      ],
+    });
+    if (seedError) throw new Error(seedError.message);
+    publish();
+    return;
+  }
 
   for (const row of (data ?? []) as { id: number; blocks: JsonBlock[] }[]) {
     const blocks = Array.isArray(row.blocks) ? [...row.blocks] : [];
