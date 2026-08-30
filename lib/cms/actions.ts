@@ -40,9 +40,6 @@ async function guard() {
 /** Publishing is what makes an edit visible: the site is static between saves. */
 function publish() {
   revalidatePath("/", "layout");
-  // sitemap.xml is a metadata route, so the layout revalidation above does
-  // not cover it. Without this a new page is live but unlisted.
-  revalidatePath("/sitemap.xml");
 }
 
 function parseJsonField(name: string, raw: string): unknown {

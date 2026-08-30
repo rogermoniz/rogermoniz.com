@@ -3,11 +3,13 @@ import { canonicalPath } from "@/lib/canonical";
 import { getRouteKinds } from "@/lib/content/source";
 
 /**
- * A metadata route carries its own segment config: the root layout's
- * revalidate never reaches it, so without this a page added from the editor
- * stays out of the sitemap until the next deploy.
+ * A metadata route carries its own segment config, and revalidatePath does
+ * not reach it, so a cached sitemap could only be refreshed by a deploy.
+ * It is read by crawlers a handful of times a day, so computing it per
+ * request costs one query and keeps a page added from the editor listed
+ * the moment it is created.
  */
-export const revalidate = 600;
+export const dynamic = "force-dynamic";
 
 /**
  * Every page in the database, weighted by what it is. No lastModified: the
