@@ -27,6 +27,27 @@ function LinkIcon() {
  * Table of contents plus article metadata. The list collapses on narrow
  * screens, where it would otherwise push the article itself below the fold.
  */
+/**
+ * Smooth scrolling is not on the stylesheet, because there it also animated the
+ * router's jump to the top of a newly opened page. A contents link turns it on
+ * for its own scroll and hands it straight back, so the anchor keeps its native
+ * behaviour: the hash, the history entry and the focus target are the browser's.
+ */
+function smoothForThisScroll() {
+  const root = document.documentElement;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  root.style.scrollBehavior = "smooth";
+  const release = () => {
+    root.style.scrollBehavior = "";
+    window.clearTimeout(fallback);
+    window.removeEventListener("scrollend", release);
+  };
+  // scrollend is not everywhere yet, so the timer is the one that must not miss.
+  const fallback = window.setTimeout(release, 1200);
+  window.addEventListener("scrollend", release);
+}
+
 export function ArticleSidebar({
   toc,
   meta,
@@ -117,6 +138,7 @@ export function ArticleSidebar({
                       />
                       <a
                         href={entry.href}
+                        onClick={smoothForThisScroll}
                         aria-current={isActive ? "location" : undefined}
                         className={`inline-block text-[0.92rem] leading-[1.35] font-medium transition-colors duration-300 hover:text-ink ${
                           isActive ? "text-ink" : "text-muted"

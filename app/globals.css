@@ -240,9 +240,11 @@
     box-sizing: border-box;
   }
 
-  html {
-    scroll-behavior: smooth;
-  }
+  /* No scroll-behavior here on purpose. It applies to programmatic scrolling
+     too, including the router's jump to the top of a page it has just opened,
+     which the reader then saw slide up from wherever the previous page was
+     scrolled to. Smooth belongs to the one place that wants it: the article
+     contents links turn it on for their own scroll. See ArticleSidebar. */
 
   /* The consent notice ships in the HTML so it paints with the page rather than
      waiting for React to mount it. It starts hidden and the script in the
