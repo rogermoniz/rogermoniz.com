@@ -20,7 +20,9 @@ function Diagram({ rows, columns }: { rows: number; columns: number }) {
   return (
     <span
       aria-hidden="true"
-      className="grid w-full gap-[3px]"
+      // Sized by its height, so a tall arrangement stays inside its tile
+      // instead of growing over the label underneath it.
+      className="grid h-full w-auto max-w-full gap-[3px]"
       style={{
         gridTemplateColumns: `repeat(${columns}, 1fr)`,
         gridTemplateRows: `repeat(${rows}, 1fr)`,
@@ -63,7 +65,7 @@ export function ImageLayoutPicker({ slug, current }: { slug: string; current: nu
                     : "border-edge text-muted hover:border-accent hover:text-accent"
                 }`}
               >
-                <span className="flex h-12 w-full items-center">
+                <span className="flex h-14 w-full items-center justify-center">
                   <Diagram rows={rows} columns={columns} />
                 </span>
                 <span className="font-display text-[0.6rem] font-bold tracking-[1px] uppercase">
