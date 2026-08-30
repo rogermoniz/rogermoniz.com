@@ -17,6 +17,8 @@ const GRID: Record<FigureColumns, string> = {
 const BY_VARIANT: Record<string, FigureColumns> = {
   "or-steps": 3,
   "or-stats": 2,
+  // `grid-template-columns: 1fr 1fr` in the site this was ported from.
+  "article-img-grid": 2,
 };
 
 export function figureColumns(variant: string, columns?: FigureColumns): FigureColumns {
