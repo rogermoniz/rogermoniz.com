@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ImageField } from "@/components/cms/ImageField";
+import { figureColumns } from "@/components/sections/editorial/FigureGroup";
 
 /**
  * An article body is a list of typed blocks. Most are plain prose, so those
@@ -115,6 +116,20 @@ export function BlocksField({
           onClick={() => append({ type: "figure", variant: "", path: "", alt: "" })}
         >
           Ajouter une image
+        </button>
+        <button
+          type="button"
+          className={CHIP}
+          onClick={() =>
+            append({
+              type: "figureGroup",
+              variant: "",
+              columns: 2,
+              figures: [emptyFigure(), emptyFigure()],
+            })
+          }
+        >
+          Ajouter une grille d&apos;images
         </button>
         <button type="button" className={CHIP} onClick={() => append({ type: "list", ordered: false, items: [[""]] })}>
           Ajouter une liste
@@ -304,7 +319,146 @@ function BlockBody({
     );
   }
 
+  if (block.type === "figureGroup") {
+    return <FigureGroupBody block={block} onChange={onChange} library={library} canUpload={canUpload} />;
+  }
+
   return <AdvancedBlock block={block} onReplace={onReplace} />;
+}
+
+function emptyFigure(): Block {
+  return { type: "figure", variant: "", path: "", alt: "" };
+}
+
+const COLUMN_CHOICES = [1, 2, 3, 4] as const;
+
+/**
+ * A row of pictures. The column count is the only layout decision: how many
+ * rows there are follows from how many images are in the grid, which is what
+ * lets one section hold two photographs and the next hold seven without
+ * anybody choosing a template.
+ */
+function FigureGroupBody({
+  block,
+  onChange,
+  library,
+  canUpload,
+}: {
+  block: Block;
+  onChange: (patch: Block) => void;
+  library: readonly string[];
+  canUpload: boolean;
+}) {
+  const figures: Block[] = Array.isArray(block.figures) ? (block.figures as Block[]) : [];
+  // Older grids set no column count and take it from their variant, so the
+  // editor asks the renderer rather than guessing, and shows what the page does.
+  const columns = figureColumns(String(block.variant ?? ""), block.columns as 1 | 2 | 3 | 4 | undefined);
+  const rows = Math.ceil(figures.length / columns);
+
+  const write = (next: Block[]) => onChange({ figures: next });
+  const patch = (index: number, values: Block) =>
+    write(figures.map((figure, i) => (i === index ? { ...figure, ...values } : figure)));
+  const swap = (index: number, direction: -1 | 1) => {
+    const to = index + direction;
+    if (to < 0 || to >= figures.length) return;
+    const next = [...figures];
+    const moved = next[index];
+    const other = next[to];
+    if (!moved || !other) return;
+    next[index] = other;
+    next[to] = moved;
+    write(next);
+  };
+
+  return (
+    <>
+      <Field title="Images par ligne">
+        <div className="flex flex-wrap items-center gap-2">
+          {COLUMN_CHOICES.map((choice) => (
+            <button
+              key={choice}
+              type="button"
+              aria-pressed={columns === choice}
+              onClick={() => onChange({ columns: choice })}
+              // One class decides the border and one the ink, rather than
+              // appending a second colour and leaving the stylesheet to settle it.
+              className={`rounded-full border px-3 py-1 font-display text-[0.6rem] font-bold tracking-[1px] uppercase transition-colors duration-200 ${
+                columns === choice
+                  ? "border-accent bg-accent text-surface"
+                  : "border-edge text-muted hover:border-accent hover:text-accent"
+              }`}
+            >
+              {choice}
+            </button>
+          ))}
+          <span className="text-xs text-muted">
+            {figures.length} image{figures.length > 1 ? "s" : ""}, soit {rows} ligne
+            {rows > 1 ? "s" : ""}. Sur un téléphone elles se remettent les unes sous les autres.
+          </span>
+        </div>
+      </Field>
+
+      <ul className="mb-3 flex flex-col gap-3">
+        {figures.map((figure, index) => (
+          <li key={index} className="rounded-lg border border-edge px-4 py-3">
+            <div className="mb-3 flex flex-wrap items-center gap-2">
+              <span className="mr-auto font-display text-[0.6rem] font-bold tracking-[1px] text-muted uppercase">
+                Image {index + 1}
+              </span>
+              <button type="button" className={CHIP} disabled={index === 0} onClick={() => swap(index, -1)}>
+                Monter
+              </button>
+              <button
+                type="button"
+                className={CHIP}
+                disabled={index === figures.length - 1}
+                onClick={() => swap(index, 1)}
+              >
+                Descendre
+              </button>
+              <button
+                type="button"
+                onClick={() => write(figures.filter((_, i) => i !== index))}
+                className="text-xs text-muted transition-colors duration-200 hover:text-danger"
+              >
+                Retirer
+              </button>
+            </div>
+            <Field title="Image">
+              <ImageField
+                name=""
+                defaultValue={String(figure.path ?? "")}
+                required={false}
+                library={library}
+                canUpload={canUpload}
+                onChange={(path) => patch(index, { path })}
+              />
+            </Field>
+            <Field title="Texte alternatif">
+              <input
+                type="text"
+                value={String(figure.alt ?? "")}
+                onChange={(event) => patch(index, { alt: event.target.value })}
+                className={CONTROL}
+              />
+            </Field>
+            <Field title="Légende">
+              <input
+                type="text"
+                value={String(figure.caption ?? "")}
+                onChange={(event) => patch(index, { caption: event.target.value })}
+                className={CONTROL}
+              />
+            </Field>
+          </li>
+        ))}
+      </ul>
+
+      <button type="button" className={CHIP} onClick={() => write([...figures, emptyFigure()])}>
+        Ajouter une image à la grille
+      </button>
+    </>
+  );
 }
 
 /** Links, emphasis and nested layouts survive untouched as their own data. */
