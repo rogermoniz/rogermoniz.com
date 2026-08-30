@@ -334,6 +334,81 @@ export async function setPageStatus(form: FormData) {
   publish();
 }
 
+type JsonBlock = Record<string, unknown> & { type?: string };
+
+const blankFigure = (): JsonBlock => ({ type: "figure", variant: "", path: "", alt: "" });
+const isFilled = (figure: JsonBlock) => String(figure.path ?? "").trim() !== "";
+
+/**
+ * Gives every part of an article the same picture layout, so the author is
+ * shown exactly as many image fields as the layout asks for and never has to
+ * count them.
+ *
+ * It only ever adds. A slot that already holds a photograph is kept even when
+ * the new layout is smaller, because losing a picture to a layout change would
+ * be a far worse surprise than a row that does not divide evenly; only empty
+ * slots past the end are cleared away.
+ */
+export async function applyImageLayout(form: FormData): Promise<void> {
+  await guard();
+  const slug = String(form.get("slug"));
+  const rows = Number(form.get("rows"));
+  const columns = Number(form.get("columns"));
+  if (!Number.isInteger(rows) || !Number.isInteger(columns) || rows < 1 || columns < 1) {
+    throw new Error("Mise en page inconnue.");
+  }
+  const wanted = rows * columns;
+
+  const { data, error } = await supabaseAdmin
+    .from("rich_sections")
+    .select("id, blocks")
+    .eq("page_slug", slug)
+    .order("position");
+  if (error) throw new Error(error.message);
+
+  for (const row of (data ?? []) as { id: number; blocks: JsonBlock[] }[]) {
+    const blocks = Array.isArray(row.blocks) ? [...row.blocks] : [];
+    const at = blocks.findIndex((b) => b.type === "figureGroup");
+    const loose = blocks.filter((b) => b.type === "figure");
+
+    const existing: JsonBlock[] =
+      at === -1 ? loose : Array.isArray(blocks[at]?.figures) ? (blocks[at].figures as JsonBlock[]) : [];
+
+    const figures = existing.filter(isFilled);
+    while (figures.length < wanted) figures.push(blankFigure());
+
+    const group: JsonBlock = {
+      ...(at === -1 ? { type: "figureGroup", variant: "" } : blocks[at]),
+      type: "figureGroup",
+      columns,
+      figures,
+    };
+
+    // The grid stays where the pictures already were: an existing grid is
+    // rewritten in place, and loose figures become one grid at the first of
+    // them. Nothing else in the part moves, so applying a layout can never
+    // reorder the prose.
+    let next: JsonBlock[];
+    if (at !== -1) {
+      next = blocks.map((b, i) => (i === at ? group : b));
+    } else if (loose.length) {
+      const first = blocks.findIndex((b) => b.type === "figure");
+      next = blocks.filter((b, i) => b.type !== "figure" || i === first);
+      next = next.map((b) => (b.type === "figure" ? group : b));
+    } else {
+      next = [...blocks, group];
+    }
+
+    const { error: writeError } = await supabaseAdmin
+      .from("rich_sections")
+      .update({ blocks: next })
+      .eq("id", row.id);
+    if (writeError) throw new Error(writeError.message);
+  }
+
+  publish();
+}
+
 export async function republish(): Promise<ActionResult> {
   await guard();
   publish();

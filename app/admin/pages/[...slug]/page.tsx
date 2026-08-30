@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminBar } from "@/components/cms/AdminBar";
+import { ImageLayoutPicker } from "@/components/cms/ImageLayoutPicker";
 import { Panel } from "@/components/cms/Panel";
 import { RowForm } from "@/components/cms/RowForm";
 import { deletePage, setPageStatus } from "@/lib/cms/actions";
@@ -20,6 +21,25 @@ export default async function PageEditor({ params }: { params: Promise<{ slug: s
   const canUpload = uploadEnabled();
   const removable = page.kind !== "home" && page.kind !== "standalone";
   const draft = page.status === "draft";
+
+  /**
+   * What the parts already do, so the picker opens on the answer rather than
+   * on nothing. Read from the first grid it finds, since the layout is applied
+   * to every part at once.
+   */
+  const imageLayout = (() => {
+    for (const section of sections) {
+      for (const panel of section.panels) {
+        const rows = panel.form === "rows" && panel.table === "rich_sections" ? panel.rows : [];
+        for (const row of rows) {
+          const blocks = Array.isArray(row.blocks) ? (row.blocks as { type?: string; figures?: unknown[] }[]) : [];
+          const group = blocks.find((b) => b.type === "figureGroup");
+          if (group && Array.isArray(group.figures)) return group.figures.length;
+        }
+      }
+    }
+    return null;
+  })();
   // The URL is pages.slug, and pages.route only mirrors it for the sitemap.
   // Neither is authored here: editing route moved nothing while looking like
   // it renamed the page, and moving a slug is a migration (every content
@@ -75,6 +95,8 @@ export default async function PageEditor({ params }: { params: Promise<{ slug: s
             Ouvrez l&apos;aperçu pour la voir telle qu&apos;elle sera.
           </p>
         ) : null}
+
+        {page.kind === "article" ? <ImageLayoutPicker slug={page.slug} current={imageLayout} /> : null}
 
         <nav className="mb-12 flex flex-wrap gap-2">
           {sections.map((section) => (
