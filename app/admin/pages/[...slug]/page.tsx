@@ -19,7 +19,12 @@ export default async function PageEditor({ params }: { params: Promise<{ slug: s
   const { page, sections } = loaded;
   const canUpload = uploadEnabled();
   const removable = page.kind !== "home" && page.kind !== "standalone";
-  const settingsFields = editableFields("pages", page ? ["slug"] : []);
+  // The URL is pages.slug, and pages.route only mirrors it for the sitemap.
+  // Neither is authored here: editing route moved nothing while looking like
+  // it renamed the page, and moving a slug is a migration (every content
+  // table keys off it with no on update cascade). The route is shown as the
+  // badge above instead.
+  const settingsFields = editableFields("pages", ["slug", "route"]);
 
   return (
     <>

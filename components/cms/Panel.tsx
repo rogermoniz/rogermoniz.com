@@ -93,7 +93,7 @@ export function Panel({
   const scopedOut = Object.keys(panel.filters);
 
   if (panel.form === "single") {
-    const fields = editableFields(panel.table, scopedOut);
+    const fields = editableFields(panel.table, [...scopedOut, ...panel.omit]);
     return (
       <div className="mb-8">
         {panel.title ? (

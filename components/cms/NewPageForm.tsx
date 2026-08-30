@@ -6,6 +6,14 @@ import { createPage, type ActionResult } from "@/lib/cms/actions";
 const CONTROL =
   "w-full rounded-lg border border-edge bg-surface px-4 py-3 font-body text-[0.95rem] text-ink outline-none transition-[border-color,box-shadow] duration-200 focus:border-accent focus:shadow-[0_0_0_4px_rgb(216_171_82_/_0.1)]";
 
+/** The slug IS the address, so an article has to carry its section prefix. */
+const SLUG_HINT: Record<string, string> = {
+  article:
+    "Lettres minuscules et tirets, précédées de la section : « blog/noel » donne l'adresse /blog/noel, « events/noel » donne /events/noel.",
+};
+
+const DEFAULT_SLUG_HINT = "Lettres minuscules et tirets. « noel » donne l'adresse /noel.";
+
 export function NewPageForm({ kind }: { kind: string }) {
   const [state, action, pending] = useActionState<ActionResult | null, FormData>(createPage, null);
 
@@ -17,9 +25,7 @@ export function NewPageForm({ kind }: { kind: string }) {
         <label htmlFor="slug" className="text-sm font-semibold text-ink">
           Adresse de la page <span className="text-accent">*</span>
         </label>
-        <p className="-mt-1 text-xs text-muted">
-          Lettres minuscules et tirets. « noel » donne l'adresse /noel.
-        </p>
+        <p className="-mt-1 text-xs text-muted">{SLUG_HINT[kind] ?? DEFAULT_SLUG_HINT}</p>
         <input id="slug" name="slug" type="text" required className={`${CONTROL} font-mono text-sm`} />
       </div>
 

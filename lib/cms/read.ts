@@ -74,7 +74,14 @@ async function select(table: string, filters: Record<string, string>): Promise<R
 }
 
 export type LoadedPanel =
-  | { form: "single"; table: string; title: string; row: Row | null; filters: Record<string, string> }
+  | {
+      form: "single";
+      table: string;
+      title: string;
+      row: Row | null;
+      filters: Record<string, string>;
+      omit: readonly string[];
+    }
   | {
       form: "rows";
       table: string;
@@ -108,7 +115,14 @@ async function loadPanel(panel: Panel, slug: string): Promise<LoadedPanel> {
   const rows = await select(panel.table, filters);
 
   if (panel.form === "single") {
-    return { form: "single", table: panel.table, title: panel.title ?? "", row: rows[0] ?? null, filters };
+    return {
+      form: "single",
+      table: panel.table,
+      title: panel.title ?? "",
+      row: rows[0] ?? null,
+      filters,
+      omit: panel.omit ?? [],
+    };
   }
 
   let child: ChildRows | null = null;
@@ -184,7 +198,7 @@ export async function loadGlobalPanel(
   filters: Record<string, string> = {},
 ): Promise<LoadedPanel> {
   const rows = await select(table, filters);
-  if (form === "single") return { form: "single", table, title: "", row: rows[0] ?? null, filters };
+  if (form === "single") return { form: "single", table, title: "", row: rows[0] ?? null, filters, omit: [] };
   return { form: "rows", table, title: "", noun: "élément", rows, filters, child: null };
 }
 

@@ -15,7 +15,14 @@ export type ChildPanel = {
 
 export type Panel =
   /** Exactly one row belongs to the page. */
-  | { form: "single"; table: string; sectionKey?: string; title?: string }
+  | {
+      form: "single";
+      table: string;
+      sectionKey?: string;
+      title?: string;
+      /** Columns of a shared table that this page kind does not render. */
+      omit?: readonly string[];
+    }
   /** An ordered list the editor can add to, reorder and trim. */
   | {
       form: "rows";
@@ -70,16 +77,21 @@ const HERO: Section = {
   ],
 };
 
-const CTA: Section = {
+/**
+ * Shared by prestations and articles, which do not render the same fields:
+ * an article draws its lead from cta_lead_paragraphs and ignores the
+ * subtitle, so offering that column there loses whatever is typed into it.
+ */
+const CTA = (omit: readonly string[] = []): Section => ({
   key: "cta",
   label: "Appel à l'action",
   hint: "Le bloc de fin de page qui invite à prendre contact.",
   panels: [
-    { form: "single", table: "cta_blocks", title: "Titre" },
+    { form: "single", table: "cta_blocks", title: "Titre", omit },
     { form: "rows", table: "cta_lead_paragraphs", title: "Paragraphes", noun: "paragraphe" },
     { form: "rows", table: "cta_links", title: "Boutons", noun: "bouton" },
   ],
-};
+});
 
 const FAQ = (): Section => ({
   key: "faq",
@@ -158,7 +170,7 @@ const PRESTATION: Blueprint = {
       label: "La galerie",
       panels: [heading("portfolio"), { form: "rows", table: "gallery_items", title: "Photos", noun: "photo" }],
     },
-    CTA,
+    CTA(),
   ],
 };
 
@@ -181,7 +193,7 @@ const ARTICLE: Blueprint = {
       hint: "Chaque bloc est une partie de l'article. Le champ Contenu décrit sa structure.",
       panels: [{ form: "rows", table: "rich_sections", title: "Parties", noun: "partie" }],
     },
-    CTA,
+    CTA(["subtitle"]),
     {
       key: "read_next",
       label: "À lire aussi",
