@@ -366,6 +366,48 @@ export async function getPrestation(slug: string): Promise<PrestationPage> {
   };
 }
 
+/**
+ * Every other article filed under the same category. The category lives on the
+ * listing card rather than on the page, which is also what the blog filters
+ * read, so the tail of an article and the filtered index can never disagree.
+ */
+function relatedFor(d: Record<string, Row[]>, slug: string) {
+  const withoutSlash = (href: string) => href.replace(/\/+$/, "");
+  const route = `/${slug}`;
+  const cards = d.article_cards ?? [];
+
+  const own = cards.find((r) => withoutSlash(str(r.href)) === route);
+  const category = str(own?.category);
+  if (!category) return null;
+
+  // Same listing as well as same category: the events cards live in this table
+  // too, and one of them is a plain link to the contact page.
+  const listing = str(own?.page_slug);
+  const siblings = cards
+    .filter(
+      (r) =>
+        str(r.page_slug) === listing &&
+        str(r.category) === category &&
+        withoutSlash(str(r.href)) !== route,
+    )
+    .map((r) => ({
+      href: str(r.href),
+      badge: nullable(r.badge),
+      path: nullable(r.path),
+      alt: str(r.alt),
+      title: nullable(r.title),
+      description: nullable(r.description),
+      ctaLabel: str(r.cta_label),
+      category: nullable(r.category) ?? undefined,
+    }));
+  if (!siblings.length) return null;
+
+  return {
+    title: headingFor(d, slug, "related").title || "Dans la même catégorie",
+    cards: siblings,
+  };
+}
+
 export async function getEditorial(slug: string): Promise<EditorialPage> {
   const d = await db();
   const page = (d.pages ?? []).find((p) => p.slug === slug);
@@ -403,6 +445,7 @@ export async function getEditorial(slug: string): Promise<EditorialPage> {
   const article: ArticlePageData = {
     ...shared,
     kind: "article",
+    related: relatedFor(d, slug),
     template: str(page?.template) === "feature" ? "feature" : "standard",
     hero: {
       category: nullable(hero?.category),

@@ -4,6 +4,7 @@ import { ArticleHero } from "@/components/sections/editorial/ArticleHero";
 import { ArticleSidebar } from "@/components/sections/editorial/ArticleSidebar";
 import { ContentBlocks } from "@/components/sections/editorial/ContentBlocks";
 import { ReadNext } from "@/components/sections/editorial/ReadNext";
+import { RelatedArticles } from "@/components/sections/editorial/RelatedArticles";
 import { DualCta } from "@/components/sections/prestation/DualCta";
 import type { ArticlePageData } from "@/lib/content/types";
 
@@ -64,6 +65,7 @@ export function ArticlePage({ data }: { data: ArticlePageData }) {
       ) : null}
 
       {data.readNext ? <ReadNext data={data.readNext} /> : null}
+      {data.related ? <RelatedArticles data={data.related} /> : null}
     </div>
   );
 }

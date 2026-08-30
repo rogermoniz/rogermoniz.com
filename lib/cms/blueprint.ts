@@ -199,6 +199,12 @@ const ARTICLE: Blueprint = {
       label: "À lire aussi",
       panels: [heading("read_next"), { form: "rows", table: "read_next_cards", title: "Cartes", noun: "carte" }],
     },
+    {
+      key: "related",
+      label: "Articles de la même catégorie",
+      hint: "La liste se remplit toute seule à partir de la catégorie des cartes du blog. Seul le titre se règle ici.",
+      panels: [heading("related")],
+    },
   ],
 };
 

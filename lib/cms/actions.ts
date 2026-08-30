@@ -245,6 +245,7 @@ const SCAFFOLD: Record<string, (slug: string) => { table: string; row: Record<st
   article: (slug) => [
     { table: "article_hero", row: { page_slug: slug } },
     { table: "section_headings", row: { page_slug: slug, section_key: "read_next" } },
+    { table: "section_headings", row: { page_slug: slug, section_key: "related" } },
     { table: "cta_blocks", row: { page_slug: slug } },
   ],
   legal: (slug) => [{ table: "hero_marquee", row: { page_slug: slug, title: "", image_aspect: "3 / 4" } }],

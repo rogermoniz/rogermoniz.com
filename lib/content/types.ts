@@ -278,6 +278,20 @@ export type ArticlePageData = EditorialShared & {
       description: string | null;
     }[];
   } | null;
+  /** Everything else in this article's category, for the tail of the page. */
+  related: {
+    title: string;
+    cards: readonly {
+      href: string;
+      badge: string | null;
+      path: string | null;
+      alt: string;
+      title: string | null;
+      description: string | null;
+      ctaLabel: string;
+      category?: string;
+    }[];
+  } | null;
 };
 
 /** CGV, privacy and legal notice: the marquee hero and a long prose column. */
