@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminBar } from "@/components/cms/AdminBar";
 import { ImageLayoutPicker } from "@/components/cms/ImageLayoutPicker";
+import { figureColumns } from "@/components/sections/editorial/FigureGroup";
 import { Panel } from "@/components/cms/Panel";
 import { RowForm } from "@/components/cms/RowForm";
 import { deletePage, setPageStatus } from "@/lib/cms/actions";
@@ -23,22 +24,36 @@ export default async function PageEditor({ params }: { params: Promise<{ slug: s
   const draft = page.status === "draft";
 
   /**
-   * What the parts already do, so the picker opens on the answer rather than
-   * on nothing. Read from the first grid it finds, since the layout is applied
-   * to every part at once.
+   * What the parts already do, so the picker opens on the answer. A part with
+   * no grid is a stack of loose pictures, which is one per row. Parts holding
+   * no picture at all say nothing either way, and if the ones that do disagree
+   * the picker highlights nothing rather than a shape that is only half true.
    */
   const imageLayout = (() => {
+    const shapes: { rows: number; columns: number }[] = [];
+
     for (const section of sections) {
       for (const panel of section.panels) {
-        const rows = panel.form === "rows" && panel.table === "rich_sections" ? panel.rows : [];
-        for (const row of rows) {
-          const blocks = Array.isArray(row.blocks) ? (row.blocks as { type?: string; figures?: unknown[] }[]) : [];
+        if (panel.form !== "rows" || panel.table !== "rich_sections") continue;
+        for (const row of panel.rows) {
+          const blocks = Array.isArray(row.blocks)
+            ? (row.blocks as { type?: string; variant?: string; columns?: number; figures?: unknown[] }[])
+            : [];
           const group = blocks.find((b) => b.type === "figureGroup");
-          if (group && Array.isArray(group.figures)) return group.figures.length;
+          const count = group
+            ? (group.figures ?? []).length
+            : blocks.filter((b) => b.type === "figure").length;
+          if (!count) continue;
+          const columns = group ? figureColumns(String(group.variant ?? ""), group.columns as never) : 1;
+          shapes.push({ rows: Math.ceil(count / columns), columns });
         }
       }
     }
-    return null;
+
+    const first = shapes[0];
+    if (!first) return null;
+    const same = shapes.every((s) => s.rows === first.rows && s.columns === first.columns);
+    return same ? first : "mixed";
   })();
   // The URL is pages.slug, and pages.route only mirrors it for the sitemap.
   // Neither is authored here: editing route moved nothing while looking like

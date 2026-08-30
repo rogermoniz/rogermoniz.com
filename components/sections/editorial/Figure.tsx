@@ -83,7 +83,7 @@ export function Figure({
   if (!shape || !overlay) {
     return (
       <figure
-        className={`group relative m-0 mb-[clamp(1.6rem,3vw,2.4rem)] overflow-hidden rounded-2xl bg-figure-tint last:mb-0 ${className}`}
+        className={`group relative m-0 overflow-hidden rounded-2xl bg-figure-tint ${className}`}
       >
         <Image
           src={cloudinary(block.path, { width: 1000 })}

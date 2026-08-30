@@ -36,7 +36,11 @@ function Diagram({ rows, columns }: { rows: number; columns: number }) {
   );
 }
 
-export function ImageLayoutPicker({ slug, current }: { slug: string; current: number | null }) {
+export type CurrentLayout = { rows: number; columns: number } | "mixed" | null;
+
+export function ImageLayoutPicker({ slug, current }: { slug: string; current: CurrentLayout }) {
+  const mixed = current === "mixed";
+  const chosen = mixed ? null : current;
   return (
     <section className="mb-12 rounded-2xl border border-edge px-6 py-6">
       <h3 className="font-display text-[0.65rem] font-bold tracking-[1.5px] text-muted uppercase">
@@ -48,10 +52,17 @@ export function ImageLayoutPicker({ slug, current }: { slug: string; current: nu
         faut. Une photo déjà en place n&apos;est jamais retirée.
       </p>
 
+      {mixed ? (
+        <p className="mb-6 -mt-3 text-sm text-muted">
+          Les parties de cet article n&apos;ont pas toutes la même disposition. En choisir une
+          ci-dessous les alignera toutes.
+        </p>
+      ) : null}
+
       <div className="flex flex-wrap gap-3">
         {LAYOUTS.map(({ rows, columns }) => {
           const total = rows * columns;
-          const active = current === total;
+          const active = chosen?.rows === rows && chosen?.columns === columns;
           return (
             <form key={`${rows}x${columns}`} action={applyImageLayout}>
               <input type="hidden" name="slug" value={slug} />
@@ -59,9 +70,10 @@ export function ImageLayoutPicker({ slug, current }: { slug: string; current: nu
               <input type="hidden" name="columns" value={columns} />
               <button
                 type="submit"
+                aria-pressed={active}
                 className={`flex w-[104px] flex-col items-center gap-2 rounded-xl border px-3 py-3 transition-colors duration-200 ${
                   active
-                    ? "border-accent text-accent"
+                    ? "border-accent bg-accent/10 text-accent"
                     : "border-edge text-muted hover:border-accent hover:text-accent"
                 }`}
               >
@@ -71,8 +83,8 @@ export function ImageLayoutPicker({ slug, current }: { slug: string; current: nu
                 <span className="font-display text-[0.6rem] font-bold tracking-[1px] uppercase">
                   {columns} × {rows}
                 </span>
-                <span className="text-[0.65rem] text-muted">
-                  {total} image{total > 1 ? "s" : ""}
+                <span className={`text-[0.65rem] ${active ? "text-accent" : "text-muted"}`}>
+                  {active ? "Utilisée" : `${total} image${total > 1 ? "s" : ""}`}
                 </span>
               </button>
             </form>

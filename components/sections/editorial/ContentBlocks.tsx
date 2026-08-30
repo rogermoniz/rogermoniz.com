@@ -70,8 +70,10 @@ function Block({ block, context }: { block: ContentBlock; context?: "duo" }) {
         </Reveal>
       );
     case "figure":
+      // The spacing sits on the wrapper, where `last` can see the blocks either
+      // side of it: on the figure itself it only ever saw its own wrapper.
       return (
-        <Reveal>
+        <Reveal className="mb-[clamp(1.6rem,3vw,2.4rem)] last:mb-0">
           <Figure block={block} context={context} />
         </Reveal>
       );
