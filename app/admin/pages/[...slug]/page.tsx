@@ -42,7 +42,7 @@ export default async function PageEditor({ params }: { params: Promise<{ slug: s
             </span>
           ) : null}
           <Link
-            href={page.route}
+            href={draft ? `/apercu/${page.slug.split("/").map(encodeURIComponent).join("/")}` : page.route}
             target="_blank"
             rel="noreferrer"
             className="text-sm text-muted transition-colors duration-200 hover:text-accent"
@@ -71,7 +71,7 @@ export default async function PageEditor({ params }: { params: Promise<{ slug: s
         {draft ? (
           <p className="mb-10 rounded-xl border border-dashed border-accent px-5 py-4 text-sm text-muted">
             Cette page n&apos;est pas en ligne. Elle n&apos;apparaît ni dans le blog, ni dans le
-            plan du site, et son adresse ne répond qu&apos;à vous, tant que vous êtes connecté ici.
+            plan du site, et son adresse publique répond 404.
             Ouvrez l&apos;aperçu pour la voir telle qu&apos;elle sera.
           </p>
         ) : null}

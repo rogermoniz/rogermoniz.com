@@ -3,8 +3,7 @@ import type { Metadata } from "next";
 import { canonicalPath } from "@/lib/canonical";
 import { LegalPage } from "@/components/templates/LegalPage";
 import { PrestationPage } from "@/components/templates/PrestationPage";
-import { getEditorial, getPageKind, getPrestation, getSlugsByKind } from "@/lib/content/source";
-import { isDraft, isHiddenDraft } from "@/lib/content/visibility";
+import { getEditorial, getPageKind, getPageStatus, getPrestation, getSlugsByKind } from "@/lib/content/source";
 
 /**
  * Every prestation and every legal page renders through here. Editing a
@@ -34,12 +33,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const draft = await isDraft(slug);
   const { data } = await load(slug);
   return {
     title: data.metaTitle,
-    // An unpublished page is on screen only for its author.
-    robots: draft ? { index: false, follow: false } : undefined,
 
     alternates: { canonical: canonicalPath(`/${slug}`) },
     openGraph: { title: data.metaTitle },
@@ -48,7 +44,8 @@ export async function generateMetadata({
 
 export default async function Route({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  if (await isHiddenDraft(slug)) notFound();
+  // A draft is not on the site at all. Its preview lives at /apercu.
+  if ((await getPageStatus(slug)) === "draft") notFound();
   const loaded = await load(slug);
 
   if (loaded.kind === "prestation") return <PrestationPage data={loaded.data} />;
