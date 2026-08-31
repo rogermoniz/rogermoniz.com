@@ -47,9 +47,15 @@ export const metadata: Metadata = {
   twitter: { card: "summary" },
 };
 
-/** Pages are static, then re-read the database every 10 minutes, so an edit
- * in Supabase appears on the site without a rebuild. */
-export const revalidate = 600;
+/**
+ * Pages are static, then re-read the database, so an edit appears without a
+ * rebuild. Saving in the editor on the live site refreshes them at once; this
+ * is the floor under that, and it is what carries an edit made anywhere else,
+ * including from the editor running on a laptop, which can only refresh the
+ * copy on that laptop. A minute is short enough that nobody wonders whether
+ * their change was saved, and the site is 22 pages, so the cost is noise.
+ */
+export const revalidate = 60;
 
 export const viewport: Viewport = {
   width: "device-width",

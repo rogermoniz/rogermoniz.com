@@ -5,6 +5,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { checkPassword, isSignedIn, SESSION_COOKIE, sessionToken } from "@/lib/cms/auth";
 import { TABLE_BY_NAME } from "@/lib/cms/schema";
+import { controlKind } from "@/lib/cms/labels";
+import { normalisePath } from "@/lib/cms/cloudinary";
 import { hasColumn, idColumn, orderColumns } from "@/lib/cms/read";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
@@ -42,12 +44,40 @@ function publish() {
   revalidatePath("/", "layout");
 }
 
+/**
+ * What to tell the author once the row is written.
+ *
+ * `revalidatePath` refreshes the site the editor is running on and no other,
+ * so an edit made from the editor on a laptop reaches the database at once and
+ * the live pages only when they next re-read it. Saying "the site is up to
+ * date" there would be a lie, and it is the lie that makes somebody think
+ * their change did not save.
+ */
+const SAVED = process.env.VERCEL
+  ? "Enregistré. Le site est à jour."
+  : "Enregistré. En ligne sur le site dans une minute.";
+
 function parseJsonField(name: string, raw: string): unknown {
   try {
     return JSON.parse(raw);
   } catch {
     throw new Error(`Le champ « ${name} » n'est pas au bon format.`);
   }
+}
+
+/** The same reduction, for the pictures an article carries inside its blocks. */
+function normaliseFigurePaths(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(normaliseFigurePaths);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([key, inner]) =>
+        key === "path" && typeof inner === "string"
+          ? [key, normalisePath(inner)]
+          : [key, normaliseFigurePaths(inner)],
+      ),
+    );
+  }
+  return value;
 }
 
 function coerce(table: string, form: FormData): Record<string, unknown> {
@@ -69,12 +99,19 @@ function coerce(table: string, form: FormData): Record<string, unknown> {
     } else if (field.kind === "number") {
       row[field.name] = raw.trim() === "" ? null : Number(raw);
     } else if (field.kind === "json") {
-      row[field.name] = raw.trim() === "" ? null : parseJsonField(field.name, raw);
+      const parsed = raw.trim() === "" ? null : parseJsonField(field.name, raw);
+      row[field.name] = field.name === "blocks" ? normaliseFigurePaths(parsed) : parsed;
     } else if (field.kind === "list") {
       row[field.name] = raw
         .split(/[\n,]/)
         .map((v) => v.trim())
         .filter(Boolean);
+    } else if (controlKind(table, field.name, field.kind) === "image") {
+      // A picture is stored as its path. The field takes a pasted link just as
+      // happily, so the link is reduced here rather than kept and worked around
+      // by every component that later reads it.
+      const path = normalisePath(raw);
+      row[field.name] = path === "" && !field.required ? null : path;
     } else {
       row[field.name] = raw === "" && !field.required ? null : raw;
     }
@@ -138,7 +175,7 @@ export async function saveRow(_prev: ActionResult | null, form: FormData): Promi
   }
 
   publish();
-  return { ok: true, message: "Enregistré. Le site est à jour." };
+  return { ok: true, message: SAVED };
 }
 
 /** Adds an empty entry to a list, so the editor never types a row from nothing. */
@@ -263,6 +300,34 @@ const SCAFFOLD: Record<string, (slug: string) => { table: string; row: Record<st
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:[-/][a-z0-9]+)*$/;
 
+/**
+ * The card that puts a new article on its listing.
+ *
+ * An article is reached through the card that links to it: the blog page is a
+ * list of cards, and the tail of an article is built from the category on its
+ * card. Without one a published article existed at its address and nowhere
+ * else, and the only way to find that out was to look. The card is created
+ * with the article, empty apart from its title and its link, and is filled in
+ * on the listing's own page like every other card. A draft's card is never
+ * shown, so it appears the day the article is published and not before.
+ */
+async function addListingCard(slug: string, title: string) {
+  const [listing] = slug.split("/");
+  if (!listing || listing === slug) return;
+
+  const { data } = await supabaseAdmin.from("pages").select("slug").eq("slug", listing).limit(1);
+  if (!(data ?? []).length) return;
+
+  await supabaseAdmin.from("article_cards").insert({
+    page_slug: listing,
+    position: await nextPosition("article_cards", { page_slug: listing }),
+    href: `/${slug}`,
+    title,
+    alt: title,
+    cta_label: "Lire",
+  });
+}
+
 export async function createPage(_prev: ActionResult | null, form: FormData): Promise<ActionResult> {
   await guard();
   const kind = String(form.get("kind") ?? "");
@@ -307,6 +372,10 @@ export async function createPage(_prev: ActionResult | null, form: FormData): Pr
     if (scaffoldError) return { ok: false, message: `${table}: ${scaffoldError.message}` };
   }
 
+  // The title is written for Google and carries the studio suffix; a card
+  // shows the article's own name.
+  if (kind === "article") await addListingCard(slug, (title.split("|")[0] ?? title).trim());
+
   publish();
   redirect(`/admin/pages/${slug.split("/").map(encodeURIComponent).join("/")}`);
 }
@@ -325,6 +394,13 @@ export async function deletePage(form: FormData) {
   }
   const { error } = await supabaseAdmin.from("pages").delete().eq("slug", slug);
   if (error) throw new Error(error.message);
+
+  // The content of a page goes with it, because every content table keys off
+  // its slug. The card that links to it does not: it belongs to the listing,
+  // and left alone it stays on the blog pointing at an address that answers
+  // 404. Hrefs are written both with and without the closing slash.
+  await supabaseAdmin.from("article_cards").delete().in("href", [`/${slug}`, `/${slug}/`]);
+
   publish();
   redirect("/admin");
 }
@@ -347,5 +423,5 @@ export async function setPageStatus(form: FormData) {
 export async function republish(): Promise<ActionResult> {
   await guard();
   publish();
-  return { ok: true, message: "Site republié." };
+  return { ok: true, message: process.env.VERCEL ? "Site republié." : "Republié localement." };
 }
