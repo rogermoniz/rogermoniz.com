@@ -203,7 +203,16 @@
   --animate-preloader-pulse: preloader-pulse 1.5s ease-in-out infinite alternate;
   --animate-cue-drop: cue-drop 2.1s var(--ease-snappy) infinite;
   --animate-cue-bob: cue-bob 2.1s ease-in-out infinite;
+  /* The page arriving. Short on purpose: long enough to be felt, short enough
+     that nobody waits for it. Deliberately no fill mode: it starts at once, so
+     there is nothing to fill, and a page whose animation never runs is then a
+     page at full opacity rather than an invisible one. */
+  --animate-route-fade: route-fade 260ms var(--ease-out-expo);
 
+  @keyframes route-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
   @keyframes scroll-up {
     0% { transform: translateY(0); }
     100% { transform: translateY(-50%); }

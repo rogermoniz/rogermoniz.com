@@ -1,6 +1,7 @@
 import { SiteAnalytics } from "@/components/analytics/SiteAnalytics";
 import { ConsentBanner } from "@/components/consent/ConsentBanner";
 import { ConsentProvider } from "@/components/consent/ConsentProvider";
+import { RouteFade } from "@/components/effects/RouteFade";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
@@ -17,7 +18,9 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
           rest of the page to parse before it can paint. */}
       <ConsentBanner />
       <SiteHeader nav={nav.primaryNav} identity={identity} />
-      <main>{children}</main>
+      <main>
+        <RouteFade>{children}</RouteFade>
+      </main>
       <SiteFooter />
       <ThemeToggle />
       <SiteAnalytics />
