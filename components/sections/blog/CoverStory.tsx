@@ -37,10 +37,14 @@ export function CoverStory({ cover }: { cover: BlogCover }) {
         <p className="mb-4 text-[0.7rem] font-semibold tracking-[0.1em] text-accent uppercase">
           {cover.meta}
         </p>
-        <h3 className="m-0 mb-4 font-display text-[clamp(1.8rem,3.2vw,2.9rem)] leading-[1.03] font-bold tracking-[-0.02em] text-ink">
+        {/* Two lines each, the same rule the cards below follow, so the panel
+            keeps its shape whatever the article is called and however long its
+            standfirst runs. The heights are stated alongside the clamps and
+            agree with them exactly: two lines of each one's own leading. */}
+        <h3 className="m-0 mb-4 line-clamp-2 max-h-[2.06em] font-display text-[clamp(1.8rem,3.2vw,2.9rem)] leading-[1.03] font-bold tracking-[-0.02em] text-ink">
           {cover.title}
         </h3>
-        <p className="mb-7 max-w-[54ch] text-[clamp(1rem,1.15vw,1.1rem)] leading-[1.6] text-muted">
+        <p className="mb-7 line-clamp-2 max-h-[3.2em] max-w-[54ch] text-[clamp(1rem,1.15vw,1.1rem)] leading-[1.6] text-muted">
           {cover.excerpt}
         </p>
         <BubbleButton href={cover.href}>{cover.ctaLabel}</BubbleButton>
