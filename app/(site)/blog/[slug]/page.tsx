@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { canonicalPath } from "@/lib/canonical";
+import type { ArticleSection } from "@/lib/content/sections";
 import { ArticlePage } from "@/components/templates/ArticlePage";
 import { getEditorial, getPageKind, getPageStatus, getSlugsByKind } from "@/lib/content/source";
 
-const SECTION = "blog";
+const SECTION: ArticleSection = "blog";
 
 /** Every blog article renders through this one template. */
 /** An article added from the editor renders on demand rather than 404ing. */

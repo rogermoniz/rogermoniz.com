@@ -7,6 +7,7 @@ import { checkPassword, isSignedIn, SESSION_COOKIE, sessionToken } from "@/lib/c
 import { TABLE_BY_NAME } from "@/lib/cms/schema";
 import { controlKind } from "@/lib/cms/labels";
 import { normalisePath } from "@/lib/cms/cloudinary";
+import { ARTICLE_SECTIONS } from "@/lib/content/sections";
 import { hasColumn, idColumn, orderColumns } from "@/lib/cms/read";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
@@ -339,6 +340,14 @@ export async function createPage(_prev: ActionResult | null, form: FormData): Pr
     return { ok: false, message: "L'identifiant ne peut contenir que des lettres minuscules, des chiffres et des tirets." };
   }
   if (!title) return { ok: false, message: "Le titre pour Google est obligatoire." };
+  // An article is rendered by its section's route, so one filed outside them
+  // would answer 404 to everybody, its own author included.
+  if (kind === "article" && !ARTICLE_SECTIONS.some((s) => slug.startsWith(`${s}/`))) {
+    return {
+      ok: false,
+      message: `Un article doit commencer par sa section : ${ARTICLE_SECTIONS.map((s) => `${s}/`).join(" ou ")}`,
+    };
+  }
 
   const route = `/${slug}`;
   const { data: existing } = await supabaseAdmin
