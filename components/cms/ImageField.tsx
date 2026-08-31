@@ -11,7 +11,7 @@ const CHIP =
 
 export function ImageField({
   name,
-  defaultValue,
+  value,
   required,
   library,
   canUpload,
@@ -19,13 +19,30 @@ export function ImageField({
 }: {
   /** Empty when the value is carried by a parent editor rather than the form. */
   name: string;
-  defaultValue: string;
+  value: string;
   required: boolean;
   library: readonly string[];
   canUpload: boolean;
   onChange?: (path: string) => void;
 }) {
-  const [path, setPathState] = useState(defaultValue);
+  const [path, setPathState] = useState(value);
+
+  /**
+   * The field follows the value it is given.
+   *
+   * It used to read it once and keep its own copy, which held while the field
+   * was the only thing writing to it and broke the moment a list moved
+   * underneath it: two pictures swapped places in the data and both fields went
+   * on showing the picture they had opened with, so a reorder looked like it had
+   * done nothing while it had in fact worked. Setting state during the render
+   * that noticed the change is React's own answer to this, and costs one extra
+   * render of this field alone.
+   */
+  const [given, setGiven] = useState(value);
+  if (given !== value) {
+    setGiven(value);
+    setPathState(value);
+  }
 
   function setPath(next: string) {
     setPathState(next);

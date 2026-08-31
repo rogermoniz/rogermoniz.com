@@ -173,7 +173,7 @@ function FieldGrid({
             ) : field.control === "image" ? (
               <ImageField
                 name={field.name}
-                defaultValue={value}
+                value={value}
                 required={field.required}
                 library={library}
                 canUpload={canUpload}

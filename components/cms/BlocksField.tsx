@@ -53,6 +53,21 @@ function label(block: Block, index: number): string {
   return `${String(index + 1).padStart(2, "0")} · ${name}`;
 }
 
+/**
+ * A block edited on screen is a block plus an identity, and the identity is
+ * what the list is keyed on.
+ *
+ * Numbering the list by position instead told React that the second entry was
+ * still the second entry after a move, so an editor holding anything of its own
+ * stayed where it was while the content moved past it: the block with a
+ * formatted layout kept showing the code of its neighbour. The identity is
+ * never written to the page, it only lives as long as this form is open.
+ */
+type Entry = { id: number; value: Block };
+
+let counter = 0;
+const carry = (value: Block): Entry => ({ id: (counter += 1), value });
+
 export function BlocksField({
   name,
   defaultValue,
@@ -64,21 +79,33 @@ export function BlocksField({
   library: readonly string[];
   canUpload: boolean;
 }) {
-  const [blocks, setBlocks] = useState<Block[]>(() => parse(defaultValue));
+  const [entries, setEntries] = useState<Entry[]>(() => parse(defaultValue).map(carry));
   const [raw, setRaw] = useState(false);
   const [text, setText] = useState(defaultValue);
 
+  const blocks = entries.map((entry) => entry.value);
+
+  /** A list rewritten wholesale keeps the identity of every block it kept. */
+  function setBlocks(next: Block[]) {
+    setEntries((current) => {
+      const known = new Map(current.map((entry) => [entry.value, entry]));
+      return next.map((value) => known.get(value) ?? carry(value));
+    });
+  }
+
   function update(index: number, patch: Block) {
-    setBlocks((current) => current.map((block, i) => (i === index ? { ...block, ...patch } : block)));
+    setEntries((current) =>
+      current.map((entry, i) => (i === index ? { ...entry, value: { ...entry.value, ...patch } } : entry)),
+    );
   }
 
   /** The code editor hands back a whole block, so stale keys cannot linger. */
   function replace(index: number, block: Block) {
-    setBlocks((current) => current.map((existing, i) => (i === index ? block : existing)));
+    setEntries((current) => current.map((entry, i) => (i === index ? { ...entry, value: block } : entry)));
   }
 
   function move(index: number, delta: number) {
-    setBlocks((current) => {
+    setEntries((current) => {
       const next = [...current];
       const target = index + delta;
       const a = next[index];
@@ -91,11 +118,11 @@ export function BlocksField({
   }
 
   function remove(index: number) {
-    setBlocks((current) => current.filter((_, i) => i !== index));
+    setEntries((current) => current.filter((_, i) => i !== index));
   }
 
   function append(block: Block) {
-    setBlocks((current) => [...current, block]);
+    setEntries((current) => [...current, carry(block)]);
   }
 
   const serialised = raw ? text : JSON.stringify(blocks, null, 2);
@@ -160,8 +187,8 @@ export function BlocksField({
         />
       ) : (
         <ul className="flex flex-col gap-3">
-          {blocks.map((block, index) => (
-            <li key={index} className="rounded-xl border border-edge px-4 py-4">
+          {entries.map(({ id, value: block }, index) => (
+            <li key={id} className="rounded-xl border border-edge px-4 py-4">
               <div className="mb-4 flex flex-wrap items-center gap-2">
                 <span className="mr-auto font-display text-[0.6rem] font-bold tracking-[1px] text-muted uppercase">
                   {label(block, index)}
@@ -295,7 +322,7 @@ function BlockBody({
         <Field title="Image">
           <ImageField
             name=""
-            defaultValue={String(block.path ?? "")}
+            value={String(block.path ?? "")}
             required={false}
             library={library}
             canUpload={canUpload}
@@ -407,7 +434,7 @@ function FigureGroupBody({
             <Field title="Image">
               <ImageField
                 name=""
-                defaultValue={String(figure.path ?? "")}
+                value={String(figure.path ?? "")}
                 required={false}
                 library={library}
                 canUpload={canUpload}
