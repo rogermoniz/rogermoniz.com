@@ -326,6 +326,17 @@ async function addNavItem(kind: string, slug: string, title: string) {
   });
 }
 
+/**
+ * A page's address, written the one way the site serves it.
+ *
+ * Next is configured with `trailingSlash: true`, so every URL is served with a
+ * closing slash and every link rendered from one carries it. Anything written
+ * without it here would still work, because the server redirects and the router
+ * normalises, but it would leave the database disagreeing with the site about
+ * what an address looks like, and half the stored links did exactly that.
+ */
+const address = (slug: string) => `/${slug}/`;
+
 const SLUG_PATTERN = /^[a-z0-9]+(?:[-/][a-z0-9]+)*$/;
 
 /**
@@ -349,7 +360,7 @@ async function addListingCard(slug: string, title: string) {
   await supabaseAdmin.from("article_cards").insert({
     page_slug: listing,
     position: await nextPosition("article_cards", { page_slug: listing }),
-    href: `/${slug}`,
+    href: address(slug),
     title,
     alt: title,
     cta_label: "Lire",
@@ -376,7 +387,7 @@ export async function createPage(_prev: ActionResult | null, form: FormData): Pr
     };
   }
 
-  const route = `/${slug}`;
+  const route = address(slug);
   const { data: existing } = await supabaseAdmin
     .from("pages")
     .select("slug")

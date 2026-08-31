@@ -1,0 +1,344 @@
+{
+  "article_cards.href": [
+    {
+      "href": "/blog/shooting-ehpad"
+    },
+    {
+      "href": "/blog/trois-lieux-magiques-a-nice"
+    },
+    {
+      "href": "/blog/octobre-rose-2025"
+    },
+    {
+      "href": "/events/on-pose-pour-le-rose"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/blog/les-mythes-sur-les-shootings/"
+    },
+    {
+      "href": "/blog/lire-la-lumiere"
+    },
+    {
+      "href": "/blog/photographier-un-evenement"
+    }
+  ],
+  "blog_cover.href": [
+    {
+      "href": "/blog/shooting-ehpad"
+    }
+  ],
+  "cta_links.href": [
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/carte-cadeau"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/carte-cadeau"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/carte-cadeau"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/carte-cadeau"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/carte-cadeau"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/carte-cadeau"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/carte-cadeau"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/carte-cadeau"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/carte-cadeau"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/carte-cadeau"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/carte-cadeau"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/carte-cadeau"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/carte-cadeau"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/evenementiel"
+    }
+  ],
+  "event_featured.cta_href": [
+    {
+      "cta_href": "/events/on-pose-pour-le-rose"
+    }
+  ],
+  "nav_items.href": [
+    {
+      "href": "/portrait"
+    },
+    {
+      "href": "/amour-de-soi"
+    },
+    {
+      "href": "/fantaisie"
+    },
+    {
+      "href": "/corporate"
+    },
+    {
+      "href": "/grossesse"
+    },
+    {
+      "href": "/in-the-box"
+    },
+    {
+      "href": "/evenementiel"
+    },
+    {
+      "href": "/packshot"
+    },
+    {
+      "href": "/blog"
+    },
+    {
+      "href": "/a-propos"
+    },
+    {
+      "href": "/contact"
+    },
+    {
+      "href": "/mentions-legales"
+    },
+    {
+      "href": "/cgv"
+    },
+    {
+      "href": "/confidentialite"
+    },
+    {
+      "href": "/events"
+    },
+    {
+      "href": "/portrait"
+    }
+  ],
+  "pages.route": [
+    {
+      "route": "/"
+    },
+    {
+      "route": "/amour-de-soi"
+    },
+    {
+      "route": "/fantaisie"
+    },
+    {
+      "route": "/corporate"
+    },
+    {
+      "route": "/grossesse"
+    },
+    {
+      "route": "/in-the-box"
+    },
+    {
+      "route": "/evenementiel"
+    },
+    {
+      "route": "/packshot"
+    },
+    {
+      "route": "/cgv"
+    },
+    {
+      "route": "/confidentialite"
+    },
+    {
+      "route": "/mentions-legales"
+    },
+    {
+      "route": "/contact"
+    },
+    {
+      "route": "/blog"
+    },
+    {
+      "route": "/events"
+    },
+    {
+      "route": "/a-propos"
+    },
+    {
+      "route": "/carte-cadeau"
+    },
+    {
+      "route": "/portrait"
+    },
+    {
+      "route": "/blog/octobre-rose-2025"
+    },
+    {
+      "route": "/blog/trois-lieux-magiques-a-nice"
+    },
+    {
+      "route": "/events/on-pose-pour-le-rose"
+    },
+    {
+      "route": "/blog/shooting-ehpad"
+    },
+    {
+      "route": "/blog/les-mythes-sur-les-shootings"
+    },
+    {
+      "route": "/blog/lire-la-lumiere"
+    },
+    {
+      "route": "/blog/photographier-un-evenement"
+    }
+  ],
+  "prestation_teasers.href": [
+    {
+      "href": "/amour-de-soi"
+    },
+    {
+      "href": "/fantaisie"
+    },
+    {
+      "href": "/portrait"
+    },
+    {
+      "href": "/corporate"
+    },
+    {
+      "href": "/grossesse"
+    },
+    {
+      "href": "/in-the-box"
+    },
+    {
+      "href": "/evenementiel"
+    },
+    {
+      "href": "/packshot"
+    }
+  ],
+  "pricing_blocks.cta_href": [
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    }
+  ],
+  "pricing_cards.cta_href": [
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    },
+    {
+      "cta_href": "/contact"
+    }
+  ]
+}
