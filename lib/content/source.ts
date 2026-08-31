@@ -468,6 +468,8 @@ export async function getEditorial(slug: string): Promise<EditorialPage> {
   const ctaBlock = one(d.cta_blocks ?? [], slug);
   const leadRow = bySlug(d.cta_lead_paragraphs ?? [], slug)[0];
 
+  const publishedLabel = frenchDate(str(page?.published_at));
+
   const article: ArticlePageData = {
     ...shared,
     kind: "article",
@@ -485,10 +487,17 @@ export async function getEditorial(slug: string): Promise<EditorialPage> {
       scrollLabel: str(hero?.scroll_label) || "Scroll",
     },
     meta: {
-      blocks: bySlug(d.article_meta ?? [], slug).map((r) => ({
-        label: str(r.label),
-        value: str(r.value),
-      })),
+      // The publication date is written once, on the page, and appears here
+      // rather than being typed a second time under a label of its own. Any
+      // row that used to hold it is dropped, so the two cannot disagree. A
+      // date that means something else, an event's own date for instance,
+      // is a different fact and stays where it was written.
+      blocks: [
+        ...(publishedLabel ? [{ label: PUBLISHED_LABEL, value: publishedLabel }] : []),
+        ...bySlug(d.article_meta ?? [], slug)
+          .filter((r) => !IS_PUBLISHED_ROW.test(str(r.label)))
+          .map((r) => ({ label: str(r.label), value: str(r.value) })),
+      ],
       shareLabel: nullable(hero?.share_label),
     },
     cta: ctaBlock
@@ -529,6 +538,10 @@ export async function getContactPage() {
     faq: { ...headingFor(d, slug, "faq"), entries: faqFor(d, slug) },
   };
 }
+
+/** How the sidebar names the publication date, and how it recognises an old one. */
+const PUBLISHED_LABEL = "Publié le";
+const IS_PUBLISHED_ROW = /^publi/i;
 
 const FRENCH_MONTHS = [
   "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",

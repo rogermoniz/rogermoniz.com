@@ -188,6 +188,7 @@ const ARTICLE: Blueprint = {
     {
       key: "meta",
       label: "Informations de l'article",
+      hint: "La date de publication s'affiche toute seule, depuis les réglages de la page. N'ajoutez ici que ce qui vient en plus, l'auteur par exemple.",
       panels: [{ form: "rows", table: "article_meta", title: "Informations", noun: "information" }],
     },
     { key: "toc", label: "Sommaire", panels: [{ form: "rows", table: "toc_entries", title: "Entrées", noun: "entrée" }] },

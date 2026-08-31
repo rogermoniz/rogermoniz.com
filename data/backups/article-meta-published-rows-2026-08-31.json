@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "page_slug": "blog/octobre-rose-2025",
+    "position": 0,
+    "label": "Publié le",
+    "value": "15 Octobre 2025"
+  },
+  {
+    "id": 3,
+    "page_slug": "blog/shooting-ehpad",
+    "position": 0,
+    "label": "Publié le",
+    "value": "16 Juin 2026"
+  },
+  {
+    "id": 5,
+    "page_slug": "blog/trois-lieux-magiques-a-nice",
+    "position": 0,
+    "label": "Publié le",
+    "value": "8 Avril 2026"
+  },
+  {
+    "id": 9,
+    "page_slug": "blog/les-mythes-sur-les-shootings",
+    "position": 0,
+    "label": "Publié le",
+    "value": "30 Août 2026"
+  },
+  {
+    "id": 13,
+    "page_slug": "blog/lire-la-lumiere",
+    "position": 0,
+    "label": "Publié le",
+    "value": "31 Août 2026"
+  },
+  {
+    "id": 15,
+    "page_slug": "blog/photographier-un-evenement",
+    "position": 0,
+    "label": "Publié le",
+    "value": "31 Août 2026"
+  },
+  {
+    "id": 17,
+    "page_slug": "blog/construire-une-image",
+    "position": 0,
+    "label": "Publié le",
+    "value": "31 Août 2026"
+  }
+]
