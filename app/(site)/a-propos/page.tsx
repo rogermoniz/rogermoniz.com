@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { canonicalPath } from "@/lib/canonical";
 import Image from "next/image";
-import { Preloader } from "@/components/effects/Preloader";
 import { ScrollCue } from "@/components/effects/ScrollCue";
 import { Reveal } from "@/components/effects/Reveal";
 import { RichText } from "@/components/primitives/RichText";
@@ -163,7 +162,6 @@ export default async function AProposRoute() {
       </section>
 
       <DualCta links={data.cta} />
-      <Preloader label={data.preloaderLabel} />
     </>
   );
 }

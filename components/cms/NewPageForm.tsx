@@ -36,17 +36,6 @@ export function NewPageForm({ kind }: { kind: string }) {
         <input id="meta_title" name="meta_title" type="text" required className={CONTROL} />
       </div>
 
-      {/* An article shows no loader, so it is never asked for the word. */}
-      {kind === "article" ? null : (
-        <div className="flex flex-col gap-2">
-          <label htmlFor="preloader_label" className="text-sm font-semibold text-ink">
-            Texte du chargement
-          </label>
-          <p className="-mt-1 text-xs text-muted">Le mot affiché pendant que la page s'ouvre.</p>
-          <input id="preloader_label" name="preloader_label" type="text" className={CONTROL} />
-        </div>
-      )}
-
       <div className="flex flex-wrap items-center gap-4">
         <button
           type="submit"

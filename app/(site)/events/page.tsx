@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { canonicalPath } from "@/lib/canonical";
 import Image from "next/image";
-import { Preloader } from "@/components/effects/Preloader";
 import { Reveal } from "@/components/effects/Reveal";
 import { BubbleButton } from "@/components/primitives/BubbleButton";
 import {
@@ -97,7 +96,6 @@ export default async function EventsRoute() {
       </Container>
 
       <FaqSection heading={data.faq} entries={data.faq.entries} />
-      <Preloader label={data.preloaderLabel} />
     </>
   );
 }

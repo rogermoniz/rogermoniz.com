@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { canonicalPath } from "@/lib/canonical";
-import { Preloader } from "@/components/effects/Preloader";
 import { Reveal } from "@/components/effects/Reveal";
 import {
   Container,
@@ -84,7 +83,6 @@ export default async function ContactRoute() {
       </Container>
 
       <FaqSection heading={data.faq} entries={data.faq.entries} />
-      <Preloader label={data.preloaderLabel} />
     </>
   );
 }

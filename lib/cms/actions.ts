@@ -396,7 +396,6 @@ export async function createPage(_prev: ActionResult | null, form: FormData): Pr
     route,
     kind,
     meta_title: title,
-    preloader_label: String(form.get("preloader_label") ?? "").trim() || null,
     sort_order: sortOrder,
     // Nothing goes live by being created. The editor publishes it when it is ready.
     status: "draft",

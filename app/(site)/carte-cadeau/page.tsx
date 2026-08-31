@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { canonicalPath } from "@/lib/canonical";
-import { Preloader } from "@/components/effects/Preloader";
 import { Reveal } from "@/components/effects/Reveal";
 import { RichText } from "@/components/primitives/RichText";
 import {
@@ -62,7 +61,6 @@ export default async function CarteCadeauRoute() {
       </Container>
 
       <FaqSection heading={data.faq} entries={data.faq.entries} />
-      <Preloader label={data.preloaderLabel} />
     </>
   );
 }

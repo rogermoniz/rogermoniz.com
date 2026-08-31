@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { canonicalPath } from "@/lib/canonical";
-import { Preloader } from "@/components/effects/Preloader";
 import { ApertureGallery } from "@/components/sections/ApertureGallery";
 import { CtaSection } from "@/components/sections/CtaSection";
 import { FaqSection } from "@/components/sections/FaqSection";
@@ -19,10 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomeRoute() {
-  const [homePage, { preloaderLabel }] = await Promise.all([
-    getHomePage(),
-    getPageMeta("index"),
-  ]);
+  const homePage = await getHomePage();
 
   return (
     <>
@@ -32,7 +28,6 @@ export default async function HomeRoute() {
       <ReviewsMarquee reviews={homePage.reviews} />
       <FaqSection heading={homePage.faq.heading} entries={homePage.faq.entries} />
       <CtaSection label={homePage.cta.label} href={homePage.cta.href} />
-      <Preloader label={preloaderLabel} />
     </>
   );
 }

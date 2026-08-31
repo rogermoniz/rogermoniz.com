@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Preloader } from "@/components/effects/Preloader";
 import { ArticleSidebar } from "@/components/sections/editorial/ArticleSidebar";
 import { ContentBlocks } from "@/components/sections/editorial/ContentBlocks";
 import { HeroMarquee } from "@/components/sections/HeroMarquee";
@@ -54,7 +53,6 @@ export function LegalPage({ data }: { data: LegalPageData }) {
           </div>
         </div>
       </section>
-      <Preloader label={data.preloaderLabel ?? "Roger Moniz"} />
     </>
   );
 }

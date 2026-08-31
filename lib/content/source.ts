@@ -261,10 +261,7 @@ export async function getPageStatus(slug: string): Promise<string> {
 export async function getPageMeta(slug: string) {
   const d = await db();
   const page = (d.pages ?? []).find((p) => p.slug === slug);
-  return {
-    metaTitle: str(page?.meta_title),
-    preloaderLabel: str(page?.preloader_label),
-  };
+  return { metaTitle: str(page?.meta_title) };
 }
 
 export async function getHomePage(): Promise<HomePage> {
@@ -347,7 +344,6 @@ export async function getPrestation(slug: string): Promise<PrestationPage> {
   return {
     slug,
     metaTitle: meta.metaTitle,
-    preloaderLabel: meta.preloaderLabel,
     hero: heroFor(d, slug),
     vision: {
       kind: vision?.kind === "stacked" ? "stacked" : "split",
@@ -447,7 +443,6 @@ export async function getEditorial(slug: string): Promise<EditorialPage> {
   const shared = {
     route: str(page?.route),
     metaTitle: meta.metaTitle,
-    preloaderLabel: meta.preloaderLabel,
     toc: bySlug(d.toc_entries ?? [], slug).map((r) => ({
       href: str(r.href),
       label: str(r.label),

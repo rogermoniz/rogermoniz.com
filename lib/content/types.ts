@@ -166,8 +166,6 @@ export type CtaLink = {
 export type PrestationPage = {
   slug: string;
   metaTitle: string;
-  /** Shown by the preloader while the page settles. */
-  preloaderLabel: string;
   hero: HomePage["hero"];
   vision: VisionBlock;
   process: SectionHeading & { steps: ProcessStep[] };
@@ -242,7 +240,6 @@ export type ArticleHeroData = {
 type EditorialShared = {
   route?: string;
   metaTitle?: string;
-  preloaderLabel: string | null;
   toc: readonly TocEntry[];
   sections: readonly ContentSection[];
 };
@@ -297,5 +294,4 @@ export type FaqBlock = SectionHeading & { entries: readonly FaqEntry[] };
 /** The five pages that share no template with any other. */
 export type UniquePage = Record<string, unknown> & {
   metaTitle?: string;
-  preloaderLabel: string | null;
 };

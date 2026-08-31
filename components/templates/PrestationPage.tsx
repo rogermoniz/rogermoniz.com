@@ -1,4 +1,3 @@
-import { Preloader } from "@/components/effects/Preloader";
 import { HeroMarquee } from "@/components/sections/HeroMarquee";
 import { DualCta } from "@/components/sections/prestation/DualCta";
 import { PortfolioSection } from "@/components/sections/prestation/PortfolioSection";
@@ -20,7 +19,6 @@ export function PrestationPage({ data }: { data: PrestationData }) {
       <PricingSection pricing={data.pricing} />
       <PortfolioSection portfolio={data.portfolio} />
       <DualCta links={data.cta} heading={data.ctaHeading} lead={data.ctaLead} />
-      <Preloader label={data.preloaderLabel} />
     </>
   );
 }

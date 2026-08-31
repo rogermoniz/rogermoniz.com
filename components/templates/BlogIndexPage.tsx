@@ -1,4 +1,3 @@
-import { Preloader } from "@/components/effects/Preloader";
 import { Container } from "@/components/primitives/Typography";
 import { HeroMarquee } from "@/components/sections/HeroMarquee";
 import { RuledHeading } from "@/components/sections/RuledHeading";
@@ -33,7 +32,6 @@ export function BlogIndexPage({ data }: { data: BlogPageData }) {
         filterHead={data.filterHead}
         articlesIntro={data.articlesIntro}
       />
-      <Preloader label={data.preloaderLabel} />
     </>
   );
 }
