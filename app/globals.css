@@ -192,7 +192,10 @@
 
   --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-preloader: cubic-bezier(0.85, 0, 0.15, 1);
+  /* A fade wants its time in the middle. The expo curve is nearly finished
+     before the eye has started, which made a quarter second fade read as no
+     fade at all. */
+  --ease-fade: cubic-bezier(0.4, 0, 0.2, 1);
 
   --animate-scroll-up: scroll-up 36s linear infinite;
   --animate-scroll-down: scroll-down 45s linear infinite;
@@ -200,14 +203,13 @@
   --animate-scroll-down-slow: scroll-down 48s linear infinite;
   --animate-reviews: scroll-reviews 45s linear infinite;
   --animate-footer-marquee: footer-scroll 64s linear infinite;
-  --animate-preloader-pulse: preloader-pulse 1.5s ease-in-out infinite alternate;
   --animate-cue-drop: cue-drop 2.1s var(--ease-snappy) infinite;
   --animate-cue-bob: cue-bob 2.1s ease-in-out infinite;
-  /* The page arriving. Short on purpose: long enough to be felt, short enough
-     that nobody waits for it. Deliberately no fill mode: it starts at once, so
-     there is nothing to fill, and a page whose animation never runs is then a
-     page at full opacity rather than an invisible one. */
-  --animate-route-fade: route-fade 260ms var(--ease-out-expo);
+  /* The page arriving. Long enough to be felt, short enough that nobody waits
+     for it. Deliberately no fill mode: it starts at once, so there is nothing
+     to fill, and a page whose animation never runs is then a page at full
+     opacity rather than an invisible one. */
+  --animate-route-fade: route-fade 400ms var(--ease-fade);
 
   @keyframes route-fade {
     from { opacity: 0; }
@@ -228,10 +230,6 @@
   @keyframes footer-scroll {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
-  }
-  @keyframes preloader-pulse {
-    0% { opacity: 0.6; }
-    100% { opacity: 1; filter: drop-shadow(0 0 10px rgb(216 171 82 / 0.3)); }
   }
   @keyframes cue-drop {
     0% { transform: translateY(-100%); }
