@@ -132,7 +132,13 @@ export function ArticleSidebar({
                     <li key={entry.href} className="relative lg:pl-5">
                       <span
                         aria-hidden="true"
-                        className={`absolute top-[0.6em] -left-[3px] hidden size-1.5 -translate-y-1/2 rounded-full bg-accent transition-transform duration-300 ease-out-expo lg:block ${
+                        // Centred on the rule, not beside it. The rule is 1px
+                        // wide at left 0, so its middle is at 0.5px; the dot is
+                        // 6px, so its left edge belongs at 0.5 - 3. And its top
+                        // is half a line of the link's own type, 0.92rem over
+                        // 1.35, rather than an em of whatever size this span
+                        // happens to inherit, which was a third of a pixel out.
+                        className={`absolute top-[0.621rem] -left-[2.5px] hidden size-1.5 -translate-y-1/2 rounded-full bg-accent transition-transform duration-300 ease-out-expo lg:block ${
                           isActive ? "scale-100" : "scale-0"
                         }`}
                       />
