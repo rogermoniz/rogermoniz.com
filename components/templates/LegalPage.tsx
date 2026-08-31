@@ -28,17 +28,6 @@ export function LegalPage({ data }: { data: LegalPageData }) {
 
   return (
     <>
-
-      <div className="fixed top-6 left-6 z-1001 max-md:hidden">
-        <Link
-          href="/"
-          className="group inline-flex items-center gap-3 font-display text-[0.875rem] font-bold tracking-[0.1em] text-ink uppercase transition-colors duration-300 hover:text-accent"
-        >
-          <BackArrow />
-          {data.backLabel}
-        </Link>
-      </div>
-
       <HeroMarquee hero={hero} />
 
       <section className="relative z-10 bg-surface px-[var(--padding-x)] pt-[var(--band-tight)] pb-[var(--band-loose)]">
@@ -53,6 +42,22 @@ export function LegalPage({ data }: { data: LegalPageData }) {
           </div>
         </div>
       </section>
+
+      {/* Positioned, so it sits where it looks regardless of where it is
+          written. It is written last because the router places the reader by
+          measuring the first element of the page it just opened: a pinned
+          element there reads as already in view, and the page then opens at
+          whatever scroll the reader arrived with, which for these pages is the
+          foot of the site where the link to them lives. */}
+      <div className="fixed top-6 left-6 z-1001 max-md:hidden">
+        <Link
+          href="/"
+          className="group inline-flex items-center gap-3 font-display text-[0.875rem] font-bold tracking-[0.1em] text-ink uppercase transition-colors duration-300 hover:text-accent"
+        >
+          <BackArrow />
+          {data.backLabel}
+        </Link>
+      </div>
     </>
   );
 }
