@@ -1,0 +1,107 @@
+{
+  "read_next_cards": [
+    {
+      "id": 1,
+      "page_slug": "blog/octobre-rose-2025",
+      "position": 0,
+      "href": null,
+      "badge": "Conseils Pro",
+      "path": "v1779963609/Amour_Pastel_15_orsyuk.webp",
+      "alt": "Set Design Studio",
+      "title": "Pourquoi le Set Design transforme vos portraits",
+      "description": "Un fond uni est classique, mais un véritable set design raconte une histoire. Comment nous construisons des décors éphémères pour élever l'identité visuelle de nos clients Corporate et Mode."
+    },
+    {
+      "id": 2,
+      "page_slug": "blog/octobre-rose-2025",
+      "position": 1,
+      "href": null,
+      "badge": "Éditorial",
+      "path": "v1779963606/Amour_Pastel_14_tolqjw.webp",
+      "alt": "Film Camera",
+      "title": "La magie de la pellicule vs Le numérique",
+      "description": "Dans un monde hyper-connecté, pourquoi le format moyen argentique continue-t-il de fasciner les directeurs artistiques ? Analyse d'une esthétique intemporelle."
+    },
+    {
+      "id": 5,
+      "page_slug": "blog/trois-lieux-magiques-a-nice",
+      "position": 0,
+      "href": null,
+      "badge": "Conseils Pro",
+      "path": "v1779963609/Amour_Pastel_15_orsyuk.webp",
+      "alt": "Set Design Studio",
+      "title": "Pourquoi le Set Design transforme vos portraits",
+      "description": "Un fond uni est classique, mais un véritable set design raconte une histoire. Comment nous construisons des décors éphémères pour élever l'identité visuelle de nos clients Corporate et Mode."
+    },
+    {
+      "id": 6,
+      "page_slug": "blog/trois-lieux-magiques-a-nice",
+      "position": 1,
+      "href": null,
+      "badge": "Éditorial",
+      "path": "v1779963606/Amour_Pastel_14_tolqjw.webp",
+      "alt": "Film Camera",
+      "title": "La magie de la pellicule vs Le numérique",
+      "description": "Dans un monde hyper-connecté, pourquoi le format moyen argentique continue-t-il de fasciner les directeurs artistiques ? Analyse d'une esthétique intemporelle."
+    },
+    {
+      "id": 7,
+      "page_slug": "events/on-pose-pour-le-rose",
+      "position": 0,
+      "href": null,
+      "badge": "Conseils Pro",
+      "path": "v1779963609/Amour_Pastel_15_orsyuk.webp",
+      "alt": "Set Design Studio",
+      "title": "Pourquoi le Set Design transforme vos portraits",
+      "description": "Un fond uni est classique, mais un véritable set design raconte une histoire. Comment nous construisons des décors éphémères pour élever l'identité visuelle de nos clients Corporate et Mode."
+    },
+    {
+      "id": 8,
+      "page_slug": "events/on-pose-pour-le-rose",
+      "position": 1,
+      "href": null,
+      "badge": "Éditorial",
+      "path": "v1779963606/Amour_Pastel_14_tolqjw.webp",
+      "alt": "Film Camera",
+      "title": "La magie de la pellicule vs Le numérique",
+      "description": "Dans un monde hyper-connecté, pourquoi le format moyen argentique continue-t-il de fasciner les directeurs artistiques ? Analyse d'une esthétique intemporelle."
+    }
+  ],
+  "section_headings_read_next": [
+    {
+      "page_slug": "blog/les-mythes-sur-les-shootings",
+      "section_key": "read_next",
+      "eyebrow": null,
+      "title": null,
+      "subtitle": null
+    },
+    {
+      "page_slug": "blog/octobre-rose-2025",
+      "section_key": "read_next",
+      "eyebrow": null,
+      "title": "À Lire Aussi",
+      "subtitle": null
+    },
+    {
+      "page_slug": "blog/shooting-ehpad",
+      "section_key": "read_next",
+      "eyebrow": null,
+      "title": "À Lire Aussi",
+      "subtitle": null
+    },
+    {
+      "page_slug": "blog/trois-lieux-magiques-a-nice",
+      "section_key": "read_next",
+      "eyebrow": null,
+      "title": "À Lire Aussi",
+      "subtitle": null
+    },
+    {
+      "page_slug": "events/on-pose-pour-le-rose",
+      "section_key": "read_next",
+      "eyebrow": null,
+      "title": "À Lire Aussi",
+      "subtitle": null
+    }
+  ]
+}
