@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { cloudinary } from "@/lib/cloudinary";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -72,7 +73,7 @@ export function SiteHeader({
             className="flex items-center gap-3 text-sm font-semibold tracking-[0.02em] whitespace-nowrap text-menu-ink transition-colors duration-600"
           >
             <Image
-              src={identity.logo}
+              src={cloudinary(identity.logo, { width: 80 })}
               alt="Roger Moniz"
               width={40}
               height={40}

@@ -2,6 +2,7 @@ import "server-only";
 import { TABLE_BY_NAME, type Field, type TableSpec } from "@/lib/cms/schema";
 import { HIDDEN_COLUMNS, controlKind, isAdvanced, type ControlKind } from "@/lib/cms/labels";
 import { blueprintFor, type Panel, type Section } from "@/lib/cms/blueprint";
+import { normalisePath } from "@/lib/cms/cloudinary";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 export type Row = Record<string, unknown>;
@@ -204,7 +205,14 @@ export async function loadGlobalPanel(
   return { form: "rows", table, title: "", noun: "élément", rows, filters, child: null };
 }
 
-/** Every Cloudinary path already used on the site, so images can be reused. */
+/**
+ * Every Cloudinary path already used on the site, so images can be reused.
+ *
+ * Reduced to the stored form and deduplicated: some rows were written as a
+ * full delivery link and some as the bare path, and offering both meant the
+ * same photograph appeared twice in the picker, once in a form that would not
+ * render where it was being placed.
+ */
 export async function knownImages(): Promise<string[]> {
   const columns: [string, string][] = [
     ["footer_images", "path"], ["hero_marquee_images", "path"], ["gallery_items", "path"],
@@ -222,7 +230,7 @@ export async function knownImages(): Promise<string[]> {
         .filter((v): v is string => typeof v === "string" && v !== "");
     }),
   );
-  return [...new Set(found.flat())].sort();
+  return [...new Set(found.flat().map(normalisePath))].sort();
 }
 
 /** A short human label for a row, so a collapsed list stays readable. */

@@ -1,0 +1,79 @@
+{
+  "footer_images": [
+    {
+      "id": 1,
+      "path": "https://res.cloudinary.com/dfbuajiyj/image/upload/f_auto,q_auto,w_500/v1779962864/OPPLR_2026_Marion_7_wmt1q9.webp"
+    },
+    {
+      "id": 2,
+      "path": "https://res.cloudinary.com/dfbuajiyj/image/upload/f_auto,q_auto,w_500/v1779962892/Fantaisie_20_d4p7y7.webp"
+    },
+    {
+      "id": 3,
+      "path": "https://res.cloudinary.com/dfbuajiyj/image/upload/f_auto,q_auto,w_500/v1779963169/Myl%C3%A8ne-18_nqlixh.webp"
+    },
+    {
+      "id": 4,
+      "path": "https://res.cloudinary.com/dfbuajiyj/image/upload/f_auto,q_auto,w_500/v1779963334/Evenement_8_gjmdf9.webp"
+    },
+    {
+      "id": 5,
+      "path": "https://res.cloudinary.com/dfbuajiyj/image/upload/f_auto,q_auto,w_500/v1779963384/Shooting_in_the_box_1_wabrhi.webp"
+    },
+    {
+      "id": 6,
+      "path": "https://res.cloudinary.com/dfbuajiyj/image/upload/f_auto,q_auto,w_500/v1779962865/OPPLR_2026_Marion_10_gww0li.webp"
+    },
+    {
+      "id": 7,
+      "path": "https://res.cloudinary.com/dfbuajiyj/image/upload/f_auto,q_auto,w_500/v1779963171/Myl%C3%A8ne-29_f6qop1.webp"
+    },
+    {
+      "id": 8,
+      "path": "https://res.cloudinary.com/dfbuajiyj/image/upload/f_auto,q_auto,w_500/v1779962892/Fantaisie_21_abq3xn.webp"
+    }
+  ],
+  "hero_marquee_images": [
+    {
+      "id": 21,
+      "path": "https://res.cloudinary.com/dfbuajiyj/image/upload/v1780396264/PORTRAIT_fskclu.webp"
+    }
+  ],
+  "gallery_items": [
+    {
+      "id": 2,
+      "path": "https://res.cloudinary.com/dfbuajiyj/image/upload/v1779963164/Myl%C3%A8ne-7_ffgl1b.webp"
+    }
+  ],
+  "site_settings": [
+    {
+      "id": 1,
+      "logo_path": "https://res.cloudinary.com/dfbuajiyj/image/upload/v1781367819/R_3_xb3j2t_hqcxbt.webp"
+    }
+  ],
+  "rich_sections": [
+    {
+      "page_slug": "blog/les-mythes-sur-les-shootings",
+      "position": 2,
+      "blocks": [
+        {
+          "text": "Mon rôle n'est pas d'attendre la perfection ",
+          "type": "heading",
+          "level": 2
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            "C'est précisément là que, selon moi, se trouve le plus grand mythe sur les shootings photo. Mon travail ne consiste pas uniquement à créer de belles images. Il consiste avant tout à créer les conditions pour que vous vous sentiez suffisamment en confiance pour être vous-même."
+          ]
+        },
+        {
+          "alt": "Une femme allongée sur un plaid blanc devant des genêts en fleurs, riant en peignant une toile posée dans l'herbe",
+          "path": "https://res.cloudinary.com/dfbuajiyj/image/upload/v1779963040/Portrait_18_bnwc8w.webp",
+          "type": "figure",
+          "variant": ""
+        }
+      ]
+    }
+  ]
+}

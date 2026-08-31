@@ -154,7 +154,7 @@ export function ImageField({
                 type="button"
                 title={candidate}
                 onClick={() => {
-                  setPath(candidate);
+                  setPath(normalisePath(candidate));
                   setBrowsing(false);
                 }}
                 className={`aspect-square overflow-hidden rounded-md border transition-colors duration-200 ${

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { cloudinary } from "@/lib/cloudinary";
 import Link from "next/link";
 import { CookiePreferencesButton } from "@/components/consent/CookiePreferencesButton";
 import {
@@ -31,7 +32,7 @@ export async function SiteFooter() {
   return (
     <footer
       id="contact"
-      className="overflow-hidden bg-surface-footer pt-[clamp(60px,8vw,110px)] pb-[clamp(88px,9vw,120px)] text-ink"
+      className="overflow-hidden bg-surface-footer pt-[var(--band)] pb-[var(--band)] text-ink"
     >
       <div className="relative mb-[clamp(44px,5vw,76px)] w-full overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]">
         <div className="flex w-max animate-footer-marquee motion-reduce:animate-none">
@@ -42,7 +43,7 @@ export async function SiteFooter() {
               className="group mr-4 aspect-4/5 w-[clamp(180px,19vw,250px)] flex-none overflow-hidden rounded-[14px] bg-surface"
             >
               <Image
-                src={src}
+                src={cloudinary(src, { width: 500 })}
                 alt=""
                 width={500}
                 height={625}
