@@ -196,7 +196,12 @@ export async function getSiteIdentity() {
 
 export async function getNavigation() {
   const d = await db();
-  const items = d.nav_items ?? [];
+  // A menu entry for a page that is a draft, or that has been deleted, is a
+  // link to a 404. The menu is written by hand, so it can outlive its page.
+  const live = new Set(
+    (d.pages ?? []).filter(isPublished).map((p) => `/${str(p.slug)}`),
+  );
+  const items = (d.nav_items ?? []).filter((i) => live.has(withoutSlash(str(i.href))));
   const primary = items.filter((i) => i.group_key === "primary");
   const children = items.filter((i) => i.group_key === "prestations");
 

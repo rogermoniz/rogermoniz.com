@@ -299,6 +299,33 @@ const SCAFFOLD: Record<string, (slug: string) => { table: string; row: Record<st
   legal: (slug) => [{ table: "hero_marquee", row: { page_slug: slug, title: "", image_aspect: "3 / 4" } }],
 };
 
+/**
+ * The menu entry that puts a new prestation or legal page in reach.
+ *
+ * The menu is a table written by hand, so a page created without one existed
+ * at its address and was linked from nowhere. It is added at the end of the
+ * group it belongs to and is renamed, reordered or removed on the Menu panel
+ * like every other entry. A draft is filtered out of the menu until it is
+ * published, so nothing appears before its page does.
+ */
+const NAV_GROUP: Record<string, { group: string; parent: string | null }> = {
+  prestation: { group: "prestations", parent: "Prestations" },
+  legal: { group: "legal", parent: null },
+};
+
+async function addNavItem(kind: string, slug: string, title: string) {
+  const entry = NAV_GROUP[kind];
+  if (!entry) return;
+
+  await supabaseAdmin.from("nav_items").insert({
+    group_key: entry.group,
+    parent_label: entry.parent,
+    label: title,
+    href: `/${slug}`,
+    position: await nextPosition("nav_items", { group_key: entry.group }),
+  });
+}
+
 const SLUG_PATTERN = /^[a-z0-9]+(?:[-/][a-z0-9]+)*$/;
 
 /**
@@ -381,9 +408,11 @@ export async function createPage(_prev: ActionResult | null, form: FormData): Pr
     if (scaffoldError) return { ok: false, message: `${table}: ${scaffoldError.message}` };
   }
 
-  // The title is written for Google and carries the studio suffix; a card
-  // shows the article's own name.
-  if (kind === "article") await addListingCard(slug, (title.split("|")[0] ?? title).trim());
+  // The title is written for Google and carries the studio suffix; a card and a
+  // menu entry show the page's own name.
+  const name = (title.split("|")[0] ?? title).trim();
+  if (kind === "article") await addListingCard(slug, name);
+  else await addNavItem(kind, slug, name);
 
   publish();
   redirect(`/admin/pages/${slug.split("/").map(encodeURIComponent).join("/")}`);
@@ -409,6 +438,16 @@ export async function deletePage(form: FormData) {
   // and left alone it stays on the blog pointing at an address that answers
   // 404. Hrefs are written both with and without the closing slash.
   await supabaseAdmin.from("article_cards").delete().in("href", [`/${slug}`, `/${slug}/`]);
+
+  // Same for its menu entry, in the groups a page is added to. The top level
+  // menu is never edited from here: "Prestations" points at the first
+  // prestation as well as opening the list, and that is a decision, not a
+  // consequence of deleting a page.
+  await supabaseAdmin
+    .from("nav_items")
+    .delete()
+    .in("href", [`/${slug}`, `/${slug}/`])
+    .in("group_key", ["prestations", "legal"]);
 
   publish();
   redirect("/admin");
