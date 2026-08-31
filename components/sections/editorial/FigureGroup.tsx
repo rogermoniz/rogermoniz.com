@@ -28,15 +28,18 @@ export function figureColumns(variant: string, columns?: FigureColumns): FigureC
 export function FigureGroup({
   variant,
   columns,
+  className = "",
   children,
 }: {
   variant: string;
   columns?: FigureColumns;
+  /** The rhythm around it, which belongs to the article rather than the grid. */
+  className?: string;
   children: React.ReactNode;
 }) {
   return (
     <Reveal
-      className={`mt-[clamp(1.6rem,3vw,2.4rem)] grid gap-[clamp(1rem,1.6vw,1.4rem)] ${GRID[figureColumns(variant, columns)]}`}
+      className={`grid gap-[clamp(1rem,1.6vw,1.4rem)] ${GRID[figureColumns(variant, columns)]} ${className}`}
     >
       {children}
     </Reveal>

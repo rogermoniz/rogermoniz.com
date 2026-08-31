@@ -94,6 +94,16 @@
 
     --container-width: 1400px;
     --padding-x: 16px;
+
+    /* The vertical rhythm of the site, as four steps.
+       Every band of a page stands on one of these rather than on a number
+       written where it was needed, which is what stops the same kind of
+       surface breathing differently from one page to the next. A card or a
+       cell keeps its own padding: these are for the bands themselves. */
+    --band-tight: clamp(40px, 5vw, 72px);
+    --band: clamp(64px, 7vw, 100px);
+    --band-loose: clamp(90px, 10vw, 140px);
+    --band-hero: clamp(140px, 15vw, 220px);
   }
 
   html[data-theme="dark"] {

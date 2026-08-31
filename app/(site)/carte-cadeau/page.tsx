@@ -31,7 +31,7 @@ export default async function CarteCadeauRoute() {
       <Preloader label={data.preloaderLabel} />
       <HeroMarquee hero={data.hero} />
 
-      <Container as="section" className="bg-surface pt-[clamp(70px,9vw,120px)] text-center">
+      <Container as="section" className="bg-surface pt-[var(--band)] text-center">
         <Eyebrow>{data.intro.eyebrow}</Eyebrow>
         <Reveal variant="text">
           <SectionHeading2 className="mb-7">
@@ -50,7 +50,7 @@ export default async function CarteCadeauRoute() {
       <Container
         as="section"
         id="builder"
-        className="relative z-10 bg-surface pt-[clamp(140px,15vw,220px)] pb-[clamp(90px,10vw,140px)]"
+        className="relative z-10 bg-surface pt-[var(--band-hero)] pb-[var(--band-loose)]"
       >
         <GiftBuilder
           steps={data.steps}

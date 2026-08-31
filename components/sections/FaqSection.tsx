@@ -27,7 +27,7 @@ export function FaqSection({
     <Container
       as="section"
       id="faq"
-      className="bg-surface pt-[clamp(140px,15vw,220px)] pb-[clamp(90px,10vw,140px)]"
+      className="bg-surface pt-[var(--band-hero)] pb-[var(--band-loose)]"
     >
       <div className="mx-auto max-w-[900px]">
         <div className="mb-24 text-center">

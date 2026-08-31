@@ -20,7 +20,7 @@ export function BlogIndexPage({ data }: { data: BlogPageData }) {
 
       <section
         id="featured"
-        className="bg-surface pt-[clamp(110px,13vw,200px)] pb-[clamp(70px,8vw,120px)]"
+        className="bg-surface pt-[var(--band-hero)] pb-[var(--band)]"
       >
         <Container>
           <RuledHeading>{data.featuredIntro}</RuledHeading>

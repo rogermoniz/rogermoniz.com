@@ -33,7 +33,7 @@ export default async function ContactRoute() {
       <Container
         as="section"
         id="welcome"
-        className="bg-surface pt-[clamp(140px,15vw,220px)] pb-[clamp(90px,10vw,140px)]"
+        className="bg-surface pt-[var(--band-hero)] pb-[var(--band-loose)]"
       >
         <div className="grid grid-cols-2 gap-20 max-lg:grid-cols-1 max-lg:gap-12">
           <div className="flex flex-col">

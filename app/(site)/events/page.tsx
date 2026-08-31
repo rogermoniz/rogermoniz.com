@@ -35,7 +35,7 @@ export default async function EventsRoute() {
       <Preloader label={data.preloaderLabel} />
       <HeroMarquee hero={data.hero} />
 
-      <Container as="section" id="featured" className="bg-surface py-[clamp(64px,7vw,100px)]">
+      <Container as="section" id="featured" className="bg-surface py-[var(--band)]">
         <Reveal>
           <Eyebrow>{featured.eyebrow}</Eyebrow>
         </Reveal>
@@ -84,7 +84,7 @@ export default async function EventsRoute() {
         </div>
       </Container>
 
-      <Container as="section" id="evenements" className="bg-surface py-[clamp(64px,7vw,100px)]">
+      <Container as="section" id="evenements" className="bg-surface py-[var(--band)]">
         <Reveal>
           <Eyebrow>{data.listEyebrow}</Eyebrow>
         </Reveal>

@@ -24,7 +24,7 @@ export function DualCta({
   const hasIntro = Boolean(heading) || Boolean(lead?.length);
 
   return (
-    <section id="cta-contact" className="bg-surface py-[clamp(64px,7vw,100px)] text-center">
+    <section id="cta-contact" className="bg-surface py-[var(--band)] text-center">
       <Container>
         {heading ? (
           <Reveal variant="text">

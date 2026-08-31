@@ -15,7 +15,7 @@ export function ProcessSection({
   steps: readonly ProcessStep[];
 }) {
   return (
-    <section id="process" className="bg-surface py-[clamp(64px,7vw,100px)]">
+    <section id="process" className="bg-surface py-[var(--band)]">
       <Container>
         <Reveal>
           <Eyebrow>{heading.eyebrow}</Eyebrow>

@@ -6,6 +6,17 @@ import type { ContentBlock, ContentSection } from "@/lib/content/types";
 
 const PROSE = "mb-[1.6rem] text-[clamp(1.08rem,1.3vw,1.2rem)] leading-[1.85] text-ink";
 
+/**
+ * The air around a picture, whether it stands alone or in a grid of four.
+ *
+ * The two used to carry different rules and only half of one each: a lone
+ * picture pushed the text below it away but nothing above, a grid did the
+ * opposite, so a paragraph following a grid sat flat against the photographs.
+ * Both now say the same thing, which is why it is said once. Margins collapse,
+ * so a heading or a quote with more air of its own still wins.
+ */
+const MEDIA = "mt-[clamp(1.6rem,3vw,2.4rem)] mb-[clamp(1.6rem,3vw,2.4rem)] last:mb-0";
+
 
 function Block({ block, context }: { block: ContentBlock; context?: "duo" }) {
   switch (block.type) {
@@ -73,7 +84,7 @@ function Block({ block, context }: { block: ContentBlock; context?: "duo" }) {
       // The spacing sits on the wrapper, where `last` can see the blocks either
       // side of it: on the figure itself it only ever saw its own wrapper.
       return (
-        <Reveal className="mb-[clamp(1.6rem,3vw,2.4rem)] last:mb-0">
+        <Reveal className={MEDIA}>
           <Figure block={block} context={context} />
         </Reveal>
       );
@@ -92,7 +103,7 @@ function Block({ block, context }: { block: ContentBlock; context?: "duo" }) {
       // last picture alone on its row spreads across it.
       const spreadsOrphan = block.columns === undefined;
       return (
-        <FigureGroup variant={block.variant} columns={block.columns}>
+        <FigureGroup variant={block.variant} columns={block.columns} className={MEDIA}>
           {pictures.map((figure, index) => {
             const orphan =
               spreadsOrphan && pictures.length % cols === 1 && index === pictures.length - 1;

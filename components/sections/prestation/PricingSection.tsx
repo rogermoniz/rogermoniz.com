@@ -43,7 +43,7 @@ const GRID: Record<1 | 2 | 3 | 4, string> = {
 
 export function PricingSection({ pricing }: { pricing: PricingBlock }) {
   return (
-    <section id="pricing" className="bg-surface py-[clamp(64px,7vw,100px)]">
+    <section id="pricing" className="bg-surface py-[var(--band)]">
       <Container>
         <Reveal>
           <Eyebrow>{pricing.eyebrow}</Eyebrow>

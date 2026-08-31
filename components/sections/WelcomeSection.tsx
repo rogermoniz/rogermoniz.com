@@ -14,7 +14,7 @@ export function WelcomeSection({ welcome }: { welcome: HomePage["welcome"] }) {
     <Container
       as="section"
       id="welcome"
-      className="relative z-30 flex min-h-screen items-center bg-surface pt-[clamp(140px,15vw,220px)] pb-[clamp(90px,10vw,140px)]"
+      className="relative z-30 flex min-h-screen items-center bg-surface pt-[var(--band-hero)] pb-[var(--band-loose)]"
     >
       <div className="grid w-full grid-cols-2 items-center gap-20 max-lg:grid-cols-1 max-lg:gap-12">
         <Reveal className="group relative aspect-4/5 w-full overflow-hidden rounded-3xl max-lg:aspect-video">

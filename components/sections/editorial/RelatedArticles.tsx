@@ -24,7 +24,7 @@ export function RelatedArticles({ data }: { data: RelatedData }) {
   const remaining = data.cards.length - visible.length;
 
   return (
-    <section className="bg-surface py-[clamp(64px,7vw,100px)]">
+    <section className="bg-surface py-[var(--band)]">
       <Container>
         <Reveal variant="text">
           <SectionHeading2 className="mb-12">{data.title}</SectionHeading2>

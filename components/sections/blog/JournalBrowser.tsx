@@ -27,7 +27,7 @@ export function JournalBrowser({
   return (
     <>
       {filters.length ? (
-        <section className="bg-surface py-[clamp(40px,5vw,72px)]">
+        <section className="bg-surface py-[var(--band-tight)]">
           <Container>
             {filterHead ? (
               <Reveal className="mb-5 text-[0.7rem] font-semibold tracking-[0.16em] text-muted uppercase">
@@ -55,7 +55,7 @@ export function JournalBrowser({
 
       <section
         id="articles"
-        className="bg-surface pt-[clamp(24px,3vw,48px)] pb-[clamp(90px,10vw,140px)]"
+        className="bg-surface pt-[clamp(24px,3vw,48px)] pb-[var(--band-loose)]"
       >
         <Container>
           <RuledHeading>{articlesIntro}</RuledHeading>

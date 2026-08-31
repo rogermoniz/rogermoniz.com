@@ -44,7 +44,7 @@ export function PortfolioSection({ portfolio }: { portfolio: PortfolioBlock }) {
   const images = portfolio.items.map((item) => item.image);
 
   return (
-    <section id="portfolio" className="relative z-10 bg-surface py-[clamp(64px,7vw,100px)]">
+    <section id="portfolio" className="relative z-10 bg-surface py-[var(--band)]">
       <Container>
         <Reveal>
           <Eyebrow>{portfolio.eyebrow}</Eyebrow>

@@ -79,7 +79,7 @@ export default async function AProposRoute() {
         </div>
       </section>
 
-      <Container as="section" className="py-[clamp(55px,7vw,90px)] pb-[clamp(80px,11vw,150px)]">
+      <Container as="section" className="py-[var(--band)] pb-[var(--band-loose)]">
         <div className="grid grid-cols-[0.85fr_1.15fr] items-center gap-[clamp(2rem,5vw,5.5rem)] max-[900px]:grid-cols-1">
           <Reveal className="group aspect-4/5 overflow-hidden rounded-2xl bg-surface max-[900px]:max-w-[420px]">
             <Image
@@ -130,7 +130,7 @@ export default async function AProposRoute() {
 
       <ProcessSection heading={data.process} steps={data.process.steps} />
 
-      <div className="py-[clamp(60px,8vw,110px)]">
+      <div className="py-[var(--band)]">
         <div className="-mx-[50vw] ml-[calc(50%-50vw)] flex w-screen snap-x snap-mandatory gap-[clamp(0.6rem,1vw,1rem)] overflow-x-auto px-[clamp(0.6rem,1vw,1rem)] [scrollbar-width:none]">
           {data.strip.map((shot) => (
             <div
@@ -151,7 +151,7 @@ export default async function AProposRoute() {
         </div>
       </div>
 
-      <section className="mx-auto max-w-[1000px] px-[var(--padding-x)] pt-[clamp(80px,11vw,150px)] pb-[clamp(60px,8vw,110px)] text-center">
+      <section className="mx-auto max-w-[1000px] px-[var(--padding-x)] pt-[var(--band-loose)] pb-[var(--band)] text-center">
         <Reveal
           as="p"
           className="font-display text-[clamp(1.4rem,2.8vw,2.2rem)] leading-snug text-ink italic"

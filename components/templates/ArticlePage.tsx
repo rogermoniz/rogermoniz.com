@@ -32,7 +32,7 @@ export function ArticlePage({ data }: { data: ArticlePageData }) {
       <Preloader label={data.preloaderLabel ?? "Roger Moniz"} />
       <ArticleHero {...hero} />
 
-      <section className="relative z-10 bg-surface px-[var(--padding-x)] pt-[clamp(3rem,6vw,5rem)] pb-[clamp(90px,12vw,135px)]">
+      <section className="relative z-10 bg-surface px-[var(--padding-x)] pt-[var(--band-tight)] pb-[var(--band-loose)]">
         <div className="mx-auto grid max-w-[1080px] grid-cols-[260px_minmax(0,1fr)] items-start gap-[clamp(2.5rem,5vw,5vw)] max-lg:grid-cols-1">
           <div className="sticky top-10 h-max self-start max-lg:static">
             <div className="tactile flex max-h-[calc(100vh-5rem)] flex-col gap-7 overflow-y-auto rounded-[20px] p-7 max-lg:max-h-none">
@@ -46,7 +46,7 @@ export function ArticlePage({ data }: { data: ArticlePageData }) {
       </section>
 
       {data.cta ? (
-        <section id="cta-contact" className="bg-surface py-[clamp(80px,10vw,135px)] text-center">
+        <section id="cta-contact" className="bg-surface py-[var(--band)] text-center">
           <Container>
             {data.cta.title ? (
               <h2 className="mb-6 font-display text-[clamp(2rem,4.5vw,4rem)] leading-[1.12] font-bold tracking-[-0.04em] text-ink uppercase">

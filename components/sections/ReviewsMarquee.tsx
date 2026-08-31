@@ -72,7 +72,7 @@ function ReviewCard({ review, hidden }: { review: Review; hidden: boolean }) {
  */
 export function ReviewsMarquee({ reviews }: { reviews: HomePage["reviews"] }) {
   return (
-    <section className="relative z-10 overflow-hidden bg-surface pt-[clamp(140px,15vw,220px)] pb-[clamp(90px,10vw,140px)]">
+    <section className="relative z-10 overflow-hidden bg-surface pt-[var(--band-hero)] pb-[var(--band-loose)]">
       <Container>
         <div className="mb-24 text-center">
           <Eyebrow>{reviews.heading.eyebrow}</Eyebrow>

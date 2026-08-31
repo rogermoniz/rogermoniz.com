@@ -21,7 +21,7 @@ export function VisionSection({ vision }: { vision: VisionBlock }) {
       <Container
         as="section"
         id="vision"
-        className="relative z-10 bg-surface py-[clamp(64px,7vw,100px)]"
+        className="relative z-10 bg-surface py-[var(--band)]"
       >
         <div>
           <Reveal>
@@ -63,7 +63,7 @@ export function VisionSection({ vision }: { vision: VisionBlock }) {
     <Container
       as="section"
       id="vision"
-      className="relative z-10 bg-surface py-[clamp(64px,7vw,100px)]"
+      className="relative z-10 bg-surface py-[var(--band)]"
     >
       <Reveal>
         <Eyebrow>{vision.eyebrow}</Eyebrow>
