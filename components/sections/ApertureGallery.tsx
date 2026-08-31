@@ -230,6 +230,17 @@ export function ApertureGallery({ prestations }: { prestations: HomePage["presta
             </div>
           </div>
         ))}
+
+        {/* The photograph dissolves into the page across the top, the way the
+            hero's marquee already does. On a phone the browser draws its own
+            bar hard against the top of the viewport, and a full bleed picture
+            meeting it edge to edge reads as a white block sitting on the
+            image; against a fade it reads as the page continuing underneath.
+            Only below the tablet breakpoint, where that bar overlaps content. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 z-20 hidden h-[16vh] bg-[linear-gradient(to_bottom,var(--color-surface)_0%,var(--surface-fade)_100%)] max-nav:block"
+        />
       </div>
     </section>
   );
