@@ -48,14 +48,29 @@ export function Card({ card }: { card: ArticleCard }) {
             {card.date}
           </span>
         ) : null}
-        <h3 className="mb-3 line-clamp-2 font-display text-[clamp(1.1rem,1.8vw,1.4rem)] font-bold tracking-[-0.02em] text-ink uppercase">
-          {card.title}
-        </h3>
-        {/* Two lines, however long the excerpt is, so a row of cards lines up
-            and the button below sits at the same height on each. */}
-        <p className="mb-6 grow line-clamp-2 text-[0.95rem] leading-relaxed text-muted">
-          {card.description}
-        </p>
+        {/* Two lines each, however long the words are, so a row of cards lines
+            up and the buttons below sit at the same height.
+
+            Each clamped line sits inside a plain wrapper rather than being a
+            flex child itself. Clamping needs `display: -webkit-box`, and a flex
+            item does not get to keep that display: the browser turns it into a
+            block, the clamp stops applying, and the extra line is sliced by the
+            card instead of ending in an ellipsis. The wrapper is the flex item,
+            so the text keeps the display the clamp needs. */}
+        <div className="mb-3">
+          <h3 className="line-clamp-2 font-display text-[clamp(1.1rem,1.8vw,1.4rem)] font-bold tracking-[-0.02em] text-ink uppercase">
+            {card.title}
+          </h3>
+        </div>
+        <div className="mb-6 grow">
+          {/* The height is stated as well as the clamp, and the two agree
+              exactly: 1.625 of a line, twice. Where the clamp holds it changes
+              nothing, and where it does not the third line is hidden outright
+              rather than sliced through the middle. */}
+          <p className="line-clamp-2 max-h-[3.25em] text-[0.95rem] leading-relaxed text-muted">
+            {card.description}
+          </p>
+        </div>
         <span className="tactile inline-flex w-fit items-center gap-3 rounded-[100px] px-5 py-2.5">
           <span className="font-display text-[0.7rem] font-bold tracking-[0.05em] uppercase">
             {card.ctaLabel}
