@@ -163,7 +163,10 @@ export function ApertureGallery({ prestations }: { prestations: HomePage["presta
       id="prestations"
       className="relative h-[1150vh] bg-surface max-md:h-[870vh]"
     >
-      <div className="sticky top-0 h-svh w-screen overflow-hidden">
+      {/* `dvh`, not `svh`: on a phone the address bar retracts as you scroll,
+          the viewport grows by its height, and a panel measured against the
+          smaller figure leaves a band of page showing underneath it. */}
+      <div className="sticky top-0 h-dvh w-screen overflow-hidden">
         <div className="absolute inset-0 z-1 flex flex-col items-center justify-center text-center">
           <Reveal>
             <Eyebrow>{prestations.heading.eyebrow}</Eyebrow>
@@ -183,7 +186,7 @@ export function ApertureGallery({ prestations }: { prestations: HomePage["presta
               slideRefs.current[index] = node;
             }}
             style={{ zIndex: index + 2, clipPath: "circle(0% at 50% 50%)" }}
-            className="absolute top-0 left-0 h-svh w-screen"
+            className="absolute top-0 left-0 h-dvh w-screen"
           >
             <div
               ref={(node) => {

@@ -32,7 +32,7 @@ export default async function AProposRoute() {
   return (
     <>
 
-      <section className="relative flex min-h-svh items-center overflow-hidden bg-surface text-ink">
+      <section className="relative flex min-h-dvh items-center overflow-hidden bg-surface text-ink">
         {/* The portrait bleeds in from the right and dissolves into the page. */}
         <div className="absolute inset-y-0 right-0 w-[48%] max-[900px]:w-full max-[900px]:opacity-30">
           {hero.backgrounds.map((background) => (

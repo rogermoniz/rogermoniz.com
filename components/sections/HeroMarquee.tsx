@@ -175,7 +175,7 @@ export function HeroMarquee({ hero }: { hero: HomePage["hero"] }) {
 
   return (
     <div ref={pinRef} className="relative nav:h-[calc(100vh_+_1100px)]">
-      <section className="relative flex h-svh w-full items-center justify-center overflow-hidden bg-surface nav:sticky nav:top-0 nav:h-screen">
+      <section className="relative flex h-dvh w-full items-center justify-center overflow-hidden bg-surface nav:sticky nav:top-0 nav:h-screen">
         <div
           ref={overlayRef}
           // Centring lives in `transform` (not Tailwind's `translate` utilities) so
