@@ -85,7 +85,7 @@ async function fetchAll() {
     "site_settings", "nav_items", "footer_images", "pages",
     "hero_marquee", "hero_marquee_images", "article_hero", "about_hero", "about_hero_backgrounds",
     "section_headings", "faq_entries", "cta_blocks", "cta_lead_paragraphs", "cta_links",
-    "rich_sections", "toc_entries", "article_meta", "read_next_cards",
+    "rich_sections", "toc_entries", "article_meta",
     "vision_blocks", "vision_paragraphs", "vision_images", "process_steps",
     "pricing_blocks", "pricing_cards", "pricing_features", "pricing_notes", "gallery_items",
     "home_welcome", "home_welcome_paragraphs", "prestation_teasers", "reviews",
@@ -467,7 +467,6 @@ export async function getEditorial(slug: string): Promise<EditorialPage> {
   const hero = one(d.article_hero ?? [], slug);
   const ctaBlock = one(d.cta_blocks ?? [], slug);
   const leadRow = bySlug(d.cta_lead_paragraphs ?? [], slug)[0];
-  const cards = bySlug(d.read_next_cards ?? [], slug);
 
   const article: ArticlePageData = {
     ...shared,
@@ -495,19 +494,6 @@ export async function getEditorial(slug: string): Promise<EditorialPage> {
           title: nullable(ctaBlock.title),
           lead: leadRow ? str(leadRow.body) : null,
           links: ctaLinksFor(d, slug),
-        }
-      : null,
-    readNext: cards.length
-      ? {
-          title: headingFor(d, slug, "read_next").title,
-          cards: cards.map((c) => ({
-            href: nullable(c.href),
-            badge: nullable(c.badge),
-            path: nullable(c.path),
-            alt: str(c.alt),
-            title: nullable(c.title),
-            description: nullable(c.description),
-          })),
         }
       : null,
   };

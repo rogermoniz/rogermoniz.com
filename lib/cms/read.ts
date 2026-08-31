@@ -209,7 +209,7 @@ export async function knownImages(): Promise<string[]> {
   const columns: [string, string][] = [
     ["footer_images", "path"], ["hero_marquee_images", "path"], ["gallery_items", "path"],
     ["vision_images", "path"], ["prestation_teasers", "path"], ["about_strip", "path"],
-    ["about_hero_backgrounds", "path"], ["article_cards", "path"], ["read_next_cards", "path"],
+    ["about_hero_backgrounds", "path"], ["article_cards", "path"],
     ["blog_cover", "path"], ["event_featured", "path"], ["reviews", "avatar_path"],
     ["home_welcome", "image_path"], ["about_story", "image_path"], ["article_hero", "image_path"],
     ["site_settings", "logo_path"],

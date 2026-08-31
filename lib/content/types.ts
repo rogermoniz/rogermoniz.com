@@ -267,17 +267,6 @@ export type ArticlePageData = EditorialShared & {
     lead: string | null;
     links: readonly CtaLink[];
   } | null;
-  readNext: {
-    title: string | null;
-    cards: readonly {
-      href: string | null;
-      badge: string | null;
-      path: string | null;
-      alt: string;
-      title: string | null;
-      description: string | null;
-    }[];
-  } | null;
   /** Everything else in this article's category, for the tail of the page. */
   related: {
     title: string;
