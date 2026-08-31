@@ -179,7 +179,11 @@ const ARTICLE: Blueprint = {
     {
       key: "hero",
       label: "Bandeau d'accueil",
-      panels: [{ form: "single", table: "article_hero", title: "Titre et image" }],
+      panels: [
+        // The date shown here is the page's publication date, set once in the
+        // settings below, because it also orders the listing.
+        { form: "single", table: "article_hero", title: "Titre et image", omit: ["date_label"] },
+      ],
     },
     {
       key: "meta",
@@ -241,7 +245,8 @@ const BLOG: Blueprint = {
     {
       key: "featured",
       label: "Article à la une",
-      panels: [heading("featured"), { form: "single", table: "blog_cover", title: "L'article mis en avant" }],
+      hint: "C'est l'article publié le plus récemment, repris tel quel depuis sa carte. Il change tout seul à chaque publication. Seul le titre de la section se règle ici.",
+      panels: [heading("featured")],
     },
     {
       key: "articles",
@@ -265,12 +270,8 @@ const EVENTS: Blueprint = {
     {
       key: "featured",
       label: "Événement à la une",
-      panels: [
-        heading("featured"),
-        { form: "single", table: "event_featured", title: "L'événement mis en avant" },
-        { form: "rows", table: "event_featured_paragraphs", title: "Paragraphes", noun: "paragraphe" },
-        { form: "rows", table: "event_featured_stats", title: "Informations", noun: "information" },
-      ],
+      hint: "C'est l'événement publié le plus récemment, repris tel quel depuis sa carte. Il change tout seul à chaque publication. Seul le titre de la section se règle ici.",
+      panels: [heading("featured")],
     },
     {
       key: "list",

@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { canonicalPath } from "@/lib/canonical";
-import Image from "next/image";
 import { Reveal } from "@/components/effects/Reveal";
-import { BubbleButton } from "@/components/primitives/BubbleButton";
 import {
   Container,
   Eyebrow,
@@ -10,9 +8,10 @@ import {
   SectionHeading2,
 } from "@/components/primitives/Typography";
 import { ArticleGrid } from "@/components/sections/ArticleGrid";
+import { CoverStory } from "@/components/sections/blog/CoverStory";
+import { RuledHeading } from "@/components/sections/RuledHeading";
 import { FaqSection } from "@/components/sections/FaqSection";
 import { HeroMarquee } from "@/components/sections/HeroMarquee";
-import { cloudinary } from "@/lib/cloudinary";
 import { getEventsPage } from "@/lib/content/source";
 
 
@@ -27,60 +26,21 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function EventsRoute() {
   const data = await getEventsPage();
-  const featured = data.featured;
 
   return (
     <>
       <HeroMarquee hero={data.hero} />
 
-      <Container as="section" id="featured" className="bg-surface py-[var(--band)]">
-        <Reveal>
-          <Eyebrow>{featured.eyebrow}</Eyebrow>
-        </Reveal>
-
-        <div className="grid grid-cols-2 items-center gap-16 max-lg:grid-cols-1 max-lg:gap-10">
-          <Reveal className="group relative aspect-4/5 overflow-hidden rounded-3xl bg-surface">
-            <span className="absolute top-5 left-5 z-2 inline-flex items-center gap-2 rounded-full bg-black/60 px-3 py-1.5 font-display text-[0.6rem] font-semibold tracking-[1.5px] text-white uppercase backdrop-blur-sm">
-              {/* A live marker: reservations are currently open. */}
-              <span className="size-1.5 animate-pulse rounded-full bg-[#ff453a]" />
-              {featured.badge}
-            </span>
-            <Image
-              src={cloudinary(featured.path, { width: 1000 })}
-              alt={featured.alt}
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="size-full object-cover transition-transform duration-1500 ease-out-expo group-hover:scale-105"
-            />
-          </Reveal>
-
-          <Reveal className="flex flex-col">
-            <SectionHeading2 className="mb-8">
-              {featured.title}
-              <HeadingSub>{featured.subtitle}</HeadingSub>
-            </SectionHeading2>
-
-            {featured.paragraphs.map((paragraph, index) => (
-              <p key={index} className="mb-5 text-[1.05rem] leading-relaxed text-muted">
-                {paragraph}
-              </p>
-            ))}
-
-            <dl className="my-8 flex flex-col gap-4 border-t border-edge pt-8">
-              {featured.stats.map((stat) => (
-                <div key={stat.label} className="flex flex-wrap items-baseline justify-between gap-3">
-                  <dt className="font-display text-[0.7rem] font-semibold tracking-[2px] text-muted uppercase">
-                    {stat.label}
-                  </dt>
-                  <dd className="m-0 text-[0.95rem] font-medium text-ink">{stat.value}</dd>
-                </div>
-              ))}
-            </dl>
-
-            <BubbleButton href={featured.ctaHref}>{featured.ctaLabel}</BubbleButton>
-          </Reveal>
-        </div>
-      </Container>
+      {/* The next event, held up the way the blog holds up its newest article:
+          the same component, so the two listings read as one site. */}
+      {data.cover ? (
+        <section id="featured" className="bg-surface pt-[var(--band)] pb-[var(--band)]">
+          <Container>
+            <RuledHeading>{data.featuredIntro}</RuledHeading>
+            <CoverStory cover={data.cover} />
+          </Container>
+        </section>
+      ) : null}
 
       <Container as="section" id="evenements" className="bg-surface py-[var(--band)]">
         <Reveal>

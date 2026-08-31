@@ -47,6 +47,7 @@ const BY_COLUMN: Record<string, string> = {
   cta_href: "Lien du bouton",
   cta_label: "Texte du bouton",
   date_label: "Date affichée",
+  published_at: "Date de publication",
   description: "Description",
   email: "Adresse email",
   excerpt: "Accroche",
@@ -143,6 +144,8 @@ const HINTS: Record<string, string> = {
   "pricing_notes.placement": "au dessus ou en dessous des formules",
   "rich_sections.blocks": "structure du contenu de l'article, à modifier avec précaution",
   "pages.sort_order": "position de la page dans cet écran, pas sur le site",
+  "pages.published_at":
+    "Au format 2026-08-31. Elle décide de l'ordre des articles sur le blog et sur les events, du plus récent au plus ancien, et de celui qui est mis en avant tout en haut.",
   "pages.template": "standard pour un article de lecture, feature pour un dossier illustré",
   "site_settings.phone": "format international, utilisé par le lien d'appel",
 };

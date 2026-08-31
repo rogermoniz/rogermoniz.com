@@ -475,7 +475,9 @@ export async function getEditorial(slug: string): Promise<EditorialPage> {
     template: str(page?.template) === "feature" ? "feature" : "standard",
     hero: {
       category: nullable(hero?.category),
-      date: nullable(hero?.date_label),
+      // One date per article, the one that also orders the listing, so the
+      // page and its card can never disagree about when it was published.
+      date: frenchDate(str(page?.published_at)) ?? nullable(hero?.date_label),
       readingTime: nullable(hero?.reading_time),
       title: nullable(hero?.title),
       path: nullable(hero?.image_path),
@@ -528,82 +530,110 @@ export async function getContactPage() {
   };
 }
 
+const FRENCH_MONTHS = [
+  "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+  "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre",
+];
+
+/** "2026-06-16" written the way the site has always written a date. */
+function frenchDate(iso: string): string | null {
+  const [year, month, day] = iso.split("-").map(Number);
+  const name = FRENCH_MONTHS[(month ?? 0) - 1];
+  return year && name && day ? `${day} ${name} ${year}` : null;
+}
+
+/** Every page's publication date, by the route a card would link to. */
+function publicationDates(d: Record<string, Row[]>): Map<string, string> {
+  return new Map(
+    (d.pages ?? [])
+      .filter((p) => str(p.published_at))
+      .map((p) => [`/${str(p.slug)}`, str(p.published_at)]),
+  );
+}
+
+/**
+ * The cards of a listing, newest first.
+ *
+ * The order is the publication date on the page itself rather than the order
+ * the cards happen to sit in, so publishing an article puts it at the top of
+ * its listing and at the head of the page with nothing else to update. Two
+ * articles published the same day settle on their address, so the order never
+ * changes between two renders of the same content.
+ */
+function listingCards(d: Record<string, Row[]>, slug: string) {
+  const drafts = draftRoutes(d);
+  const dates = publicationDates(d);
+
+  return bySlug(d.article_cards ?? [], slug)
+    .filter((r) => !drafts.has(withoutSlash(str(r.href))))
+    .map((r) => {
+      const published = dates.get(withoutSlash(str(r.href))) ?? "";
+      return {
+        href: str(r.href),
+        // The card's own line wins where it says more than a date: an event
+        // announces the day it happens and the place it happens in.
+        date: nullable(r.date_label) ?? (published ? frenchDate(published) : null),
+        badge: nullable(r.badge),
+        path: nullable(r.path),
+        alt: str(r.alt),
+        title: nullable(r.title),
+        description: nullable(r.description),
+        ctaLabel: str(r.cta_label),
+        category: nullable(r.category) ?? undefined,
+        published,
+      };
+    })
+    .sort((a, b) => b.published.localeCompare(a.published) || a.href.localeCompare(b.href))
+    .map(({ published: _published, ...card }) => card);
+}
+
+/** The newest article of a listing, shown whole above the others. */
+function coverFrom(card: ReturnType<typeof listingCards>[number] | undefined) {
+  if (!card) return null;
+  return {
+    href: card.href,
+    flag: card.badge ?? "",
+    path: card.path ?? "",
+    alt: card.alt,
+    meta: card.date ?? "",
+    title: card.title ?? "",
+    excerpt: card.description ?? "",
+    ctaLabel: card.ctaLabel,
+  };
+}
+
 export async function getBlogPage() {
   const d = await db();
   const slug = "blog";
-  const cover = one(d.blog_cover ?? [], slug);
+  const cards = listingCards(d, slug);
   return {
     ...(await getPageMeta(slug)),
     hero: heroFor(d, slug),
     featuredIntro: headingFor(d, slug, "featured").title,
-    cover: {
-      href: str(cover?.href),
-      flag: str(cover?.flag),
-      path: str(cover?.path),
-      alt: str(cover?.alt),
-      meta: str(cover?.meta),
-      title: str(cover?.title),
-      excerpt: str(cover?.excerpt),
-      ctaLabel: str(cover?.cta_label),
-    },
+    cover: coverFrom(cards[0]),
     filterHead: headingFor(d, slug, "filters").title,
     filters: (d.blog_filters ?? []).map((r) => ({ value: str(r.value), label: str(r.label) })),
     articlesIntro: headingFor(d, slug, "articles").title,
-    cards: bySlug(d.article_cards ?? [], slug)
-      .filter((r) => !draftRoutes(d).has(withoutSlash(str(r.href))))
-      .map((r) => ({
-      href: str(r.href),
-      date: nullable(r.date_label),
-      badge: nullable(r.badge),
-      path: nullable(r.path),
-      alt: str(r.alt),
-      title: nullable(r.title),
-      description: nullable(r.description),
-      ctaLabel: str(r.cta_label),
-      category: nullable(r.category) ?? undefined,
-    })),
+    cards,
   };
 }
 
 export async function getEventsPage() {
   const d = await db();
   const slug = "events";
-  const featured = one(d.event_featured ?? [], slug);
-  const fh = headingFor(d, slug, "featured");
   const lh = headingFor(d, slug, "list");
+  // The events listing is the blog listing with a different set of cards: the
+  // newest one held up whole, the rest underneath, both from the same dates.
+  const cards = listingCards(d, slug);
   return {
     ...(await getPageMeta(slug)),
     hero: heroFor(d, slug),
-    featured: {
-      eyebrow: str(fh.eyebrow),
-      badge: str(featured?.badge),
-      path: str(featured?.path),
-      alt: str(featured?.alt),
-      title: fh.title,
-      subtitle: str(fh.subtitle),
-      paragraphs: (d.event_featured_paragraphs ?? []).map((r) => str(r.body)),
-      stats: (d.event_featured_stats ?? []).map((r) => ({
-        label: str(r.label),
-        value: str(r.value),
-      })),
-      ctaHref: str(featured?.cta_href),
-      ctaLabel: str(featured?.cta_label),
-    },
+    featuredIntro: headingFor(d, slug, "featured").title,
+    cover: coverFrom(cards[0]),
     listEyebrow: str(lh.eyebrow),
     listTitle: lh.title,
     listSubtitle: lh.subtitle,
-    cards: bySlug(d.article_cards ?? [], slug)
-      .filter((r) => !draftRoutes(d).has(withoutSlash(str(r.href))))
-      .map((r) => ({
-      href: str(r.href),
-      date: nullable(r.date_label),
-      badge: nullable(r.badge),
-      path: nullable(r.path),
-      alt: str(r.alt),
-      title: nullable(r.title),
-      description: nullable(r.description),
-      ctaLabel: str(r.cta_label),
-    })),
+    cards,
     faq: { ...headingFor(d, slug, "faq"), entries: faqFor(d, slug) },
   };
 }

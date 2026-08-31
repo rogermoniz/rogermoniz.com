@@ -16,15 +16,19 @@ export function BlogIndexPage({ data }: { data: BlogPageData }) {
     <>
       <HeroMarquee hero={data.hero} />
 
-      <section
-        id="featured"
-        className="bg-surface pt-[var(--band-hero)] pb-[var(--band)]"
-      >
-        <Container>
-          <RuledHeading>{data.featuredIntro}</RuledHeading>
-          <CoverStory cover={data.cover} />
-        </Container>
-      </section>
+      {/* The newest article, whole. There is nothing to hold up before the
+          first one is published, so the band goes rather than standing empty. */}
+      {data.cover ? (
+        <section
+          id="featured"
+          className="bg-surface pt-[var(--band-hero)] pb-[var(--band)]"
+        >
+          <Container>
+            <RuledHeading>{data.featuredIntro}</RuledHeading>
+            <CoverStory cover={data.cover} />
+          </Container>
+        </section>
+      ) : null}
 
       <JournalBrowser
         cards={data.cards}
