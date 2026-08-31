@@ -310,7 +310,10 @@ function MarqueeStrip({
           loading={lead && index === 0 ? undefined : "eager"}
           sizes={COLUMN_SIZES}
           style={{ "--pos": image.focal, "--pos-m": image.focalMobile, aspectRatio: aspect } as React.CSSProperties}
-          className="mb-[1.5vw] block h-auto w-full rounded-xl object-cover opacity-50 grayscale transition-[transform,opacity,filter,box-shadow] duration-800 ease-out-expo hover:z-10 hover:scale-[1.02] hover:opacity-100 hover:grayscale-0 hover:shadow-[0_30px_60px_var(--theme-shadow)] max-md:hover:scale-100"
+          // `scale` is its own CSS property, not part of `transform`, so a
+          // transition that names only `transform` leaves the hover scale to
+          // snap while the colour and the shadow ease in around it.
+          className="mb-[1.5vw] block h-auto w-full rounded-xl object-cover opacity-50 grayscale transition-[scale,opacity,filter,box-shadow] duration-800 ease-out-expo hover:z-10 hover:scale-[1.02] hover:opacity-100 hover:grayscale-0 hover:shadow-[0_30px_60px_var(--theme-shadow)] max-md:hover:scale-100"
         />
       ))}
     </div>

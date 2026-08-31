@@ -169,7 +169,7 @@ export function SiteHeader({
         id="rm-mobile-menu"
         aria-label="Navigation mobile"
         data-open={mobileOpen ? "true" : undefined}
-        className="fixed top-[95px] left-1/2 z-999 max-h-[75vh] w-[92%] max-w-[400px] -translate-x-1/2 scale-95 -translate-y-5 overflow-y-auto rounded-[30px] border border-menu-edge bg-menu-dropdown backdrop-blur-[var(--menu-blur)] p-5 opacity-0 shadow-[0_20px_80px_var(--menu-shadow)] transition-[transform,opacity,visibility] duration-400 ease-snappy [visibility:hidden] data-[open]:translate-y-0 data-[open]:scale-100 data-[open]:opacity-100 data-[open]:[visibility:visible] nav:hidden"
+        className="fixed top-[95px] left-1/2 z-999 max-h-[75vh] w-[92%] max-w-[400px] -translate-x-1/2 scale-95 -translate-y-5 overflow-y-auto rounded-[30px] border border-menu-edge bg-menu-dropdown backdrop-blur-[var(--menu-blur)] p-5 opacity-0 shadow-[0_20px_80px_var(--menu-shadow)] transition-[translate,scale,opacity,visibility] duration-400 ease-snappy [visibility:hidden] data-[open]:translate-y-0 data-[open]:scale-100 data-[open]:opacity-100 data-[open]:[visibility:visible] nav:hidden"
       >
         <ul>
           {nav.map((item, index) => {

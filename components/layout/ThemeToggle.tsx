@@ -16,7 +16,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       aria-label={isLight ? "Activer le thème sombre" : "Activer le thème clair"}
-      className="group fixed right-8 bottom-8 z-[10001] flex size-[52px] items-center justify-center overflow-hidden rounded-full border border-edge bg-edge backdrop-blur-md transition-[border-color,background-color,transform] duration-400 ease-out-expo hover:scale-105 hover:border-accent hover:bg-[var(--theme-btn-hover)]"
+      className="group fixed right-8 bottom-8 z-[10001] flex size-[52px] items-center justify-center overflow-hidden rounded-full border border-edge bg-edge backdrop-blur-md transition-[border-color,background-color,scale] duration-400 ease-out-expo hover:scale-105 hover:border-accent hover:bg-[var(--theme-btn-hover)]"
     >
       <span
         className="absolute flex size-full items-center justify-center transition-[transform,opacity] duration-800 ease-out-expo"
