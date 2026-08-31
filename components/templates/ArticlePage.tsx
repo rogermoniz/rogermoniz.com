@@ -1,4 +1,3 @@
-import { Preloader } from "@/components/effects/Preloader";
 import { Container } from "@/components/primitives/Typography";
 import { ArticleHero } from "@/components/sections/editorial/ArticleHero";
 import { ArticleSidebar } from "@/components/sections/editorial/ArticleSidebar";
@@ -29,7 +28,6 @@ export function ArticlePage({ data }: { data: ArticlePageData }) {
        halfway down. A plain block changes no layout here, and still carries the
        type scale to every button in the article. */
     <div className="[--button-label-size:0.875rem] [--button-label-weight:600]">
-      <Preloader label={data.preloaderLabel ?? "Roger Moniz"} />
       <ArticleHero {...hero} />
 
       <section className="relative z-10 bg-surface px-[var(--padding-x)] pt-[var(--band-tight)] pb-[var(--band-loose)]">

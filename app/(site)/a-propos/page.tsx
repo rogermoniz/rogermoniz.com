@@ -32,7 +32,6 @@ export default async function AProposRoute() {
 
   return (
     <>
-      <Preloader label={data.preloaderLabel} />
 
       <section className="relative flex min-h-svh items-center overflow-hidden bg-surface text-ink">
         {/* The portrait bleeds in from the right and dissolves into the page. */}
@@ -164,6 +163,7 @@ export default async function AProposRoute() {
       </section>
 
       <DualCta links={data.cta} />
+      <Preloader label={data.preloaderLabel} />
     </>
   );
 }

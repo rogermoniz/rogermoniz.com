@@ -29,7 +29,6 @@ export function LegalPage({ data }: { data: LegalPageData }) {
 
   return (
     <>
-      <Preloader label={data.preloaderLabel ?? "Roger Moniz"} />
 
       <div className="fixed top-6 left-6 z-1001 max-md:hidden">
         <Link
@@ -55,6 +54,7 @@ export function LegalPage({ data }: { data: LegalPageData }) {
           </div>
         </div>
       </section>
+      <Preloader label={data.preloaderLabel ?? "Roger Moniz"} />
     </>
   );
 }

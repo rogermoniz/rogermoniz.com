@@ -27,7 +27,6 @@ export default async function ContactRoute() {
   const data = await getContactPage();
   return (
     <>
-      <Preloader label={data.preloaderLabel} />
       <HeroMarquee hero={data.hero} />
 
       <Container
@@ -85,6 +84,7 @@ export default async function ContactRoute() {
       </Container>
 
       <FaqSection heading={data.faq} entries={data.faq.entries} />
+      <Preloader label={data.preloaderLabel} />
     </>
   );
 }

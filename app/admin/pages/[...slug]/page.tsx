@@ -26,7 +26,13 @@ export default async function PageEditor({ params }: { params: Promise<{ slug: s
   // it renamed the page, and moving a slug is a migration (every content
   // table keys off it with no on update cascade). The route is shown as the
   // badge above instead.
-  const settingsFields = editableFields("pages", ["slug", "route"]);
+  // An article shows no loader, so the word it would have displayed is a field
+  // that does nothing on this page.
+  const settingsFields = editableFields("pages", [
+    "slug",
+    "route",
+    ...(page.kind === "article" ? ["preloader_label"] : []),
+  ]);
 
   return (
     <>

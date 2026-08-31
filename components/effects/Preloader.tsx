@@ -3,43 +3,44 @@
 import { useEffect, useState } from "react";
 
 /**
- * The first document load belongs to it, and nothing else does.
- *
- * Every template renders one, so React mounted a fresh preloader on every
- * client navigation too, where there is no first paint left to cover: the load
- * event had long since fired, so it always ran the full fallback, flashed over
- * an already painted page, and held `html { overflow: hidden }` for 700ms.
- * That lock swallowed the router's scroll reset, which is why opening an
- * article from a card halfway down the blog landed halfway down the article.
- *
- * The flag lives at module scope, so it is reset by a real page load and by
- * nothing else.
+ * Set once the first document load has been covered. A real page load resets
+ * it, a navigation inside the site does not, which is how the loader tells the
+ * two apart.
  */
-let consumed = false;
+let firstLoadDone = false;
 
 /**
- * Holds the page still while the first paint settles, then slides away.
- * The bar creeps to 90% on a timer and completes on load; the hard 700ms
- * fallback guarantees it never traps the page.
+ * Holds the page while it settles, then slides away.
+ *
+ * A first document load has a paint to cover and a `load` event to wait for. A
+ * navigation inside the site has neither, since the page is already built, so
+ * there the loader is a short beat rather than a wait.
+ *
+ * **It renders last in a page and is positioned, never in flow.** The router
+ * decides where to put the reader by measuring the first element of the page it
+ * just opened; a full screen fixed panel sitting there reads as already in
+ * view, so the router leaves the scroll alone and an article opened from a card
+ * halfway down the blog begins halfway down. For the same reason the page is
+ * only locked during the first load, where there is no router decision to
+ * swallow.
  */
 export function Preloader({ label }: { label: string }) {
-  const [active] = useState(() => !consumed);
+  const [firstLoad] = useState(() => !firstLoadDone);
   const [progress, setProgress] = useState(0);
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    consumed = true;
-    if (!active) return;
+    firstLoadDone = true;
 
     const root = document.documentElement;
-    root.style.overflow = "hidden";
+    if (firstLoad) root.style.overflow = "hidden";
 
     let done = false;
     let settle: number | undefined;
 
     const creep = window.setInterval(() => {
-      setProgress((value) => Math.min(90, value + Math.random() * 10));
-    }, 200);
+      setProgress((value) => Math.min(90, value + Math.random() * 12));
+    }, 120);
 
     const finish = () => {
       if (done) return;
@@ -52,8 +53,12 @@ export function Preloader({ label }: { label: string }) {
       }, 80);
     };
 
-    window.addEventListener("load", finish);
-    const fallback = window.setTimeout(finish, 700);
+    if (firstLoad) window.addEventListener("load", finish);
+    // On a navigation the beat is short on purpose. What actually decides how
+    // long the loader stays up is the page being built behind it: timers wait
+    // their turn on the main thread, so a heavy page holds it a little longer,
+    // which is the point of covering the transition at all.
+    const fallback = window.setTimeout(finish, firstLoad ? 700 : 260);
 
     return () => {
       window.clearInterval(creep);
@@ -62,9 +67,7 @@ export function Preloader({ label }: { label: string }) {
       window.removeEventListener("load", finish);
       root.style.overflow = "";
     };
-  }, [active]);
-
-  if (!active) return null;
+  }, [firstLoad]);
 
   return (
     <div

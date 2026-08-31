@@ -14,13 +14,13 @@ import type { PrestationPage as PrestationData } from "@/lib/content/types";
 export function PrestationPage({ data }: { data: PrestationData }) {
   return (
     <>
-      <Preloader label={data.preloaderLabel} />
       <HeroMarquee hero={data.hero} />
       <VisionSection vision={data.vision} />
       <ProcessSection heading={data.process} steps={data.process.steps} />
       <PricingSection pricing={data.pricing} />
       <PortfolioSection portfolio={data.portfolio} />
       <DualCta links={data.cta} heading={data.ctaHeading} lead={data.ctaLead} />
+      <Preloader label={data.preloaderLabel} />
     </>
   );
 }

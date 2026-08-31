@@ -15,7 +15,6 @@ type BlogPageData = Awaited<ReturnType<typeof getBlogPage>>;
 export function BlogIndexPage({ data }: { data: BlogPageData }) {
   return (
     <>
-      <Preloader label={data.preloaderLabel} />
       <HeroMarquee hero={data.hero} />
 
       <section
@@ -34,6 +33,7 @@ export function BlogIndexPage({ data }: { data: BlogPageData }) {
         filterHead={data.filterHead}
         articlesIntro={data.articlesIntro}
       />
+      <Preloader label={data.preloaderLabel} />
     </>
   );
 }

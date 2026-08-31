@@ -28,7 +28,6 @@ export default async function CarteCadeauRoute() {
   const data = await getGiftPage();
   return (
     <>
-      <Preloader label={data.preloaderLabel} />
       <HeroMarquee hero={data.hero} />
 
       <Container as="section" className="bg-surface pt-[var(--band)] text-center">
@@ -63,6 +62,7 @@ export default async function CarteCadeauRoute() {
       </Container>
 
       <FaqSection heading={data.faq} entries={data.faq.entries} />
+      <Preloader label={data.preloaderLabel} />
     </>
   );
 }

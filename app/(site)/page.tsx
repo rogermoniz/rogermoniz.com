@@ -26,13 +26,13 @@ export default async function HomeRoute() {
 
   return (
     <>
-      <Preloader label={preloaderLabel} />
       <HeroMarquee hero={homePage.hero} />
       <WelcomeSection welcome={homePage.welcome} />
       <ApertureGallery prestations={homePage.prestations} />
       <ReviewsMarquee reviews={homePage.reviews} />
       <FaqSection heading={homePage.faq.heading} entries={homePage.faq.entries} />
       <CtaSection label={homePage.cta.label} href={homePage.cta.href} />
+      <Preloader label={preloaderLabel} />
     </>
   );
 }
