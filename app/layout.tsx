@@ -3,7 +3,6 @@ import { Inter, Oswald } from "next/font/google";
 import Script from "next/script";
 import { CONSENT_BOOTSTRAP, CONSENT_DEFAULTS } from "@/lib/consent";
 import { THEME_BOOTSTRAP, ThemeProvider } from "@/components/layout/ThemeProvider";
-import { THEME_COLOR } from "@/lib/theme";
 import "./globals.css";
 
 /**
@@ -69,8 +68,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr" data-theme="light" suppressHydrationWarning>
       <head>
-        {/* Before the bootstrap below, which rewrites it for a dark reader. */}
-        <meta name="theme-color" content={THEME_COLOR.light} />
         <link rel="preconnect" href="https://res.cloudinary.com" />
         {/*
           Two things have to be settled before anything is drawn, and neither can

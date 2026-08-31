@@ -10,24 +10,10 @@ import {
   type ReactNode,
 } from "react";
 
-import { THEME_COLOR, type Theme } from "@/lib/theme";
-
-export type { Theme };
+export type Theme = "light" | "dark";
 
 const STORAGE_KEY = "rm-theme";
 const DEFAULT_THEME: Theme = "light";
-
-/**
- * The browser's own bars follow the theme, at boot and at every toggle.
- *
- * Left unsaid, a phone browser picks that colour itself by looking at the page,
- * which is why the bar around the address blended at the top of the page, went
- * to a flat white block partway down, and stayed there. Saying it outright
- * stops the guessing.
- */
-function paintBrowserBars(theme: Theme) {
-  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", THEME_COLOR[theme]);
-}
 
 type ThemeContextValue = {
   theme: Theme;
@@ -54,7 +40,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setTheme((current) => {
       const next: Theme = current === "light" ? "dark" : "light";
       document.documentElement.setAttribute("data-theme", next);
-      paintBrowserBars(next);
       try {
         window.localStorage.setItem(STORAGE_KEY, next);
       } catch {
@@ -80,4 +65,4 @@ export function useTheme(): ThemeContextValue {
  * Applied before first paint so a reader who chose dark never sees a light
  * flash. Kept to a single attribute write; all other behaviour is React.
  */
-export const THEME_BOOTSTRAP = `try{var t=localStorage.getItem("${STORAGE_KEY}")||"${DEFAULT_THEME}";document.documentElement.setAttribute("data-theme",t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",t==="dark"?"${THEME_COLOR.dark}":"${THEME_COLOR.light}")}catch(e){document.documentElement.setAttribute("data-theme","${DEFAULT_THEME}")}`;
+export const THEME_BOOTSTRAP = `try{var t=localStorage.getItem("${STORAGE_KEY}")||"${DEFAULT_THEME}";document.documentElement.setAttribute("data-theme",t)}catch(e){document.documentElement.setAttribute("data-theme","${DEFAULT_THEME}")}`;
