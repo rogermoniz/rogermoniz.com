@@ -34,15 +34,52 @@ export function isPageScoped(table: string): boolean {
   return hasColumn(table, "page_slug");
 }
 
-export type EditableField = Field & { control: ControlKind; advanced: boolean };
+export type EditableField = Field & {
+  control: ControlKind;
+  advanced: boolean;
+  /** Set when the allowed values come from the database rather than the code. */
+  choices?: readonly string[];
+};
 
-export function editableFields(table: string, extraHidden: readonly string[] = []): EditableField[] {
+/** Choices that only exist once the database is read, keyed `table.column`. */
+export type LiveChoices = Record<string, readonly string[]>;
+
+export function editableFields(
+  table: string,
+  extraHidden: readonly string[] = [],
+  live: LiveChoices = {},
+): EditableField[] {
   const spec = TABLE_BY_NAME.get(table);
   if (!spec) throw new Error(`Unknown table ${table}`);
   const hidden = new Set([...HIDDEN_COLUMNS, ...extraHidden]);
   return spec.fields
     .filter((f) => !f.readOnly && !hidden.has(f.name))
-    .map((f) => ({ ...f, control: controlKind(table, f.name, f.kind), advanced: isAdvanced(f.name) }));
+    .map((f) => {
+      const choices = live[`${table}.${f.name}`];
+      return {
+        ...f,
+        control: choices ? ("choice" as ControlKind) : controlKind(table, f.name, f.kind),
+        advanced: isAdvanced(f.name),
+        ...(choices ? { choices } : {}),
+      };
+    });
+}
+
+/**
+ * The filter a blog card can be filed under.
+ *
+ * `article_cards.category` is not a label, it is the key the blog filters match
+ * on, so a card carrying anything else disappears the moment a visitor picks a
+ * filter — while still showing under Tout, which is why the mistake survives a
+ * look at the page. The values live in `blog_filters`, so the editor offers
+ * exactly those rather than a text box.
+ */
+export async function liveChoices(): Promise<LiveChoices> {
+  const { data } = await supabaseAdmin.from("blog_filters").select("value").order("position");
+  const values = ((data ?? []) as Row[])
+    .map((r) => String(r.value ?? ""))
+    .filter((value) => value && value !== "all");
+  return values.length ? { "article_cards.category": values } : {};
 }
 
 /* -------------------------------------------------------------------------- */

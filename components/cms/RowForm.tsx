@@ -139,7 +139,7 @@ function FieldGrid({
         const value = initial(field, row);
         const label = fieldLabel(table, field.name);
         const hint = fieldHint(table, field.name);
-        const choices = fieldChoices(table, field.name);
+        const choices = field.choices ?? fieldChoices(table, field.name);
         const wide =
           field.control === "longtext" ||
           field.control === "blocks" ||

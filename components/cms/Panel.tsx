@@ -1,6 +1,14 @@
 import { TABLE_BY_NAME } from "@/lib/cms/schema";
 import { addRow, deleteRowAction, moveRow } from "@/lib/cms/actions";
-import { editableFields, idColumn, keyColumns, summarise, type LoadedPanel, type Row } from "@/lib/cms/read";
+import {
+  editableFields,
+  idColumn,
+  keyColumns,
+  summarise,
+  type LiveChoices,
+  type LoadedPanel,
+  type Row,
+} from "@/lib/cms/read";
 import { previewUrl } from "@/lib/cms/cloudinary";
 import { RowForm } from "@/components/cms/RowForm";
 
@@ -79,10 +87,12 @@ export function Panel({
   panel,
   library,
   canUpload,
+  choices = {},
 }: {
   panel: LoadedPanel;
   library: readonly string[];
   canUpload: boolean;
+  choices?: LiveChoices;
 }) {
   const spec = TABLE_BY_NAME.get(panel.table);
   if (!spec) return null;
@@ -93,7 +103,7 @@ export function Panel({
   const scopedOut = Object.keys(panel.filters);
 
   if (panel.form === "single") {
-    const fields = editableFields(panel.table, [...scopedOut, ...panel.omit]);
+    const fields = editableFields(panel.table, [...scopedOut, ...panel.omit], choices);
     return (
       <div className="mb-8">
         {panel.title ? (
@@ -115,7 +125,7 @@ export function Panel({
     );
   }
 
-  const fields = editableFields(panel.table, scopedOut);
+  const fields = editableFields(panel.table, scopedOut, choices);
   const child = panel.child;
 
   return (
@@ -187,6 +197,7 @@ export function Panel({
                       rows={childRows}
                       library={library}
                       canUpload={canUpload}
+                      choices={choices}
                     />
                   ) : null}
                 </div>
@@ -211,16 +222,18 @@ function ChildList({
   rows,
   library,
   canUpload,
+  choices,
 }: {
   child: NonNullable<Extract<LoadedPanel, { form: "rows" }>["child"]>;
   parentId: string;
   rows: readonly Row[];
   library: readonly string[];
   canUpload: boolean;
+  choices: LiveChoices;
 }) {
   const spec = TABLE_BY_NAME.get(child.table);
   if (!spec) return null;
-  const fields = editableFields(child.table);
+  const fields = editableFields(child.table, [], choices);
   const filters = { [child.foreignKey]: parentId };
 
   return (

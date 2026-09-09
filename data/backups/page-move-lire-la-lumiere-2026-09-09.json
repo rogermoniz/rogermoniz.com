@@ -1,0 +1,358 @@
+{
+  "pages": [
+    {
+      "slug": "blog/lire-la-lumiere",
+      "route": "/blog/lire-la-lumiere/",
+      "kind": "article",
+      "meta_title": "Si je devais recommencer la photo aujourd'hui...",
+      "preloader_label": null,
+      "sort_order": 22,
+      "template": "standard",
+      "status": "published",
+      "published_at": "2026-09-09"
+    }
+  ],
+  "article_cards": [
+    {
+      "id": 6,
+      "page_slug": "blog",
+      "position": 3,
+      "href": "/blog/les-mythes-sur-les-shootings/",
+      "date_label": null,
+      "badge": "MA VISION",
+      "path": "v1779962865/OPPLR_2026_Marion_8_ehkotr.webp",
+      "alt": "Mythe",
+      "title": "Les mythes sur les shootings photo",
+      "description": "On vous a peut-être fait croire qu'une séance photo nécessitait de savoir poser, d'être à l'aise et presque déjà prêt(e) avant même d'arriver. Mais si je vous disais que tout cela est faux ? Découvrez pourquoi je préfère vous faire rire, vous guider et surtout vous faire passer un bon moment plutôt que de chercher la perfection.",
+      "cta_label": "Lire",
+      "category": "Ma-vision"
+    },
+    {
+      "id": 1,
+      "page_slug": "blog",
+      "position": 0,
+      "href": "/blog/shooting-ehpad/",
+      "date_label": null,
+      "badge": "Coulisses",
+      "path": "v1779963542/Blog_EHPAD_7_j2jkpu.webp",
+      "alt": "Shooting photo en EHPAD",
+      "title": "Shooting en EHPAD : redonner lumière et douceur",
+      "description": "Lors de ce shooting en EHPAD, j'ai rencontré des résidents pleins de vie, d'humour et d'histoires. Un projet photo humain et bienveillant, pour redonner confiance et visibilité à ceux qu'on oublie parfois.",
+      "cta_label": "Lire",
+      "category": "coulisses"
+    },
+    {
+      "id": 2,
+      "page_slug": "blog",
+      "position": 1,
+      "href": "/blog/trois-lieux-magiques-a-nice/",
+      "date_label": null,
+      "badge": "Conseils Pro",
+      "path": "v1779963528/Blog_3_lieux_magiques_zwetkw.webp",
+      "alt": "Trois lieux magiques à Nice",
+      "title": "Trois lieux magiques à Nice pour un shooting",
+      "description": "Nice est une ville qui respire la beauté et la lumière. De Cimiez au Vinaigrier, découvrez mes décors azuréens favoris pour créer des portraits empreints de poésie.",
+      "cta_label": "Lire",
+      "category": "conseils-pro"
+    },
+    {
+      "id": 3,
+      "page_slug": "blog",
+      "position": 2,
+      "href": "/blog/octobre-rose-2025/",
+      "date_label": null,
+      "badge": "Coulisses",
+      "path": "v1779963561/Blog_Octobre_Rose_8_rdzgmq.webp",
+      "alt": "Octobre Rose 2025",
+      "title": "Octobre Rose 2025 – Prévention et lutte contre le cancer du sein",
+      "description": "En ce mois d’Octobre Rose, la campagne de sensibilisation au dépistage du cancer du sein nous rappelle l’importance de la prévention et du soutien entre femmes. En tant que photographe à Nice, j’ai souhaité rendre hommage à cette cause à travers une séance photo pleine de lumière, de douceur et de solidarité. Et si la photographie peut, à sa manière, contribuer à sensibiliser, alors chaque image devient un petit pas vers plus de conscience et d’espérance.",
+      "cta_label": "Lire",
+      "category": "coulisses"
+    },
+    {
+      "id": 14,
+      "page_slug": "blog",
+      "position": 5,
+      "href": "/blog/photographier-un-evenement/",
+      "date_label": null,
+      "badge": "Événementiel",
+      "path": "v1781512639/Soir%C3%A9e_entrepreneurs_28.05.26-6_lrxy56.webp",
+      "alt": "Trois invités attablés en pleine conversation pendant une soirée",
+      "title": "Photographier un événement",
+      "description": "Anticiper plutôt que réagir, lire une salle encore vide, composer avec des lumières impossibles et livrer une sélection qui raconte la soirée.",
+      "cta_label": "Lire",
+      "category": "evenementiel"
+    },
+    {
+      "id": 15,
+      "page_slug": "blog",
+      "position": 6,
+      "href": "/blog/construire-une-image/",
+      "date_label": null,
+      "badge": "Éditorial",
+      "path": "v1779962882/Fantaisie_2_eavcyy.webp",
+      "alt": "Portrait mis en scène au bord de la mer, robe bleue et trident",
+      "title": "Construire une image",
+      "description": "Une idée, un décor, une couleur, un détail que personne ne remarque : comment se fabrique une image, bien avant d'appuyer.",
+      "cta_label": "Lire",
+      "category": "editorial"
+    },
+    {
+      "id": 13,
+      "page_slug": "blog",
+      "position": 4,
+      "href": "https://rogermoniz.com/blog/lire-la-lumiere/",
+      "date_label": "09 SEPTEMBRE 2026",
+      "badge": "MA VISION",
+      "path": "v1779962888/Fantaisie_14_hkqeew.webp",
+      "alt": "Shooting gothique en forêt",
+      "title": "Si je devais recommencer la photo aujourd'hui",
+      "description": " Avec quelques années de photographie derrière moi, j'ai appris énormément de choses… parfois à mes dépens. Si je pouvais recommencer depuis le début, certaines erreurs, certaines habitudes et surtout certaines croyances, je les aborderais très différemment. Voici ce que j'aimerais transmettre au photographe que j'étais à mes débuts.",
+      "cta_label": "Lire",
+      "category": "MA VISION"
+    }
+  ],
+  "cta_links": [
+    {
+      "id": 26,
+      "page_slug": "blog/les-mythes-sur-les-shootings",
+      "position": 0,
+      "href": "https://rogermoniz.com/contact/",
+      "label": "ME CONTACTER",
+      "variant": "outline"
+    },
+    {
+      "id": 27,
+      "page_slug": "blog/lire-la-lumiere",
+      "position": 0,
+      "href": "https://rogermoniz.com/contact/",
+      "label": "ME CONTACTER",
+      "variant": "outline"
+    }
+  ],
+  "article_hero": [
+    {
+      "page_slug": "blog/lire-la-lumiere",
+      "category": "MA VISION",
+      "date_label": "31 Août 2026",
+      "reading_time": "5 min de lecture",
+      "title": "Si je devais recommencer la photo aujourd'hui",
+      "image_path": "v1779962891/Fantaisie_19_xcpaou.webp",
+      "image_alt": "Shooting fantaisie",
+      "scroll_label": "Scroll",
+      "share_label": "Partager"
+    }
+  ],
+  "article_meta": [
+    {
+      "id": 14,
+      "page_slug": "blog/lire-la-lumiere",
+      "position": 1,
+      "label": "Auteur",
+      "value": "Roger Moniz"
+    }
+  ],
+  "cta_blocks": [
+    {
+      "page_slug": "blog/lire-la-lumiere",
+      "title": "ET MAINTENANT?",
+      "subtitle": null
+    }
+  ],
+  "cta_lead_paragraphs": [
+    {
+      "id": 13,
+      "page_slug": "blog/lire-la-lumiere",
+      "position": 0,
+      "body": "Si ces mots résonnent en vous, je vous invite à me contacter."
+    }
+  ],
+  "rich_sections": [
+    {
+      "id": 55,
+      "page_slug": "blog/lire-la-lumiere",
+      "anchor": "intro",
+      "variant": null,
+      "position": 0,
+      "blocks": [
+        {
+          "text": "Si je devais recommencer la photo aujourd'hui...",
+          "type": "heading",
+          "level": 2
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            "Quand je repense à mes débuts en photographie, il y a beaucoup de choses que je referais exactement de la même manière. Les erreurs, les doutes et les expérimentations m'ont permis de devenir le photographe que je suis aujourd'hui."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            "Mais s'il y a bien une chose que l'expérience m'a apprise, c'est qu'il existe quelques raccourcis que j'aurais aimé connaître plus tôt."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            "Le premier serait d'apprendre réellement les bases de mon matériel photo et de mes logiciels. Pas pour impressionner, simplement pour comprendre plus rapidement l'incroyable liberté créative qu'ils offrent. Une fois la technique assimilée, elle cesse d'être un frein et devient un formidable outil pour donner vie à ses idées."
+          ]
+        },
+        {
+          "alt": "Shooting \"fantaisie\"",
+          "path": "v1788981008/Sabrine_Mer-_1_gvkgsh.webp",
+          "type": "figure",
+          "variant": ""
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "page_slug": "blog/lire-la-lumiere",
+      "anchor": "parfait",
+      "variant": null,
+      "position": 1,
+      "blocks": [
+        {
+          "text": "Arrêter d'attendre que tout soit parfait ",
+          "type": "heading",
+          "level": 2
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            "Je serais aussi beaucoup moins exigeant avec moi-même."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            "Pendant longtemps, j'ai attendu que tout soit parfait avant d'être satisfait de mes photos. Je pensais qu'une image devait être irréprochable pour avoir de la valeur. Avec le recul, je réalise que ce n'est presque jamais la perfection qui nous touche. Ce sont les émotions, les regards, les imperfections qui racontent une histoire et rendent une photographie mémorable."
+          ]
+        },
+        {
+          "alt": "Fantaisie en extérieur",
+          "path": "v1779963000/Portrait_15_okf9jk.webp",
+          "type": "figure",
+          "variant": ""
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "page_slug": "blog/lire-la-lumiere",
+      "anchor": "progresser",
+      "variant": null,
+      "position": 2,
+      "blocks": [
+        {
+          "text": "Photographier pour progresser",
+          "type": "heading",
+          "level": 2
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            "Je pratiquerais encore plus."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            "Parce qu'il n'existe pas de meilleur moyen de progresser que de photographier, encore et encore. Chaque séance, chaque erreur et chaque essai permettent d'affiner son regard et de découvrir peu à peu le style qui nous correspond vraiment."
+          ]
+        },
+        {
+          "type": "figureGroup",
+          "columns": 1,
+          "figures": [
+            {
+              "alt": "amour de soi",
+              "path": "v1787254728/Camille_Blais_Nuages_xibfxc.webp",
+              "type": "figure",
+              "variant": ""
+            }
+          ],
+          "variant": ""
+        }
+      ]
+    },
+    {
+      "id": 58,
+      "page_slug": "blog/lire-la-lumiere",
+      "anchor": "likes",
+      "variant": null,
+      "position": 3,
+      "blocks": [
+        {
+          "text": "Arrêter de photographier pour des likes",
+          "type": "heading",
+          "level": 2
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            "Et surtout, je passerais beaucoup moins de temps à chercher l'approbation des autres."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            "Comme beaucoup de photographes, il m'est arrivé de réaliser certaines images en espérant qu'elles récolteraient davantage de \"likes\". Je pensais parfois davantage à ce qui plairait sur les réseaux sociaux qu'à ce qui me faisait réellement vibrer."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            "Petit spoiler : certaines de ces photos ne plaisaient finalement à personne... pas même à moi. Aujourd'hui, je préfère créer des images qui me ressemblent. Des photos dont je suis fier, même si elles ne suivent pas les tendances du moment. Parce qu'au fond, la créativité est ce qui me donne envie de prendre mon appareil photo à chaque séance."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            "Et c'est aussi ce que j'ai envie de partager avec vous à travers chaque image que je réalise."
+          ]
+        }
+      ]
+    }
+  ],
+  "section_headings": [
+    {
+      "page_slug": "blog/lire-la-lumiere",
+      "section_key": "related",
+      "eyebrow": null,
+      "title": null,
+      "subtitle": null
+    }
+  ],
+  "toc_entries": [
+    {
+      "id": 47,
+      "page_slug": "blog/lire-la-lumiere",
+      "position": 0,
+      "href": "#intro",
+      "label": "Apprendre la technique pour mieux créer"
+    },
+    {
+      "id": 48,
+      "page_slug": "blog/lire-la-lumiere",
+      "position": 1,
+      "href": "#parfait",
+      "label": "Arrêter d'attendre que tout soit parfait"
+    },
+    {
+      "id": 49,
+      "page_slug": "blog/lire-la-lumiere",
+      "position": 2,
+      "href": "#progresser",
+      "label": "Photographier pour progresser"
+    },
+    {
+      "id": 50,
+      "page_slug": "blog/lire-la-lumiere",
+      "position": 3,
+      "href": "#likes",
+      "label": "Arrêter de photographier pour des likes"
+    }
+  ]
+}

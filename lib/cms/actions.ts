@@ -7,6 +7,7 @@ import { checkPassword, isSignedIn, SESSION_COOKIE, sessionToken } from "@/lib/c
 import { TABLE_BY_NAME } from "@/lib/cms/schema";
 import { controlKind } from "@/lib/cms/labels";
 import { normalisePath } from "@/lib/cms/cloudinary";
+import { normaliseHref } from "@/lib/cms/links";
 import { ARTICLE_SECTIONS } from "@/lib/content/sections";
 import { hasColumn, idColumn, orderColumns } from "@/lib/cms/read";
 import { supabaseAdmin } from "@/lib/supabase/admin";
@@ -113,6 +114,12 @@ function coerce(table: string, form: FormData): Record<string, unknown> {
       // by every component that later reads it.
       const path = normalisePath(raw);
       row[field.name] = path === "" && !field.required ? null : path;
+    } else if (controlKind(table, field.name, field.kind) === "url") {
+      // A link is stored as the path the router matches on. The field takes a
+      // pasted address just as happily, so it is reduced here rather than kept
+      // and worked around by every comparison that later reads it.
+      const href = normaliseHref(raw);
+      row[field.name] = href === "" && !field.required ? null : href;
     } else {
       row[field.name] = raw === "" && !field.required ? null : raw;
     }

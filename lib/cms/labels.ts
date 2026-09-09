@@ -111,6 +111,8 @@ const BY_TABLE_COLUMN: Record<string, string> = {
   "about_figures.label": "Ce que le chiffre désigne",
   "about_figures.value": "Chiffre",
   "about_hero.tag": "Mention sous le titre",
+  "article_cards.category": "Filtre du blog",
+  "article_hero.category": "Surtitre au dessus du titre",
   "article_meta.label": "Intitulé",
   "article_meta.value": "Contenu",
   "blog_cover.meta": "Date et durée de lecture",
@@ -134,6 +136,11 @@ const BY_TABLE_COLUMN: Record<string, string> = {
 
 const HINTS: Record<string, string> = {
   "about_hero_backgrounds.theme": "clair ou sombre",
+  "article_cards.category":
+    "Décide sous quel bouton la carte apparaît sur la page Blog. Le texte affiché sur la carte, lui, se règle dans Pastille.",
+  "article_cards.href":
+    "Adresse de l'article sur le site, par exemple /blog/mon-article/. Une adresse complète collée depuis le navigateur est ramenée à cette forme à l'enregistrement.",
+  "article_hero.category": "texte affiché tel quel au dessus du titre de l'article",
   "blog_cover.flag": "petite étiquette au dessus de l'image",
   "gallery_items.span": "laisser vide pour une case standard",
   "hero_marquee.image_aspect": "3 / 4 partout, 1 / 1 sur In The Box",

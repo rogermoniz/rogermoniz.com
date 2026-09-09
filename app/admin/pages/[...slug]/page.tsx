@@ -5,7 +5,7 @@ import { Panel } from "@/components/cms/Panel";
 import { RowForm } from "@/components/cms/RowForm";
 import { deletePage, setPageStatus } from "@/lib/cms/actions";
 import { uploadEnabled } from "@/lib/cms/cloudinary";
-import { editableFields, knownImages, loadPage, pageName } from "@/lib/cms/read";
+import { editableFields, knownImages, liveChoices, loadPage, pageName } from "@/lib/cms/read";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 export default async function PageEditor({ params }: { params: Promise<{ slug: string[] }> }) {
   const { slug: segments } = await params;
   const slug = segments.map(decodeURIComponent).join("/");
-  const [loaded, library] = await Promise.all([loadPage(slug), knownImages()]);
+  const [loaded, library, choices] = await Promise.all([loadPage(slug), knownImages(), liveChoices()]);
   if (!loaded) notFound();
 
   const { page, sections } = loaded;
@@ -112,6 +112,7 @@ export default async function PageEditor({ params }: { params: Promise<{ slug: s
                 panel={panel}
                 library={library}
                 canUpload={canUpload}
+                choices={choices}
               />
             ))}
           </section>
