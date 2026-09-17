@@ -66,6 +66,23 @@ export default async function AdminHome() {
           );
         })}
 
+        <section className="mb-14 border-t border-edge pt-12">
+          <h2 className="mb-2 font-display text-[0.7rem] font-semibold tracking-[2px] text-muted uppercase">
+            Les ventes
+          </h2>
+          <p className="mb-5 text-sm text-muted">
+            Les cartes cadeaux et les séances payées sur le site, et ce qui reste à traiter.
+          </p>
+          <div className="grid grid-cols-3 gap-3 max-lg:grid-cols-2 max-md:grid-cols-1">
+            <Link
+              href="/admin/commandes"
+              className="tactile rounded-2xl px-5 py-4 text-sm font-medium text-ink transition-transform duration-300 hover:-translate-y-0.5"
+            >
+              Commandes
+            </Link>
+          </div>
+        </section>
+
         <section className="mb-8 border-t border-edge pt-12">
           <h2 className="mb-2 font-display text-[0.7rem] font-semibold tracking-[2px] text-muted uppercase">
             Tout le site

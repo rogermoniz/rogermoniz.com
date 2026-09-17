@@ -110,6 +110,8 @@ export type PricingCard = {
   title: string;
   description: string;
   price: string;
+  /** The price in cents when it can be charged, null when it is prose. */
+  amount: number | null;
   features: readonly string[];
   ctaLabel: string;
   ctaHref: string;

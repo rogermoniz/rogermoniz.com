@@ -375,7 +375,20 @@ insert into section_headings (page_slug, section_key, eyebrow, title, subtitle) 
   ('a-propos', 'story', 'Mon histoire', 'L''art dans la peau', null),
   ('a-propos', 'process', 'Ma façon de travailler', 'Ce qui guide', 'chaque séance.'),
   ('carte-cadeau', 'intro', 'L''Esprit du Cadeau', 'Offrez un moment,', 'pas un objet.'),
-  ('carte-cadeau', 'faq', 'Infos Pratiques', 'Questions Fréquentes', null);
+  ('carte-cadeau', 'faq', 'Infos Pratiques', 'Questions Fréquentes', null),
+  ('carte-cadeau', 'thanks', 'Commande confirmée', 'Merci !', 'Votre carte cadeau est en route'),
+  ('portrait', 'booking', 'Réservation', 'Réserver ma séance', 'Choisissez votre formule et réglez en ligne, je vous contacte ensuite pour fixer la date'),
+  ('portrait', 'thanks', 'Séance réservée', 'Merci !', 'Votre paiement est confirmé et Stripe vous envoie un reçu. Je vous contacte très vite par email ou téléphone pour fixer la date de votre séance.'),
+  ('amour-de-soi', 'booking', 'Réservation', 'Réserver ma séance', 'Choisissez votre formule et réglez en ligne, je vous contacte ensuite pour fixer la date'),
+  ('amour-de-soi', 'thanks', 'Séance réservée', 'Merci !', 'Votre paiement est confirmé et Stripe vous envoie un reçu. Je vous contacte très vite par email ou téléphone pour fixer la date de votre séance.'),
+  ('fantaisie', 'booking', 'Réservation', 'Réserver ma séance', 'Choisissez votre formule et réglez en ligne, je vous contacte ensuite pour fixer la date'),
+  ('fantaisie', 'thanks', 'Séance réservée', 'Merci !', 'Votre paiement est confirmé et Stripe vous envoie un reçu. Je vous contacte très vite par email ou téléphone pour fixer la date de votre séance.'),
+  ('corporate', 'booking', 'Réservation', 'Réserver ma séance', 'Choisissez votre formule et réglez en ligne, je vous contacte ensuite pour fixer la date'),
+  ('corporate', 'thanks', 'Séance réservée', 'Merci !', 'Votre paiement est confirmé et Stripe vous envoie un reçu. Je vous contacte très vite par email ou téléphone pour fixer la date de votre séance.'),
+  ('grossesse', 'booking', 'Réservation', 'Réserver ma séance', 'Choisissez votre formule et réglez en ligne, je vous contacte ensuite pour fixer la date'),
+  ('grossesse', 'thanks', 'Séance réservée', 'Merci !', 'Votre paiement est confirmé et Stripe vous envoie un reçu. Je vous contacte très vite par email ou téléphone pour fixer la date de votre séance.'),
+  ('in-the-box', 'booking', 'Réservation', 'Réserver ma séance', 'Choisissez votre formule et réglez en ligne, je vous contacte ensuite pour fixer la date'),
+  ('in-the-box', 'thanks', 'Séance réservée', 'Merci !', 'Votre paiement est confirmé et Stripe vous envoie un reçu. Je vous contacte très vite par email ou téléphone pour fixer la date de votre séance.');
 
 insert into faq_entries (page_slug, position, question, answer) values
   ('index', 0, 'Y a-t-il une limite de temps pour les séances ?', 'Non, je n’indique jamais de limite de temps car je ne me l’impose pas. L''objectif est de prendre le temps nécessaire pour que vous soyez à l''aise et que le résultat final réponde parfaitement à vos attentes.'),
@@ -651,25 +664,25 @@ insert into pricing_blocks (page_slug, kind, cta_label, cta_href) values
   ('packshot', 'quote', 'Demander un devis', '/contact');
 
 insert into pricing_cards (page_slug, position, featured, tag, badge, title, description, price, cta_label, cta_href) values
-  ('portrait', 0, false, 'Portrait', null, 'Instant', 'Pour celles et ceux qui veulent vivre l’expérience en toute simplicité, se découvrir ou redécouvrir.', '150€', 'Réserver', '/contact'),
-  ('portrait', 1, true, 'Populaire', 'Signature', 'Classique', 'Pour celles et ceux pour qui chaque image raconte quelque chose de différent.', '200€', 'Réserver', '/contact'),
-  ('portrait', 2, false, 'Premium', null, 'Deluxe', 'Pour celles et ceux qui veulent garder des souvenirs à revivre encore et encore.', '230€', 'Réserver', '/contact'),
-  ('amour-de-soi', 0, false, 'Amour de soi', null, 'Éclat', 'Pour celles et ceux qui veulent vivre l’expérience en toute simplicité, se découvrir ou redécouvrir. Vous vous accordez une parenthèse rien qu’à vous.', '200€', 'Réserver', '/contact'),
-  ('amour-de-soi', 1, true, 'Populaire', 'Signature', 'Amour', 'Pour celles et ceux pour qui chaque image raconte quelque chose de différent. Un équilibre parfait entre choix, émotion et souvenir.', '250€', 'Réserver', '/contact'),
-  ('amour-de-soi', 2, false, 'Premium', null, 'Passion', 'Pour celles et ceux qui souhaitent que cette expérience devienne un objet d’art à part entière. Certaines images méritent de quitter l’écran, de prendre vie.', '300€', 'Réserver', '/contact'),
-  ('fantaisie', 0, false, 'Fantaisie', null, 'Éveil', 'Pour celles et ceux qui veulent vivre l’expérience en toute simplicité, se découvrir ou redécouvrir. Vous vous accordez une parenthèse rien qu’à vous.', '170€', 'Réserver', '/contact'),
-  ('fantaisie', 1, true, 'Populaire', 'Signature', 'Fantaisie', 'Pour celles et ceux pour qui chaque image raconte quelque chose de différent. L’harmonie entre les frissons et les souvenirs du moment passé.', '220€', 'Réserver', '/contact'),
-  ('fantaisie', 2, false, 'Premium', null, 'Légende', 'Pour celles et ceux qui souhaitent que cette expérience devienne un objet d’art à part entière. Certaines images méritent de quitter l’écran, de prendre vie.', '270€', 'Réserver', '/contact'),
-  ('corporate', 0, false, 'Présence', null, 'Présence', 'Pour les entrepreneurs qui ont besoin de quelques images simples, professionnelles et efficaces.', '180€', 'Réserver', '/contact'),
-  ('corporate', 1, true, 'Populaire', 'Signature', 'Signature', 'Pour les entrepreneurs qui veulent raconter davantage leur univers et varier leur communication.', '230€', 'Réserver', '/contact'),
-  ('corporate', 2, false, 'Premium', null, 'Vision', 'Pour les entrepreneurs et les marques qui souhaitent construire une image forte et durable.', '260€', 'Réserver', '/contact'),
-  ('grossesse', 0, false, 'Grossesse', null, 'Prélude', 'Pour celles qui veulent simplement garder un souvenir. Quelques images choisies avec le cœur.', '150€', 'Réserver', '/contact'),
-  ('grossesse', 1, true, 'Populaire', 'Signature', 'Connexion', 'Pour celles qui sentent que ce moment mérite un peu plus. Parce que chaque détail compte. Chaque geste, chaque regard.', '200€', 'Réserver', '/contact'),
-  ('grossesse', 2, false, 'Premium', null, 'Éclosion', 'Pour celles qui veulent se souvenir mais aussi garder une trace. Une part de votre histoire à garder toute une vie.', '250€', 'Réserver', '/contact'),
-  ('in-the-box', 0, false, 'In The Box', null, 'Iron', 'Pour une première approche simple et amusante dans la boîte.', '150€', 'Réserver', '/contact'),
-  ('in-the-box', 1, false, 'In The Box', null, 'Silver', 'Plus d''espace pour exprimer votre créativité et vos émotions.', '180€', 'Réserver', '/contact'),
-  ('in-the-box', 2, true, 'Populaire', 'Signature', 'Gold', 'L''équilibre parfait pour des interactions de groupe mémorables.', '230€', 'Réserver', '/contact'),
-  ('in-the-box', 3, false, 'Premium', null, 'Deluxe', 'L''expérience ultime pour un montage géant et des souvenirs incroyables.', '260€', 'Réserver', '/contact');
+  ('portrait', 0, false, 'Portrait', null, 'Instant', 'Pour celles et ceux qui veulent vivre l’expérience en toute simplicité, se découvrir ou redécouvrir.', '150€', 'Réserver', '/reserver/portrait/?formule=1'),
+  ('portrait', 1, true, 'Populaire', 'Signature', 'Classique', 'Pour celles et ceux pour qui chaque image raconte quelque chose de différent.', '200€', 'Réserver', '/reserver/portrait/?formule=2'),
+  ('portrait', 2, false, 'Premium', null, 'Deluxe', 'Pour celles et ceux qui veulent garder des souvenirs à revivre encore et encore.', '230€', 'Réserver', '/reserver/portrait/?formule=3'),
+  ('amour-de-soi', 0, false, 'Amour de soi', null, 'Éclat', 'Pour celles et ceux qui veulent vivre l’expérience en toute simplicité, se découvrir ou redécouvrir. Vous vous accordez une parenthèse rien qu’à vous.', '200€', 'Réserver', '/reserver/amour-de-soi/?formule=4'),
+  ('amour-de-soi', 1, true, 'Populaire', 'Signature', 'Amour', 'Pour celles et ceux pour qui chaque image raconte quelque chose de différent. Un équilibre parfait entre choix, émotion et souvenir.', '250€', 'Réserver', '/reserver/amour-de-soi/?formule=5'),
+  ('amour-de-soi', 2, false, 'Premium', null, 'Passion', 'Pour celles et ceux qui souhaitent que cette expérience devienne un objet d’art à part entière. Certaines images méritent de quitter l’écran, de prendre vie.', '300€', 'Réserver', '/reserver/amour-de-soi/?formule=6'),
+  ('fantaisie', 0, false, 'Fantaisie', null, 'Éveil', 'Pour celles et ceux qui veulent vivre l’expérience en toute simplicité, se découvrir ou redécouvrir. Vous vous accordez une parenthèse rien qu’à vous.', '170€', 'Réserver', '/reserver/fantaisie/?formule=7'),
+  ('fantaisie', 1, true, 'Populaire', 'Signature', 'Fantaisie', 'Pour celles et ceux pour qui chaque image raconte quelque chose de différent. L’harmonie entre les frissons et les souvenirs du moment passé.', '220€', 'Réserver', '/reserver/fantaisie/?formule=8'),
+  ('fantaisie', 2, false, 'Premium', null, 'Légende', 'Pour celles et ceux qui souhaitent que cette expérience devienne un objet d’art à part entière. Certaines images méritent de quitter l’écran, de prendre vie.', '270€', 'Réserver', '/reserver/fantaisie/?formule=9'),
+  ('corporate', 0, false, 'Présence', null, 'Présence', 'Pour les entrepreneurs qui ont besoin de quelques images simples, professionnelles et efficaces.', '180€', 'Réserver', '/reserver/corporate/?formule=10'),
+  ('corporate', 1, true, 'Populaire', 'Signature', 'Signature', 'Pour les entrepreneurs qui veulent raconter davantage leur univers et varier leur communication.', '230€', 'Réserver', '/reserver/corporate/?formule=11'),
+  ('corporate', 2, false, 'Premium', null, 'Vision', 'Pour les entrepreneurs et les marques qui souhaitent construire une image forte et durable.', '260€', 'Réserver', '/reserver/corporate/?formule=12'),
+  ('grossesse', 0, false, 'Grossesse', null, 'Prélude', 'Pour celles qui veulent simplement garder un souvenir. Quelques images choisies avec le cœur.', '150€', 'Réserver', '/reserver/grossesse/?formule=13'),
+  ('grossesse', 1, true, 'Populaire', 'Signature', 'Connexion', 'Pour celles qui sentent que ce moment mérite un peu plus. Parce que chaque détail compte. Chaque geste, chaque regard.', '200€', 'Réserver', '/reserver/grossesse/?formule=14'),
+  ('grossesse', 2, false, 'Premium', null, 'Éclosion', 'Pour celles qui veulent se souvenir mais aussi garder une trace. Une part de votre histoire à garder toute une vie.', '250€', 'Réserver', '/reserver/grossesse/?formule=15'),
+  ('in-the-box', 0, false, 'In The Box', null, 'Iron', 'Pour une première approche simple et amusante dans la boîte.', '150€', 'Réserver', '/reserver/in-the-box/?formule=16'),
+  ('in-the-box', 1, false, 'In The Box', null, 'Silver', 'Plus d''espace pour exprimer votre créativité et vos émotions.', '180€', 'Réserver', '/reserver/in-the-box/?formule=17'),
+  ('in-the-box', 2, true, 'Populaire', 'Signature', 'Gold', 'L''équilibre parfait pour des interactions de groupe mémorables.', '230€', 'Réserver', '/reserver/in-the-box/?formule=18'),
+  ('in-the-box', 3, false, 'Premium', null, 'Deluxe', 'L''expérience ultime pour un montage géant et des souvenirs incroyables.', '260€', 'Réserver', '/reserver/in-the-box/?formule=19');
 
 insert into pricing_notes (page_slug, placement, position, body) values
   ('corporate', 'intro', 0, 'Tarifs étudiés pour un shooting d’une personne. Pour une entreprise, contactez-moi afin d’adapter le nombre de personnes à photographier et de photos à livrer. Un supplément de 20€ est à prévoir si la séance nécessite l’installation d’un fond studio.'),
@@ -965,6 +978,6 @@ insert into gift_deliveries (position, value, is_default, title, description, pr
   (1, 'physical', false, 'Carte Cadeau Physique', 'Carte élégante dans une enveloppe personnalisée, expédition rapide avec accusé de réception (La Poste).', '+ 15€');
 
 insert into gift_form (page_slug, submit_label, success_message, card_brand, card_caption) values
-  ('carte-cadeau', 'Envoyer le formulaire', 'Merci ! Votre demande a bien été envoyée. Je vous recontacte très vite par email pour finaliser votre carte cadeau.', 'Roger Moniz.', 'CARTE CADEAU');
+  ('carte-cadeau', 'Payer et commander', 'Votre paiement est confirmé et Stripe vous envoie un reçu par email. Je vous recontacte très vite pour finaliser votre carte cadeau.', 'Roger Moniz.', 'CARTE CADEAU');
 
 commit;

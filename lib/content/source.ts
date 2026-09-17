@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { parseEuros, tryParseEuros } from "@/lib/orders/money";
 import { supabase } from "@/lib/supabase/server";
 import type {
   ArticlePageData,
@@ -233,6 +234,42 @@ export async function getSlugsByKind(...kinds: string[]): Promise<string[]> {
     .map((p) => str(p.slug));
 }
 
+/**
+ * A priced prestation, as its booking page needs it: the formulas that can be
+ * charged, with the page's own words for the form and the thank you. A page
+ * that invites a quote, or has no readable price, has no booking page.
+ */
+export async function getBookingPage(slug: string) {
+  const d = await db();
+  const page = (d.pages ?? []).find((p) => p.slug === slug && str(p.kind) === "prestation" && isPublished(p));
+  const pricing = one(d.pricing_blocks ?? [], slug);
+  if (!page || pricing?.kind !== "cards") return null;
+
+  const cards = bySlug(d.pricing_cards ?? [], slug).flatMap((c) => {
+    const amount = tryParseEuros(str(c.price));
+    if (amount === null) return [];
+    return [{
+      id: String(c.id),
+      title: str(c.title),
+      description: str(c.description),
+      price: str(c.price),
+      amount,
+      featured: c.featured === true,
+      features: (d.pricing_features ?? []).filter((f) => f.card_id === c.id).map((f) => str(f.body)),
+    }];
+  });
+  if (cards.length === 0) return null;
+
+  return {
+    slug,
+    name: str(page.meta_title).split("|")[0]?.trim() || slug,
+    metaTitle: str(page.meta_title),
+    heading: headingFor(d, slug, "booking"),
+    thanks: headingFor(d, slug, "thanks"),
+    cards,
+  };
+}
+
 export async function getPageKind(slug: string): Promise<string> {
   const d = await db();
   return str((d.pages ?? []).find((p) => p.slug === slug)?.kind);
@@ -331,6 +368,7 @@ export async function getPrestation(slug: string): Promise<PrestationPage> {
     title: str(c.title),
     description: str(c.description),
     price: str(c.price),
+    amount: tryParseEuros(str(c.price)),
     features: (d.pricing_features ?? [])
       .filter((f) => f.card_id === c.id)
       .map((f) => str(f.body)),
@@ -711,6 +749,7 @@ export async function getGiftPage() {
     packages: (d.gift_packages ?? []).map((r) => ({
       value: str(r.value),
       price: str(r.price),
+      amount: parseEuros(str(r.price)),
       checked: r.is_default === true,
       title: str(r.title),
       description: str(r.description),
@@ -721,9 +760,11 @@ export async function getGiftPage() {
       title: str(r.title),
       description: str(r.description),
       price: str(r.price),
+      amount: parseEuros(str(r.price)),
     })),
     submitLabel: str(form?.submit_label),
     formSuccess: str(form?.success_message),
+    thanks: headingFor(d, slug, "thanks"),
     cardLabels: { brand: str(form?.card_brand), caption: str(form?.card_caption) },
     faq: { ...headingFor(d, slug, "faq"), entries: faqFor(d, slug) },
   };

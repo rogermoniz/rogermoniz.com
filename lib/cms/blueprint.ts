@@ -155,6 +155,8 @@ const PRESTATION: Blueprint = {
       panels: [
         heading("pricing"),
         { form: "single", table: "pricing_blocks", title: "Réglages" },
+        heading("booking", "Page de réservation (formules à prix fixe)"),
+        heading("thanks", "Page après paiement"),
         {
           form: "rows",
           table: "pricing_cards",
@@ -332,6 +334,12 @@ const GIFT: Blueprint = {
         { form: "rows", table: "gift_deliveries", title: "Remise du cadeau", noun: "option" },
         { form: "single", table: "gift_form", title: "Textes du formulaire" },
       ],
+    },
+    {
+      key: "thanks",
+      label: "La page après paiement",
+      hint: "Ce que voit l'acheteur en revenant de Stripe. Le message de confirmation est celui du formulaire, ci dessus.",
+      panels: [heading("thanks")],
     },
     FAQ(),
   ],

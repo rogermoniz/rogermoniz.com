@@ -55,7 +55,6 @@ export default async function CarteCadeauRoute() {
           packages={data.packages}
           deliveries={data.deliveries}
           submitLabel={data.submitLabel}
-          successMessage={data.formSuccess}
           cardLabels={data.cardLabels}
         />
       </Container>

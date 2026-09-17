@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { Field, FormRow, TextArea, TextInput } from "@/components/primitives/FormField";
 import { ArrowRightIcon } from "@/components/primitives/icons";
-import { WEB3FORMS_ACCESS_KEY, WEB3FORMS_ENDPOINT, type SubmitState } from "@/lib/forms";
+import { startGiftCheckout, type CheckoutState } from "@/lib/orders/checkout";
+import { formatEuros } from "@/lib/orders/money";
 
 type Package = {
   value: string;
   price: string;
+  amount: number;
   checked: boolean;
   title: string;
   description: string;
@@ -19,6 +21,7 @@ type Delivery = {
   title: string;
   description: string;
   price: string;
+  amount: number;
 };
 
 function SmartChip() {
@@ -40,54 +43,32 @@ function SmartChip() {
 
 /**
  * The gift card builder. The chosen formula drives a live preview of the card,
- * so the reader sees what they are buying while they fill the form in.
+ * so the reader sees what they are buying while they fill the form in, and
+ * the form itself hands over to Stripe Checkout: the site never sees a card
+ * number, only the order that comes back paid.
  */
 export function GiftBuilder({
   steps,
   packages,
   deliveries,
   submitLabel,
-  successMessage,
   cardLabels,
 }: {
   steps: readonly string[];
   packages: readonly Package[];
   deliveries: readonly Delivery[];
   submitLabel: string;
-  successMessage: string;
   cardLabels: { brand: string; caption: string };
 }) {
-  const initial = packages.find((p) => p.checked) ?? packages[0];
-  const [selected, setSelected] = useState(initial?.value ?? "");
-  const [state, setState] = useState<SubmitState>("idle");
+  const initialPackage = packages.find((p) => p.checked) ?? packages[0];
+  const initialDelivery = deliveries.find((d) => d.checked) ?? deliveries[0];
+  const [selected, setSelected] = useState(initialPackage?.value ?? "");
+  const [delivery, setDelivery] = useState(initialDelivery?.value ?? "");
+  const [state, action, pending] = useActionState<CheckoutState, FormData>(startGiftCheckout, null);
 
-  const active = packages.find((p) => p.value === selected) ?? initial;
-
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const data = new FormData(form);
-    data.set("subject", `Nouvelle commande — Carte Cadeau (${data.get("package") ?? ""})`);
-
-    setState("sending");
-    try {
-      const response = await fetch(WEB3FORMS_ENDPOINT, {
-        method: "POST",
-        headers: { Accept: "application/json" },
-        body: data,
-      });
-      const result: { success?: boolean } = await response.json();
-      if (result.success) {
-        setState("sent");
-        form.reset();
-        setSelected(initial?.value ?? "");
-      } else {
-        setState("error");
-      }
-    } catch {
-      setState("error");
-    }
-  };
+  const active = packages.find((p) => p.value === selected) ?? initialPackage;
+  const chosenDelivery = deliveries.find((d) => d.value === delivery) ?? initialDelivery;
+  const total = (active?.amount ?? 0) + (chosenDelivery?.amount ?? 0);
 
   const radio =
     "peer sr-only";
@@ -123,17 +104,7 @@ export function GiftBuilder({
         </div>
       </div>
 
-      <form onSubmit={onSubmit} className="flex flex-col gap-16">
-        <input type="hidden" name="access_key" value={WEB3FORMS_ACCESS_KEY} />
-        <input type="hidden" name="from_name" value="Site Roger Moniz — Carte Cadeau" />
-        <input
-          type="checkbox"
-          name="botcheck"
-          tabIndex={-1}
-          autoComplete="off"
-          aria-hidden="true"
-          className="hidden"
-        />
+      <form action={action} className="flex flex-col gap-16">
 
         <fieldset className="flex flex-col border-0 p-0">
           <legend className="tactile mb-6 inline-block rounded-[30px] px-3 py-[5px] font-body text-[0.45rem] tracking-[2.5px] uppercase">
@@ -221,7 +192,8 @@ export function GiftBuilder({
                   type="radio"
                   name="delivery"
                   value={option.value}
-                  defaultChecked={option.checked}
+                  checked={delivery === option.value}
+                  onChange={() => setDelivery(option.value)}
                   className={radio}
                 />
                 <span className={card}>
@@ -239,29 +211,31 @@ export function GiftBuilder({
         </fieldset>
 
         <div>
+          <p className="mb-6 flex items-baseline justify-between gap-6 border-t border-edge pt-6 font-body">
+            <span className="text-[0.8rem] font-semibold tracking-[0.08em] text-muted uppercase">Total</span>
+            <span className="font-display text-2xl font-bold text-ink">{formatEuros(total)}</span>
+          </p>
           <button
             type="submit"
-            disabled={state === "sending" || state === "sent"}
+            disabled={pending}
             className="tactile group inline-flex w-fit items-center justify-center gap-4 rounded-[100px] px-6 py-3 disabled:opacity-70"
           >
             <span className="font-display text-xs font-bold tracking-[0.05em] uppercase">
-              {state === "sending"
-                ? "Envoi en cours…"
-                : state === "sent"
-                  ? "Demande envoyée ✓"
-                  : submitLabel}
+              {pending ? "Redirection vers le paiement…" : submitLabel}
             </span>
             <span className="relative block size-5 overflow-hidden">
               <ArrowRightIcon className="absolute top-0 left-0 size-full transition-transform duration-600 ease-out-expo group-hover:translate-x-full" />
               <ArrowRightIcon className="absolute top-0 left-0 size-full -translate-x-full transition-transform duration-600 ease-out-expo group-hover:translate-x-0" />
             </span>
           </button>
-          <p role="status" className="mt-5 font-body text-[0.95rem] leading-relaxed text-ink">
-            {state === "sent" ? successMessage : null}
-            {state === "error"
-              ? "L’envoi a échoué. Réessayez, ou écrivez directement à contact@rogermoniz.com."
-              : null}
+          <p className="mt-5 font-body text-[0.85rem] leading-relaxed text-muted">
+            Paiement sécurisé par Stripe. Carte bancaire, Apple Pay et Google Pay.
           </p>
+          {state ? (
+            <p role="alert" className="mt-3 font-body text-[0.95rem] leading-relaxed text-danger">
+              {state.message}
+            </p>
+          ) : null}
         </div>
       </form>
     </div>
