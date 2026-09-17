@@ -57,7 +57,7 @@ On a paid session the webhook marks the order paid; the buyer lands on
 notification (Web3Forms refuses server side calls, so the webhook cannot use
 it). The buyer gets Stripe's receipt.
 
-`scripts/stripe-go-live.sh` registers the live webhook and writes both secrets
+`scripts/stripe-go-live.sh` registered the live webhook (2026-09-17) and writes both secrets
 into the Vercel project, reading the live key from
 `~/.rogermoniz-stripe-live-key` and a Vercel token from
 `~/.rogermoniz-vercel-token`, so neither value is ever typed or printed.
