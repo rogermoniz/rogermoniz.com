@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { CONTACT_PATH, paymentsOpen } from "@/lib/orders/launch";
 import { parseEuros, tryParseEuros } from "@/lib/orders/money";
 import { supabase } from "@/lib/supabase/server";
 import type {
@@ -343,6 +344,11 @@ export async function getHomePage(): Promise<HomePage> {
   };
 }
 
+/** A link into the booking flow leads to the contact page while payments are closed. */
+function bookingHref(href: string): string {
+  return href.startsWith("/reserver/") && !paymentsOpen() ? CONTACT_PATH : href;
+}
+
 export async function getPrestation(slug: string): Promise<PrestationPage> {
   const d = await db();
   const meta = await getPageMeta(slug);
@@ -373,7 +379,7 @@ export async function getPrestation(slug: string): Promise<PrestationPage> {
       .filter((f) => f.card_id === c.id)
       .map((f) => str(f.body)),
     ctaLabel: str(c.cta_label),
-    ctaHref: str(c.cta_href),
+    ctaHref: bookingHref(str(c.cta_href)),
   }));
 
   const gallery = bySlug(d.gallery_items ?? [], slug);

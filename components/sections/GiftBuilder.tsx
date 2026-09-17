@@ -2,7 +2,9 @@
 
 import { useActionState, useState } from "react";
 import { Field, FormRow, TextArea, TextInput } from "@/components/primitives/FormField";
+import { BubbleButton } from "@/components/primitives/BubbleButton";
 import { ArrowRightIcon } from "@/components/primitives/icons";
+import { CONTACT_PATH } from "@/lib/orders/launch";
 import { startGiftCheckout, type CheckoutState } from "@/lib/orders/checkout";
 import { formatEuros } from "@/lib/orders/money";
 
@@ -53,12 +55,15 @@ export function GiftBuilder({
   deliveries,
   submitLabel,
   cardLabels,
+  open,
 }: {
   steps: readonly string[];
   packages: readonly Package[];
   deliveries: readonly Delivery[];
   submitLabel: string;
   cardLabels: { brand: string; caption: string };
+  /** Whether online payment is open; until then the form points at the contact page. */
+  open: boolean;
 }) {
   const initialPackage = packages.find((p) => p.checked) ?? packages[0];
   const initialDelivery = deliveries.find((d) => d.checked) ?? deliveries[0];
@@ -215,21 +220,29 @@ export function GiftBuilder({
             <span className="text-[0.8rem] font-semibold tracking-[0.08em] text-muted uppercase">Total</span>
             <span className="font-display text-2xl font-bold text-ink">{formatEuros(total)}</span>
           </p>
-          <button
-            type="submit"
-            disabled={pending}
-            className="tactile group inline-flex w-fit items-center justify-center gap-4 rounded-[100px] px-6 py-3 disabled:opacity-70"
-          >
-            <span className="font-display text-xs font-bold tracking-[0.05em] uppercase">
-              {pending ? "Redirection vers le paiement…" : submitLabel}
-            </span>
-            <span className="relative block size-5 overflow-hidden">
-              <ArrowRightIcon className="absolute top-0 left-0 size-full transition-transform duration-600 ease-out-expo group-hover:translate-x-full" />
-              <ArrowRightIcon className="absolute top-0 left-0 size-full -translate-x-full transition-transform duration-600 ease-out-expo group-hover:translate-x-0" />
-            </span>
-          </button>
+          {open ? (
+            <button
+              type="submit"
+              disabled={pending}
+              className="tactile group inline-flex w-fit items-center justify-center gap-4 rounded-[100px] px-6 py-3 disabled:opacity-70"
+            >
+              <span className="font-display text-xs font-bold tracking-[0.05em] uppercase">
+                {pending ? "Redirection vers le paiement…" : submitLabel}
+              </span>
+              <span className="relative block size-5 overflow-hidden">
+                <ArrowRightIcon className="absolute top-0 left-0 size-full transition-transform duration-600 ease-out-expo group-hover:translate-x-full" />
+                <ArrowRightIcon className="absolute top-0 left-0 size-full -translate-x-full transition-transform duration-600 ease-out-expo group-hover:translate-x-0" />
+              </span>
+            </button>
+          ) : (
+            <BubbleButton href={CONTACT_PATH} variant="solid">
+              Me contacter pour commander
+            </BubbleButton>
+          )}
           <p className="mt-5 font-body text-[0.85rem] leading-relaxed text-muted">
-            Paiement sécurisé par Stripe. Carte bancaire, Apple Pay et Google Pay.
+            {open
+              ? "Paiement sécurisé par Stripe. Carte bancaire, Apple Pay et Google Pay."
+              : "Le paiement en ligne ouvre très bientôt. En attendant, je prends votre commande par email."}
           </p>
           {state ? (
             <p role="alert" className="mt-3 font-body text-[0.95rem] leading-relaxed text-danger">

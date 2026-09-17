@@ -12,6 +12,7 @@ import { FaqSection } from "@/components/sections/FaqSection";
 import { GiftBuilder } from "@/components/sections/GiftBuilder";
 import { HeroMarquee } from "@/components/sections/HeroMarquee";
 import { getGiftPage } from "@/lib/content/source";
+import { paymentsOpen } from "@/lib/orders/launch";
 
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -56,6 +57,7 @@ export default async function CarteCadeauRoute() {
           deliveries={data.deliveries}
           submitLabel={data.submitLabel}
           cardLabels={data.cardLabels}
+          open={paymentsOpen()}
         />
       </Container>
 

@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import type Stripe from "stripe";
 import { SITE_ORIGIN } from "@/lib/canonical";
 import { getBookingPage, getGiftPage } from "@/lib/content/source";
+import { paymentsOpen } from "./launch";
 import { stripe } from "@/lib/stripe/server";
 import { readBookingInput, readGiftInput } from "./order";
 import { recordOrder, type NewOrder } from "./orders";
@@ -13,6 +14,8 @@ export type CheckoutState = { message: string } | null;
 
 const FAILED =
   "Le paiement n’a pas pu démarrer. Réessayez dans un instant, ou écrivez directement à contact@rogermoniz.com.";
+const CLOSED =
+  "Le paiement en ligne n’est pas encore ouvert. Écrivez-moi depuis la page contact et je reviens vers vous très vite.";
 
 /** Stripe caps a metadata value at 500 characters; the full text is in the order book. */
 const clip = (text: string) => (text.length > 500 ? `${text.slice(0, 497)}…` : text);
@@ -84,6 +87,7 @@ async function openCheckout(
  * from the form, so nothing the browser sends can change a price.
  */
 export async function startGiftCheckout(_prev: CheckoutState, form: FormData): Promise<CheckoutState> {
+  if (!paymentsOpen()) return { message: CLOSED };
   const reading = readGiftInput(form);
   if (!reading.ok) return { message: reading.message };
   const { input } = reading;
@@ -133,6 +137,7 @@ export async function startGiftCheckout(_prev: CheckoutState, form: FormData): P
 
 /** A session on a priced prestation, paid in full up front. */
 export async function startBookingCheckout(_prev: CheckoutState, form: FormData): Promise<CheckoutState> {
+  if (!paymentsOpen()) return { message: CLOSED };
   const reading = readBookingInput(form);
   if (!reading.ok) return { message: reading.message };
   const { input } = reading;

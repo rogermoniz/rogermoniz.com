@@ -29,6 +29,11 @@ The local values are in `.env.local`, which is gitignored.
 
 ## Stripe
 
+**Payments open the moment `STRIPE_SECRET_KEY` exists in the environment**
+(`lib/orders/launch.ts`). Without it every "Réserver" leads to the contact page,
+the gift card form offers "Me contacter pour commander", and the booking pages
+404, so a deploy without the key is the site as it was before Stripe.
+
 The gift card (`/carte-cadeau`) and every priced prestation formula
 (`/reserver/<slug>/`, reached from each pricing card's button) are paid through
 Stripe Checkout. The forms post to the `startGiftCheckout` / `startBookingCheckout`

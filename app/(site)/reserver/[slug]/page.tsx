@@ -4,6 +4,7 @@ import { Reveal } from "@/components/effects/Reveal";
 import { Container, Eyebrow, HeadingSub, SectionHeading2 } from "@/components/primitives/Typography";
 import { BookingBuilder } from "@/components/sections/BookingBuilder";
 import { getBookingPage } from "@/lib/content/source";
+import { paymentsOpen } from "@/lib/orders/launch";
 
 /**
  * The booking page of a priced prestation. It exists only for pages whose
@@ -26,7 +27,7 @@ export default async function BookingRoute({
   searchParams: Promise<{ formule?: string | string[] }>;
 }) {
   const [{ slug }, { formule }] = await Promise.all([params, searchParams]);
-  const page = await getBookingPage(slug);
+  const page = paymentsOpen() ? await getBookingPage(slug) : null;
   if (!page) notFound();
 
   return (
